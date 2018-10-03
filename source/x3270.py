@@ -31,18 +31,20 @@ class x3270(object):
         """
         self.timeout = int(seconds)
         
-    def open_connection(self, host, LU=None):
-        """Create a connection with IBM3270 mainframe. To make a connection with the mainframe you only 
-        must inform the Host. You can pass the Logical Unit Name as opcional.
+    def open_connection(self, host, LU=None, port=23):
+        """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only 
+        must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
 
 	Example:
             | Open Connection | Hostname | 
             | Open Connection | Hostname | LU=LUname |
+            | Open Connection | Hostname | port=992 |
         """
-        self.lu = LU
         self.host = host
+        self.lu = LU
+        self.port = port
         if self.lu:
-            self.credential = "%s@%s:23" % (self.lu, self.host)
+            self.credential = "%s@%s:%s" % (self.lu, self.host, self.port)
         else:
             self.credential = self.host
         self.mf.connect(self.credential)
