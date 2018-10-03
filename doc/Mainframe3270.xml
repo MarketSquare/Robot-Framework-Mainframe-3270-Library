@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20181003 11:21:27" type="library" name="Mainframe3270" format="ROBOT">
+<keywordspec generated="20181003 14:41:12" type="library" name="Mainframe3270" format="ROBOT">
 <version>2.1</version>
 <scope>global</scope>
 <namedargs>yes</namedargs>
@@ -21,7 +21,6 @@ but is you set the visible to false, the py3270 will run the ws3270.exe.
 
 | ***** Settings *****
 | Library           Mainframe3270
-| Library           BuiltIn
 |
 | ***** Test Cases *****
 | Example
@@ -29,7 +28,7 @@ but is you set the visible to false, the py3270 will run the ws3270.exe.
 |     Change Wait Time    0.9
 |     Set Screenshot Folder    C:\\Temp\\IMG
 |     ${value}    Read    3    10    17
-|     Should Be Equal As Strings    ${value}    ENTER APPLICATION
+|     Page Should Contain String    ENTER APPLICATION
 |     Write Bare    applicationname
 |     Send Enter
 |     Take Screenshot

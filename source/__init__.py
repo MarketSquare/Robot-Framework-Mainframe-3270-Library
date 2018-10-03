@@ -30,7 +30,7 @@ class Mainframe3270(x3270):
        |     Change Wait Time    0.9
        |     Set Screenshot Folder    C:\\\Temp\\\IMG
        |     ${value}    Read    3    10    17
-       |     Should Be Equal As Strings    ${value}    ENTER APPLICATION
+       |     Page Should Contain String    ENTER APPLICATION
        |     Write Bare    applicationname
        |     Send Enter
        |     Take Screenshot
