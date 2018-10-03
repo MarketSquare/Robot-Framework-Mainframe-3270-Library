@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20180926 10:14:36" type="library" name="Mainframe3270" format="ROBOT">
-<version>2.0</version>
+<keywordspec generated="20181003 11:21:27" type="library" name="Mainframe3270" format="ROBOT">
+<version>2.1</version>
 <scope>global</scope>
 <namedargs>yes</namedargs>
 <doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
@@ -152,13 +152,15 @@ Examples:
 <arguments>
 <arg>host</arg>
 <arg>LU=None</arg>
+<arg>port=23</arg>
 </arguments>
-<doc>Create a connection with IBM3270 mainframe. To make a connection with the mainframe you only 
-must inform the Host. You can pass the Logical Unit Name as opcional.
+<doc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only 
+must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
 
 Example:
     | Open Connection | Hostname | 
-    | Open Connection | Hostname | LU=LUname |</doc>
+    | Open Connection | Hostname | LU=LUname |
+    | Open Connection | Hostname | port=992 |</doc>
 <tags>
 </tags>
 </kw>
