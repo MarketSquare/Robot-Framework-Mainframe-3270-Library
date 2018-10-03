@@ -3,3 +3,4 @@ tests/log.html
 tests/output.xml
 tests/report.html
 tests/screenshot/
+tests/logs/
