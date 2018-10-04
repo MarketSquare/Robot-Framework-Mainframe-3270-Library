@@ -6,7 +6,7 @@ Mainframe3270 is a library for Robot Framework based on [py3270 project](https:/
 
 ## Instalation
 
-In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html) and put the directory on your PATH. On Windows, you need to download wc3270 and put the "C:\Program Files\wc3270" in PATH of the Environment Variables.
+In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html). More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Instalation) of this project.
 
 ## Notes
 
@@ -44,6 +44,9 @@ To change the wait_time see Change Wait Time, to change the img_folder see the S
 ## Keyword Documentation
 
 You can find the keywords documentation [here](https://rawgit.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/documentation.html)
+
+## WIKI
+For more information visit this repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
 
 ## Authors
    - **Altran -** [Altran Web Site](https://www.altran.com/us/en/)
