@@ -21,7 +21,7 @@ class x3270(object):
         self.host = None
         self.credential = None
         self.imgfolder =img_folder
-        #self.output_folder=BuiltIn().get_variable_value('${OUTPUT DIR}')
+        self.output_folder=BuiltIn().get_variable_value('${OUTPUT DIR}')
         self.wait = float(wait_time)
         self.timeout = int(timeout)
         self.mf = Emulator(visible=bool(visible), timeout=int(timeout))
