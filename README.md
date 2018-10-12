@@ -53,6 +53,7 @@ For more information visit this repository [Wiki](https://github.com/Altran-PT-G
    - **Samuel Cabral**
    - **Joao Gomes**
    - **Bruno Calado**
+   - **Ricardo Morgado**
    
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE) file for details.
