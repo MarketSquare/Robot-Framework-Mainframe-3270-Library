@@ -145,12 +145,11 @@ class ExecutableAppLinux(object):
         return False
 
     def close(self):
-        self.sp.kill()
+        pass
 
     def write(self, data):
         self.sp.stdin.write(data)
         self.sp.stdin.flush()
-        os.fsync(self.sp.stdin.fileno()) 
 
     def readline(self):
         return self.sp.stdout.readline()
@@ -219,7 +218,7 @@ class x3270App(ExecutableAppLinux):
     # work around that, when AID commands are sent, there is a 350ms delay
     # before the command returns. This arg turns that feature off for
     # performance reasons.
-    args = ['-xrm', 'x3270.unlockDelay: False', '-script']
+    args = ['-xrm', 'x3270.unlockDelay: False', '-xrm', 'x3270.model: 2', '-script']
 
 
 class s3270App(ExecutableAppLinux):
@@ -241,9 +240,7 @@ class wc3270App(ExecutableAppWin):
 class ws3270App(ExecutableAppWin):
     executable = 'ws3270'
     # see notes for args in x3270App
-    args = [
-        '-xrm', 'ws3270.unlockDelay: False',
-    ]
+    args = ['-xrm', 'ws3270.unlockDelay: False',]
 
 class EmulatorBase(object):
     def __init__(self, visible=False, timeout=30, app=None, _sp=None):
@@ -483,4 +480,3 @@ class Emulator(object):
 
     def save_screen(self, file_path):
         self.exec_command('PrintText(html,file,{0})'.format(file_path).encode('ascii'))
-
