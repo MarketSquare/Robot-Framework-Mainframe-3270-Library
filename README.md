@@ -8,10 +8,6 @@ Mainframe3270 is a library for Robot Framework based on [py3270 project](https:/
 
 In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html). More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Instalation) of this project.
 
-## Notes
-
-By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe, but is you set the visible to false, the py3270 will run the ws3270.exe.
-
 ## Example
 
     *** Settings ***
@@ -40,6 +36,10 @@ Arguments:
 You can change to hide the emulator screen set the argument visible=${False}
 
 To change the wait_time see Change Wait Time, to change the img_folder see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
+
+## Notes
+
+By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe, but is you set the visible to false, the py3270 will run the ws3270.exe.
 
 ## Keyword Documentation
 
