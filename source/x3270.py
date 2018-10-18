@@ -285,7 +285,7 @@ class x3270(object):
                | Page Should Contain String | someTHING | ignore_case=${True} |
                | Page Should Contain String | something | error_message=New error message |
         """
-        message = 'String "' + txt + '" not found'
+        message = 'The string "' + txt + '" was not found'
         if error_message: message = error_message
         if ignore_case: txt = str(txt).lower()
         result = self._search_string(txt, ignore_case)
@@ -323,7 +323,7 @@ class x3270(object):
                | Page Should Contain Any String | ${list_of_string} | ignore_case=${True} |
                | Page Should Contain Any String | ${list_of_string} | error_message=New error message |
         """
-        message = 'Strings "' + str(list_string) + '" not found'
+        message = 'The strings "' + str(list_string) + '" was not found'
         if error_message: message = error_message
         if ignore_case: list_string = [item.lower() for item in list_string]
         for string in list_string:
