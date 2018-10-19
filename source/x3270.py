@@ -84,6 +84,12 @@ class x3270(object):
            Example for read a string in the position y=8 / x=10 of a length 15:
                | ${value} | Read | 8 | 10 | 15 |
         """
+        if int(ypos) > 24:
+            raise Exception('You have exceeded the y-axis limit of the mainframe screen')
+        if int(xpos) > 80:
+            raise Exception('You have exceeded the x-axis limit of the mainframe screen')
+        if int(xpos) + int(length) > (80+1):
+            raise Exception('You have exceeded the x-axis limit of the mainframe screen')
         string = self.mf.string_get(int(ypos), int(xpos), int(length))
         return str(string)
 
@@ -108,7 +114,7 @@ class x3270(object):
         if os.path.exists(os.path.normpath(os.path.join(self.output_folder, path))):
             self.imgfolder = path
         else:
-            logger.error('Given screenshots path "%s" does not exist!' % path)
+            logger.error('Given screenshots path "%s" does not exist' % path)
             logger.warn('Screenshots will be saved in "%s"' % self.imgfolder)
         
     def take_screenshot(self, height='410', width='670'):
@@ -418,7 +424,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if not re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception('No matches found for "' + regex_pattern +'" pattern!')
+            raise Exception('No matches found for "' + regex_pattern +'" pattern')
 
     def page_should_not_match_regex(self, regex_pattern):
         """Fails if string does match pattern as a regular expression. Regular expression check is
@@ -431,7 +437,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception('There are matches found for "' + regex_pattern +'" pattern!')
+            raise Exception('There are matches found for "' + regex_pattern +'" pattern')
 
     def page_should_contain_match(self, txt, ignore_case=False, error_message=None):
         """Fails unless the given string matches the given pattern.
@@ -460,7 +466,7 @@ class x3270(object):
         result = matcher.match(all_screen)
         if result == False:
             if message == None:
-                message = 'No matches found for "' + txt +'" pattern!'
+                message = 'No matches found for "' + txt +'" pattern'
             raise Exception(message)
 
     def page_should_not_contain_match(self, txt, ignore_case=False, error_message=None):
@@ -490,7 +496,7 @@ class x3270(object):
         result = matcher.match(all_screen)
         if result == True:
             if message == None:
-                message = 'There are matches found for "' + txt +'" pattern!'
+                message = 'There are matches found for "' + txt +'" pattern'
             raise Exception(message)
 
     def _read_all_screen(self):
