@@ -235,7 +235,6 @@ class wc3270App(ExecutableAppWin):
     executable = 'wc3270'
     # see notes for args in x3270App
     args = ['-xrm','wc3270.unlockDelay: False', '-xrm', 'wc3270.model: 2']
-    #args = ['-xrm','wc3270.unlockDelay: False']
 
 class ws3270App(ExecutableAppWin):
     executable = 'ws3270'
