@@ -41,6 +41,8 @@ Test Read
     ${read_text}    Read    1    10    21
     Run Keyword And Expect Error    Welcome to PUB400.COM * your public IBM i server != Welcome to PUB400.COM    Should Be Equal As Strings    ${welcome_title}    ${read_text}
     Run Keyword And Expect Error    You have exceeded the x-axis limit of the mainframe screen    Read    4    48    34
+    Run Keyword And Expect Error    You have exceeded the x-axis limit of the mainframe screen    Read    4    81    1
+    Run Keyword And Expect Error    You have exceeded the y-axis limit of the mainframe screen    Read    25    48    34
 
 Test Page Should Contain String
     Run Keyword And Expect Error    The string "WELCOME TO PUB400.COM * YOUR PUBLIC IBM I SERVER" was not found    Page Should Contain String    ${welcome_title_wrong_case}
