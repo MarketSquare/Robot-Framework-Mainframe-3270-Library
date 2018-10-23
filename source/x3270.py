@@ -84,10 +84,8 @@ class x3270(object):
            Example for read a string in the position y=8 / x=10 of a length 15:
                | ${value} | Read | 8 | 10 | 15 |
         """
-        if int(ypos) > 24:
-            raise Exception('You have exceeded the y-axis limit of the mainframe screen')
-        if int(xpos) > 80:
-            raise Exception('You have exceeded the x-axis limit of the mainframe screen')
+        self._check_limits(ypos, xpos)
+        #Checks if the user has passed a length that will be larger than the x limit of the screen.
         if int(xpos) + int(length) > (80+1):
             raise Exception('You have exceeded the x-axis limit of the mainframe screen')
         string = self.mf.string_get(int(ypos), int(xpos), int(length))
@@ -229,7 +227,8 @@ class x3270(object):
 
            Example:
                | Write in Position | something | 9 | 11 |
-        """       
+        """
+        self._check_limits(ypos, xpos)       
         self._write(txt, ypos=ypos, xpos=xpos, enter='1')
         
     def write_bare_in_position(self,txt, ypos, xpos):
@@ -240,7 +239,8 @@ class x3270(object):
 
            Example:
                | Write Bare in Position | something | 9 | 11 |
-        """ 
+        """
+        self._check_limits(ypos, xpos) 
         self._write(txt, ypos=ypos, xpos=xpos)
 
     def _write(self, txt, ypos=None, xpos=None, enter='0'):
@@ -310,13 +310,13 @@ class x3270(object):
                | Page Should Not Contain String | someTHING | ignore_case=${True} |
                | Page Should Not Contain String | something | error_message=New error message |
         """        
-        message = 'String "' + txt + '" found'
+        message = 'The string "' + txt + '" was found'
         if error_message: message = error_message
         if ignore_case: txt = str(txt).lower()
         result = self._search_string(txt, ignore_case)
         if result == True:
             raise Exception(message)
-        logger.info('The string "' + txt + '" was not found')
+        #logger.info('The string "' + txt + '" was found')
 
     def page_should_contain_any_string(self, list_string, ignore_case=False, error_message=None):
         """Search if one of the strings in a given list exists on the mainframe screen.
@@ -387,7 +387,7 @@ class x3270(object):
             result = self._search_string(string, ignore_case)
             if result == True:
                 if message == None:
-                    message = 'String "' + string + '" are found'
+                    message = 'The string "' + string + '" was found'
                 raise Exception(message)
 
     def page_should_contain_string_x_times (self, txt, number, ignore_case=False, error_message=None):
@@ -523,3 +523,10 @@ class x3270(object):
                     message = 'The string "' + string + '" was not found'
                 raise Exception(message)
 
+    def _check_limits(self, ypos, xpos):
+        """Checks if the user has passed some coordinate y / x greater than that existing in the mainframe
+        """
+        if int(ypos) > 24:
+            raise Exception('You have exceeded the y-axis limit of the mainframe screen')
+        if int(xpos) > 80:
+            raise Exception('You have exceeded the x-axis limit of the mainframe screen')
