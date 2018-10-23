@@ -11,16 +11,23 @@ Suite Teardown    Close Connection
 #host
 ${host}               pub400.com
 ${folder}      ${CURDIR}${/}screenshot
+#Texts to write
+${write_string}       TEST
 #Texts to read 
 ${welcome_title}      Welcome to PUB400.COM * your public IBM i server
-@{list_strings_wrong_in_the_first}    WRONGSTRING    Subsystem    Display name
+${welcome_title_short}      Welcome to PUB400.COM 
+@{list_strings_wrong_on_the_first}    WRONGSTRING    Subsystem    Display name
 @{list_strings_wrong_on_the_second}   Server name    WRONGSTRING   Display name 
 @{list_strings_wrong_on_the_third}    Server name   Subsystem    WRONGSTRING
 ${text_to_count}    IBM
 ${valid_regex}    USER\\d{4}
+@{list_strings_right_on_the_first}   Server name    WRONGSTRING   WRONGSTRING
+@{list_strings_right_on_the_second}   WRONGSTRING    Subsystem   WRONGSTRING 
+@{list_strings_right_on_the_third}     WRONGSTRING    WRONGSTRING    Display name
 #Texts to read with wrong case
 ${welcome_title_wrong_case}    WELCOME TO PUB400.COM * YOUR PUBLIC IBM I SERVER
-@{list_strings_wrong_case_in_the_first}    SERVER NAME    Subsystem    Display name
+${welcome_title_short_wrong_case}      WELCOME TO PUB400.COM
+@{list_strings_wrong_case_on_the_first}    SERVER NAME    Subsystem    Display name
 @{list_strings_wrong_case_on_the_second}   Server name    SUBSYSTEM   Display name 
 @{list_strings_wrong_case_on_the_third}    Server name   Subsystem    DISPLAY NAME
 @{list_strings_all_wrong_case}    SERVER NAME   SUBSYSTEM    DISPLAY NAME
@@ -44,15 +51,23 @@ Test Read
     Run Keyword And Expect Error    You have exceeded the x-axis limit of the mainframe screen    Read    4    81    1
     Run Keyword And Expect Error    You have exceeded the y-axis limit of the mainframe screen    Read    25    48    34
 
+Test Write In Position
+    Run Keyword And Expect Error    You have exceeded the y-axis limit of the mainframe screen    Write In Position    ${write_string}    25    10
+    Run Keyword And Expect Error    You have exceeded the x-axis limit of the mainframe screen    Write In Position    ${write_string}    10    81
+
+Test Write Bare In Position
+    Run Keyword And Expect Error    You have exceeded the y-axis limit of the mainframe screen    Write Bare In Position    ${write_string}    25    10
+    Run Keyword And Expect Error    You have exceeded the x-axis limit of the mainframe screen    Write Bare In Position    ${write_string}    10    81
+
 Test Page Should Contain String
     Run Keyword And Expect Error    The string "WELCOME TO PUB400.COM * YOUR PUBLIC IBM I SERVER" was not found    Page Should Contain String    ${welcome_title_wrong_case}
     Run Keyword And Expect Error    The string "WRONGSTRING" was not found    Page Should Contain String    ${wrong_string}    ignore_case=${True}
 
 Test Page Should Contain All Strings
-    Run Keyword And Expect Error    The string "SERVER NAME" was not found    Page Should Contain All Strings    ${list_strings_wrong_case_in_the_first}
+    Run Keyword And Expect Error    The string "SERVER NAME" was not found    Page Should Contain All Strings    ${list_strings_wrong_case_on_the_first}
     Run Keyword And Expect Error    The string "SUBSYSTEM" was not found    Page Should Contain All Strings    ${list_strings_wrong_case_on_the_second}
     Run Keyword And Expect Error    The string "DISPLAY NAME" was not found    Page Should Contain All Strings    ${list_strings_wrong_case_on_the_third}
-    Run Keyword And Expect Error    The string "wrongstring" was not found    Page Should Contain All Strings    ${list_strings_wrong_in_the_first}    ignore_case=${True}
+    Run Keyword And Expect Error    The string "wrongstring" was not found    Page Should Contain All Strings    ${list_strings_wrong_on_the_first}    ignore_case=${True}
     Run Keyword And Expect Error    The string "wrongstring" was not found    Page Should Contain All Strings    ${list_strings_wrong_on_the_second}    ignore_case=${True}
     Run Keyword And Expect Error    The string "wrongstring" was not found    Page Should Contain All Strings    ${list_strings_wrong_on_the_third}    ignore_case=${True}
 
@@ -70,5 +85,23 @@ Test Page Should Contain String X Times
 
 Test Page Should Match Regex 
     Run Keyword And Expect Error    No matches found for "USER\\d{5}" pattern    Page Should Match Regex    ${invalid_regex}
+
+# Test Wait Until String
+#     Run Keyword And Expect Error    String "WRONGSTRING" not found in 2 seconds    Wait Until String    ${wrong_string}    1
+#     Run Keyword And Expect Error    String "WRONGSTRING" not found in 3 seconds    Wait Until String    ${wrong_string}    2
+
+Test Page Should Not Contain String
+    Run Keyword And Expect Error    The string "Welcome to PUB400.COM" was found    Page Should Not Contain String    ${welcome_title_short}  
+    Run Keyword And Expect Error    The string "WELCOME TO PUB400.COM" was found    Page Should Not Contain String    ${welcome_title_short_wrong_case}    ignore_case=${True}
+
+Test Page Should Not Contain All Strings
+    Run Keyword And Expect Error    The string "Server name" was found    Page Should Not Contain All Strings    ${list_strings_right_on_the_first}
+    Run Keyword And Expect Error    The string "Subsystem" was found    Page Should Not Contain All Strings    ${list_strings_right_on_the_second}
+    Run Keyword And Expect Error    The string "Display name" was found    Page Should Not Contain All Strings    ${list_strings_right_on_the_third}
+
+Test Page Should Not Contain Any String
+    Run Keyword And Expect Error    The string "Server name" was found    Page Should Not Contain Any String    ${list_strings_right_on_the_first}
+    Run Keyword And Expect Error    The string "Subsystem" was found    Page Should Not Contain Any String    ${list_strings_right_on_the_second}
+    Run Keyword And Expect Error    The string "Display name" was found    Page Should Not Contain Any String    ${list_strings_right_on_the_third}
 
 *** Keywords ***
