@@ -20,7 +20,7 @@ class x3270(object):
         self.lu = None
         self.host = None
         self.credential = None
-        self.imgfolder =img_folder
+        self.imgfolder = img_folder
         self.output_folder=BuiltIn().get_variable_value('${OUTPUT DIR}')
         self.wait = float(wait_time)
         self.timeout = int(timeout)
@@ -35,8 +35,8 @@ class x3270(object):
         """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only 
         must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
 
-	Example:
-            | Open Connection | Hostname | 
+        Example:
+            | Open Connection | Hostname |
             | Open Connection | Hostname | LU=LUname |
             | Open Connection | Hostname | port=992 |
         """
@@ -59,14 +59,14 @@ class x3270(object):
 
     def change_wait_time(self, wait_time):
         """To give time for the mainframe screen to be "drawn" and receive the 
-	   next commands, a "wait time" has been created which by default is set to 
-	   0.5 seconds. This is a sleep applied after the follow keywords:
+        next commands, a "wait time" has been created which by default is set to
+        0.5 seconds. This is a sleep applied after the follow keywords:
 
-	   `Execute Command`
-	   `Send Enter`
-	   `Send PF`
-	   `Write`
-	   `Write in position`
+        `Execute Command`
+        `Send Enter`
+        `Send PF`
+        `Write`
+        `Write in position`
 
         If you want to change this value just use this keyword passing the time in seconds.
 
@@ -85,7 +85,7 @@ class x3270(object):
                | ${value} | Read | 8 | 10 | 15 |
         """
         self._check_limits(ypos, xpos)
-        #Checks if the user has passed a length that will be larger than the x limit of the screen.
+        # Checks if the user has passed a length that will be larger than the x limit of the screen.
         if int(xpos) + int(length) > (80+1):
             raise Exception('You have exceeded the x-axis limit of the mainframe screen')
         string = self.mf.string_get(int(ypos), int(xpos), int(length))
@@ -136,13 +136,13 @@ class x3270(object):
     def wait_field_detected(self):
         """Wait until the screen is ready, the cursor has been positioned
         on a modifiable field, and the keyboard is unlocked.
-		
-		Sometimes the server will "unlock" the keyboard but the screen
-	will not yet be ready.  In that case, an attempt to read or write to the
+
+        Sometimes the server will "unlock" the keyboard but the screen
+        will not yet be ready.  In that case, an attempt to read or write to the
         screen will result in a 'E' keyboard status because we tried to read from
         a screen that is not yet ready.
-		
-		Using this method tells the client to wait until a field is
+
+        Using this method tells the client to wait until a field is
         detected and the cursor has been positioned on it.
         """
         self.mf.wait_for_field()
@@ -203,7 +203,7 @@ class x3270(object):
         self.mf.exec_command(b'PF('+str(PF)+')')
         time.sleep(self.wait)
         
-    def write(self,txt):
+    def write(self, txt):
         """Send a string to the screen at the current cursor location *and a Enter.*
 
            Example:
@@ -211,7 +211,7 @@ class x3270(object):
         """
         self._write(txt, enter='1')
 
-    def write_bare(self,txt):
+    def write_bare(self, txt):
         """Send only the string to the screen at the current cursor location.
 
            Example:
@@ -316,7 +316,7 @@ class x3270(object):
         result = self._search_string(txt, ignore_case)
         if result == True:
             raise Exception(message)
-        #logger.info('The string "' + txt + '" was found')
+        # logger.info('The string "' + txt + '" was found')
 
     def page_should_contain_any_string(self, list_string, ignore_case=False, error_message=None):
         """Search if one of the strings in a given list exists on the mainframe screen.
@@ -354,7 +354,6 @@ class x3270(object):
         message = error_message       
         self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, message, should_match=False)
 
-        
     def page_should_contain_all_strings(self, list_string, ignore_case=False, error_message=None):
         """Search if all of the strings in a given list exists on the mainframe screen.
 
@@ -392,10 +391,10 @@ class x3270(object):
 
     def page_should_contain_string_x_times (self, txt, number, ignore_case=False, error_message=None):
         """Search if the entered string appears the desired number of times on the mainframe screen.
-		
-		   The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
 
-           Example:
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+
+        Example:
                | Page Should Contain String X Times | something | 3 |
                | Page Should Contain String X Times | someTHING | 3 | ignore_case=${True} |
                | Page Should Contain String X Times | something | 3 | error_message=New error message |
@@ -442,20 +441,20 @@ class x3270(object):
     def page_should_contain_match(self, txt, ignore_case=False, error_message=None):
         """Fails unless the given string matches the given pattern.
 
-           Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
-           In the pattern, * matches to anything and ? matches to any single character.
+        Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
+        In the pattern, * matches to anything and ? matches to any single character.
 
-           Note that the entire screen is only considered a string for this keyword, so if you want to search
-           for the string "something" and it is somewhere other than at the beginning or end of the screen it
-           should be reported as follows: **something**
-		   
-		   The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+        Note that the entire screen is only considered a string for this keyword, so if you want to search
+        for the string "something" and it is somewhere other than at the beginning or end of the screen it
+        should be reported as follows: **something**
 
-           Example:
-               | Page Should Contain Match | **something** |
-               | Page Should Contain Match | **so???hing** |
-               | Page Should Contain Match | **someTHING** | ignore_case=${True} |
-               | Page Should Contain Match | **something** | error_message=New error message |
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+
+        Example:
+            | Page Should Contain Match | **something** |
+            | Page Should Contain Match | **so???hing** |
+            | Page Should Contain Match | **someTHING** | ignore_case=${True} |
+            | Page Should Contain Match | **something** | error_message=New error message |
         """
         message = error_message
         all_screen = self._read_all_screen()
@@ -472,20 +471,20 @@ class x3270(object):
     def page_should_not_contain_match(self, txt, ignore_case=False, error_message=None):
         """Fails if the given string matches the given pattern.
 
-           Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
-           In the pattern, * matches to anything and ? matches to any single character.
+        Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
+        In the pattern, * matches to anything and ? matches to any single character.
 
-           Note that the entire screen is only considered a string for this keyword, so if you want to search
-           for the string "something" and it is somewhere other than at the beginning or end of the screen it
-           should be reported as follows: **something**
-		   
-		   The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+        Note that the entire screen is only considered a string for this keyword, so if you want to search
+        for the string "something" and it is somewhere other than at the beginning or end of the screen it
+        should be reported as follows: **something**
 
-           Example:
-               | Page Should Not Contain Match | **something** |
-               | Page Should Not Contain Match | **so???hing** |
-               | Page Should Not Contain Match | **someTHING** | ignore_case=${True} |
-               | Page Should Not Contain Match | **something** | error_message=New error message |
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+
+        Example:
+            | Page Should Not Contain Match | **something** |
+            | Page Should Not Contain Match | **so???hing** |
+            | Page Should Not Contain Match | **someTHING** | ignore_case=${True} |
+            | Page Should Not Contain Match | **something** | error_message=New error message |
         """
         message = error_message
         all_screen = self._read_all_screen()
