@@ -180,7 +180,7 @@ Test Move Next Field
     Sleep    1s
 
 Test Move Previous Field
-    #Send two Move Previous Field because the first only put the cursor int he beginning of the password field
+    # Send two Move Previous Field because the first only put the cursor int he beginning of the password field
     Move Previous Field
     Move Previous Field
     Write Bare    ${write_text}
@@ -233,7 +233,6 @@ Test Wait Until String
     Logon
     Wait Until String    ${main_menu_title}    5
     Logout
-
 
 *** Keywords ***
 Logon
