@@ -3,7 +3,6 @@ from py3270 import Emulator
 import time
 import os
 import socket
-import sys
 import re
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
@@ -19,9 +18,10 @@ class x3270(object):
         """
         self.lu = None
         self.host = None
+        self.port = None
         self.credential = None
         self.imgfolder = img_folder
-        self.output_folder=BuiltIn().get_variable_value('${OUTPUT DIR}')
+        self.output_folder = BuiltIn().get_variable_value('${OUTPUT DIR}')
         self.wait = float(wait_time)
         self.timeout = int(timeout)
         self.mf = Emulator(visible=bool(visible), timeout=int(timeout))
@@ -30,7 +30,7 @@ class x3270(object):
         """Change the timeout for connection in seconds.
         """
         self.timeout = int(seconds)
-        
+
     def open_connection(self, host, LU=None, port=23):
         """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only 
         must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
@@ -75,7 +75,7 @@ class x3270(object):
             | Change Wait Time | 2 |
         """
         self.wait = float(wait_time)
-        
+
     def read(self, ypos, xpos, length):
         """Get a string of "length" at screen co-ordinates "ypos"/"xpos".
 
@@ -114,7 +114,7 @@ class x3270(object):
         else:
             logger.error('Given screenshots path "%s" does not exist' % path)
             logger.warn('Screenshots will be saved in "%s"' % self.imgfolder)
-        
+
     def take_screenshot(self, height='410', width='670'):
         """Generate a screenshot of the IBM 3270 Mainframe in a html format. The
            default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
@@ -127,12 +127,12 @@ class x3270(object):
                | Take Screenshot | height=500 | width=700 |
         """
         filename_prefix = 'screenshot'
-        extention = 'html'
+        extension = 'html'
         filename_sufix = str(int(round(time.time() * 1000)))
-        filepath = os.path.join(self.imgfolder, '%s_%s.%s' % (filename_prefix, filename_sufix, extention))
+        filepath = os.path.join(self.imgfolder, '%s_%s.%s' % (filename_prefix, filename_sufix, extension))
         self.mf.save_screen(os.path.join(self.output_folder, filepath))
         logger.write('<iframe src="%s" height="%s" width="%s"></iframe>' % (filepath.replace("\\", "/"), height, width), level='INFO', html=True)
-                                
+
     def wait_field_detected(self):
         """Wait until the screen is ready, the cursor has been positioned
         on a modifiable field, and the keyboard is unlocked.
@@ -158,10 +158,10 @@ class x3270(object):
                | Delete Char |
                | Delete Char | ypos=9 | xpos=25 |
         """
-        if not ypos is None and not xpos is None:
+        if ypos is not None and xpos is not None:
             self.mf.move_to(int(ypos), int(xpos))
         self.mf.exec_command(b'Delete')
-        
+
     def delete_field(self, ypos=None, xpos=None):
         """Delete a entire contents in field at current cursor location and positions
            cursor at beginning of field. If you want to delete a field that is in
@@ -174,7 +174,7 @@ class x3270(object):
                | Delete Field |
                | Delete Field | ypos=12 | xpos=6 |
         """
-        if not ypos is None and not xpos is None:
+        if ypos is not None and xpos is not None:
             self.mf.move_to(int(ypos), int(xpos))
         self.mf.exec_command(b'DeleteField')
 
@@ -202,7 +202,7 @@ class x3270(object):
         """
         self.mf.exec_command(b'PF('+str(PF)+')')
         time.sleep(self.wait)
-        
+
     def write(self, txt):
         """Send a string to the screen at the current cursor location *and a Enter.*
 
@@ -219,7 +219,7 @@ class x3270(object):
         """
         self._write(txt)
 
-    def write_in_position(self,txt, ypos, xpos):
+    def write_in_position(self, txt, ypos, xpos):
         """Send a string to the screen at screen co-ordinates "ypos"/"xpos" and a Enter.
 
            Co-ordinates are 1 based, as listed in the status area of the
@@ -228,9 +228,9 @@ class x3270(object):
            Example:
                | Write in Position | something | 9 | 11 |
         """
-        self._check_limits(ypos, xpos)       
+        self._check_limits(ypos, xpos)
         self._write(txt, ypos=ypos, xpos=xpos, enter='1')
-        
+
     def write_bare_in_position(self,txt, ypos, xpos):
         """Send only the string to the screen at screen co-ordinates "ypos"/"xpos".
 
@@ -240,7 +240,7 @@ class x3270(object):
            Example:
                | Write Bare in Position | something | 9 | 11 |
         """
-        self._check_limits(ypos, xpos) 
+        self._check_limits(ypos, xpos)
         self._write(txt, ypos=ypos, xpos=xpos)
 
     def _write(self, txt, ypos=None, xpos=None, enter='0'):
@@ -266,7 +266,7 @@ class x3270(object):
             if result:
                 return txt
         raise Exception('String "' + txt + '" not found in ' + timeout + ' seconds' )
-    
+
     def _search_string(self, string, ignore_case=False):
         """Search if a string exists on the mainframe screen and return True or False.
         """
@@ -295,8 +295,7 @@ class x3270(object):
         if error_message: message = error_message
         if ignore_case: txt = str(txt).lower()
         result = self._search_string(txt, ignore_case)
-        if result == False:
-            raise Exception(message)
+        if not result: raise Exception(message)
         logger.info('The string "' + txt + '" was found')
 
     def page_should_not_contain_string (self, txt, ignore_case=False, error_message=None):
@@ -309,14 +308,12 @@ class x3270(object):
                | Page Should Not Contain String | something |
                | Page Should Not Contain String | someTHING | ignore_case=${True} |
                | Page Should Not Contain String | something | error_message=New error message |
-        """        
+        """
         message = 'The string "' + txt + '" was found'
         if error_message: message = error_message
         if ignore_case: txt = str(txt).lower()
         result = self._search_string(txt, ignore_case)
-        if result == True:
-            raise Exception(message)
-        # logger.info('The string "' + txt + '" was found')
+        if result: raise Exception(message)
 
     def page_should_contain_any_string(self, list_string, ignore_case=False, error_message=None):
         """Search if one of the strings in a given list exists on the mainframe screen.
@@ -334,10 +331,8 @@ class x3270(object):
         if ignore_case: list_string = [item.lower() for item in list_string]
         for string in list_string:
             result = self._search_string(string, ignore_case)
-            if result == True:
-                break
-        if result == False:
-            raise Exception(message)
+            if result: break
+        if not result: raise Exception(message)
 
     def page_should_not_contain_any_string(self, list_string, ignore_case=False, error_message=None):
         """Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the string
@@ -351,8 +346,7 @@ class x3270(object):
                | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=${True} |
                | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |
         """
-        message = error_message       
-        self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, message, should_match=False)
+        self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=False)
 
     def page_should_contain_all_strings(self, list_string, ignore_case=False, error_message=None):
         """Search if all of the strings in a given list exists on the mainframe screen.
@@ -365,8 +359,7 @@ class x3270(object):
                | Page Should Contain All Strings | ${list_of_string} | ignore_case=${True} |
                | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |
         """
-        message = error_message
-        self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, message, should_match=True)
+        self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=True)
 
     def page_should_not_contain_all_strings(self, list_string, ignore_case=False, error_message=None):
         """Fails if one of the strings in a given list exists on the mainframe screen. if one of the string
@@ -384,8 +377,8 @@ class x3270(object):
         if ignore_case: list_string = [item.lower() for item in list_string]
         for string in list_string:
             result = self._search_string(string, ignore_case)
-            if result == True:
-                if message == None:
+            if result:
+                if message is None:
                     message = 'The string "' + string + '" was found'
                 raise Exception(message)
 
@@ -402,16 +395,17 @@ class x3270(object):
         message = error_message
         number = int(number)
         all_screen = self._read_all_screen()
-        if ignore_case == True:
+        if ignore_case:
             txt = str(txt).lower()
             all_screen = str(all_screen).lower()
         number_of_times = all_screen.count(txt)
         if number_of_times != number:
-            if message == None:
-                message = 'The string "' + txt + '" was not found "'+ str(number) +'" times, it appears "'+ str(number_of_times) +'" times'
+            if message is None:
+                message = 'The string "' + txt + '" was not found "'+ str(number) + '" times, it appears "' \
+                          + str(number_of_times) + '" times'
             raise Exception(message)
-        logger.info('The string "' + txt + '" was found "'+ str(number) +'" times')
-        
+        logger.info('The string "' + txt + '" was found "' + str(number) + '" times')
+
     def page_should_match_regex(self, regex_pattern):
         """Fails if string does not match pattern as a regular expression. Regular expression check is
            implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
@@ -423,7 +417,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if not re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception('No matches found for "' + regex_pattern +'" pattern')
+            raise Exception('No matches found for "' + regex_pattern + '" pattern')
 
     def page_should_not_match_regex(self, regex_pattern):
         """Fails if string does match pattern as a regular expression. Regular expression check is
@@ -436,7 +430,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception('There are matches found for "' + regex_pattern +'" pattern')
+            raise Exception('There are matches found for "' + regex_pattern + '" pattern')
 
     def page_should_contain_match(self, txt, ignore_case=False, error_message=None):
         """Fails unless the given string matches the given pattern.
@@ -458,14 +452,14 @@ class x3270(object):
         """
         message = error_message
         all_screen = self._read_all_screen()
-        if ignore_case == True:
+        if ignore_case:
             txt = txt.lower()
             all_screen = all_screen.lower()
         matcher = Matcher(txt, caseless=False, spaceless=False)
         result = matcher.match(all_screen)
-        if result == False:
-            if message == None:
-                message = 'No matches found for "' + txt +'" pattern'
+        if not result:
+            if message is None:
+                message = 'No matches found for "' + txt + '" pattern'
             raise Exception(message)
 
     def page_should_not_contain_match(self, txt, ignore_case=False, error_message=None):
@@ -488,41 +482,42 @@ class x3270(object):
         """
         message = error_message
         all_screen = self._read_all_screen()
-        if ignore_case == True:
+        if ignore_case:
             txt = txt.lower()
             all_screen = all_screen.lower()
         matcher = Matcher(txt, caseless=False, spaceless=False)
         result = matcher.match(all_screen)
-        if result == True:
-            if message == None:
-                message = 'There are matches found for "' + txt +'" pattern'
+        if result:
+            if message is None:
+                message = 'There are matches found for "' + txt + '" pattern'
             raise Exception(message)
 
     def _read_all_screen(self):
         """Read all the mainframe screen and return in a single string.
         """
         full_text = ''
-        for ypos in range (24):
-            line = self.mf.string_get(ypos+1,1,80)
+        for ypos in range(24):
+            line = self.mf.string_get(ypos + 1, 1, 80)
             for char in line:
                 if char:
                     full_text += char
         return full_text
 
-    def _compare_all_list_with_screen_text(self, list_string, ignore_case, error_message, message, should_match):
+    def _compare_all_list_with_screen_text(self, list_string, ignore_case, message, should_match):
         if ignore_case: list_string = [item.lower() for item in list_string]
         for string in list_string:
             result = self._search_string(string, ignore_case)
-            if not should_match and result == True:
-                if message == None:
+            if not should_match and result:
+                if message is None:
                     message = 'The string "' + string + '" was found'
                 raise Exception(message)
-            elif should_match and result == False:
-                if message == None:
+            elif should_match and not result:
+                if message is None:
                     message = 'The string "' + string + '" was not found'
                 raise Exception(message)
 
-    def _check_limits(self, ypos, xpos):
+    @staticmethod
+    def _check_limits(ypos, xpos):
         """Checks if the user has passed some coordinate y / x greater than that existing in the mainframe
         """
         if int(ypos) > 24:
