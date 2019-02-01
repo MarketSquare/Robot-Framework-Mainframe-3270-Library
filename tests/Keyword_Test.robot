@@ -1,54 +1,7 @@
 *** Settings ***
-Library           Mainframe3270
-Library           BuiltIn
-Library           Dialogs
-Library           Process
-Library           OperatingSystem
+Resource          pub400_resources.txt
 Suite Teardown    Close Connection    
 Test Teardown     Run Keyword If Test Failed    Fatal Error
-
-*** Variables ***
-#host
-${host}               pub400.com
-#folders
-${folder}      ${CURDIR}${/}screenshot
-${new_folder}      ${folder}${/}new_folder
-#Credentials
-${user}    USER0112
-${password}    user0112
-#Texts to write
-${write_text}         TEST
-#Texts to read with correct case
-${welcome_title}    Welcome to PUB400.COM * your public IBM i server
-${main_menu_title}    IBM i Main Menu
-${main_menu_help_title}    IBM i Main Menu - Help
-${text_after_delete_char}     EST TEST
-${text_after_delete_field}     ${SPACE * 8}
-${text_after_move_next_field}     ${SPACE * 4}
-${text_match}     *PUB???.COM*
-${text_to_count}    IBM
-${valid_regex}    USER\\d{4}
-@{list_strings}     Server name    Subsystem    Display name
-@{list_strings_right_in_the_first}    Subsystem    WRONGSTRING    WRONGSTRING
-@{list_strings_right_on_the_second}    WRONGSTRING    Subsystem    WRONGSTRING
-@{list_strings_right_on_the_third}    WRONGSTRING    WRONGSTRING   Subsystem
-#Texts to read with wrong case
-${welcome_title_wrong_case}    WELCOME TO PUB400.COM * YOUR PUBLIC IBM I SERVER
-${text_match_wrong_case}     *pub???.com*
-${text_to_count_wrong_case}    ibm 
-@{list_strings_wrong_case}     SERVER NAME    SUBSYSTEM    DISPLAY NAME
-@{list_strings_right_in_the_first_wrong_case}    SUBSYSTEM    WRONGSTRING    WRONGSTRING
-@{list_strings_right_on_the_second_wrong_case}    WRONGSTRING    SUBSYSTEM    WRONGSTRING
-@{list_strings_right_on_the_third_wrong_case}    WRONGSTRING    WRONGSTRING   SUBSYSTEM
-#Texts not existants to read with correct case
-@{list_strings_not_existants}     SERVER NAME    SUBSYSTEM    DISPLAY NAME
-${text_not_match}     *PUB???400.COM*
-${invalid_regex}    USER\\d{5}
-#Texts not existants to read with wrong case
-@{list_strings_not_existants_ignore_case}     WRONGSTRING    WRONGSTRING    WRONGSTRING
-${text_not_match_wrong_case}     *pub???400.com*
-${string_not_existant}     WRONGSTRING
-
 
 *** Test Cases ***
 # Because of a situation on the open400 public mainframe we can not create a new connection to perform each test, 
@@ -233,26 +186,3 @@ Test Wait Until String
     Logon
     Wait Until String    ${main_menu_title}    5
     Logout
-
-*** Keywords ***
-Logon
-    Page Should Contain String    ${welcome_title}
-    Write Bare In Position   ${user}    5    25
-    Write Bare In Position   ${password}    6    25
-    Send Enter
-    Check if user is allocated to another job
-    Check if user have messages to read
-    Wait Field Detected  
-
-Logout
-    Write Bare    90
-    Send Enter
-    Sleep    1s
-
-Check if user is allocated to another job
-    ${status}=    Run Keyword And Return Status    Page Should Contain String    is allocated to another job
-    Run Keyword If    ${status}    Send Enter 
-
-Check if user have messages to read
-    ${status}=    Run Keyword And Return Status    Page Should Contain String    Display Messages
-    Run Keyword If    ${status}    Send Enter 
