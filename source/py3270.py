@@ -154,6 +154,7 @@ class ExecutableAppLinux(object):
     def readline(self):
         return self.sp.stdout.readline()
 
+
 class ExecutableAppWin(object):
     executable = None
     args = [
