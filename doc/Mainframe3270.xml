@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20181003 14:41:12" type="library" name="Mainframe3270" format="ROBOT">
+<keywordspec generated="20190205 11:07:34" type="library" name="Mainframe3270" format="ROBOT">
 <version>2.1</version>
 <scope>global</scope>
 <namedargs>yes</namedargs>
@@ -60,14 +60,14 @@ see the `Set Screenshot Folder` and to change the timeout see the `Change Timeou
 <arg>wait_time</arg>
 </arguments>
 <doc>To give time for the mainframe screen to be "drawn" and receive the 
-   next commands, a "wait time" has been created which by default is set to 
-   0.5 seconds. This is a sleep applied after the follow keywords:
+next commands, a "wait time" has been created which by default is set to
+0.5 seconds. This is a sleep applied after the follow keywords:
 
-   `Execute Command`
-   `Send Enter`
-   `Send PF`
-   `Write`
-   `Write in position`
+`Execute Command`
+`Send Enter`
+`Send PF`
+`Write`
+`Write in position`
 
 If you want to change this value just use this keyword passing the time in seconds.
 
@@ -153,11 +153,11 @@ Examples:
 <arg>LU=None</arg>
 <arg>port=23</arg>
 </arguments>
-<doc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only 
-must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
+<doc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
+you only must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
 
 Example:
-    | Open Connection | Hostname | 
+    | Open Connection | Hostname |
     | Open Connection | Hostname | LU=LUname |
     | Open Connection | Hostname | port=992 |</doc>
 <tags>
@@ -213,8 +213,8 @@ In the pattern, * matches to anything and ? matches to any single character.
 Note that the entire screen is only considered a string for this keyword, so if you want to search
 for the string "something" and it is somewhere other than at the beginning or end of the screen it
 should be reported as follows: **something**
-        
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+
+The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
 
 Example:
     | Page Should Contain Match | **something** |
@@ -250,13 +250,14 @@ Example:
 <arg>error_message=None</arg>
 </arguments>
 <doc>Search if the entered string appears the desired number of times on the mainframe screen.
-     
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+
+The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
+can edit the raise exception message with error_message.
 
 Example:
-    | Page Should Contain String X Times | something | 3 |
-    | Page Should Contain String X Times | someTHING | 3 | ignore_case=${True} |
-    | Page Should Contain String X Times | something | 3 | error_message=New error message |</doc>
+       | Page Should Contain String X Times | something | 3 |
+       | Page Should Contain String X Times | someTHING | 3 | ignore_case=${True} |
+       | Page Should Contain String X Times | something | 3 | error_message=New error message |</doc>
 <tags>
 </tags>
 </kw>
@@ -299,8 +300,8 @@ Example:
 <arg>ignore_case=False</arg>
 <arg>error_message=None</arg>
 </arguments>
-<doc>Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the string
-are found, the keyword will raise a exception.
+<doc>Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the
+string are found, the keyword will raise a exception.
 
 The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
 and you can edit the raise exception message with error_message.
@@ -326,8 +327,8 @@ In the pattern, * matches to anything and ? matches to any single character.
 Note that the entire screen is only considered a string for this keyword, so if you want to search
 for the string "something" and it is somewhere other than at the beginning or end of the screen it
 should be reported as follows: **something**
-        
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+
+The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
 
 Example:
     | Page Should Not Contain Match | **something** |
@@ -435,13 +436,13 @@ Examples:
 </arguments>
 <doc>Wait until the screen is ready, the cursor has been positioned
 on a modifiable field, and the keyboard is unlocked.
-        
-        Sometimes the server will "unlock" the keyboard but the screen
+
+Sometimes the server will "unlock" the keyboard but the screen
 will not yet be ready.  In that case, an attempt to read or write to the
 screen will result in a 'E' keyboard status because we tried to read from
 a screen that is not yet ready.
-        
-        Using this method tells the client to wait until a field is
+
+Using this method tells the client to wait until a field is
 detected and the cursor has been positioned on it.</doc>
 <tags>
 </tags>
@@ -449,13 +450,14 @@ detected and the cursor has been positioned on it.</doc>
 <kw name="Wait Until String">
 <arguments>
 <arg>txt</arg>
-<arg>timeout</arg>
+<arg>timeout=5</arg>
 </arguments>
 <doc>Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on
-the specified time the keyword will raise a exception. 
+5 seconds the keyword will raise a exception. You can define a different timeout.
 
 Example:
-    | Wait Until String | something | 3 |</doc>
+    | Wait Until String | something |
+    | Wait Until String | something | timeout=10 |</doc>
 <tags>
 </tags>
 </kw>
