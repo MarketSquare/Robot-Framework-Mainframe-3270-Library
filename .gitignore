@@ -4,3 +4,7 @@ tests/output.xml
 tests/report.html
 tests/screenshot/
 tests/logs/
+.idea/
+report.html
+output.xml
+log.html
