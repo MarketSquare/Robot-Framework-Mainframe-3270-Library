@@ -32,8 +32,8 @@ class x3270(object):
         self.timeout = int(seconds)
 
     def open_connection(self, host, LU=None, port=23):
-        """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only 
-        must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
+        """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
+        you only must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
 
         Example:
             | Open Connection | Hostname |
@@ -131,7 +131,8 @@ class x3270(object):
         filename_sufix = str(int(round(time.time() * 1000)))
         filepath = os.path.join(self.imgfolder, '%s_%s.%s' % (filename_prefix, filename_sufix, extension))
         self.mf.save_screen(os.path.join(self.output_folder, filepath))
-        logger.write('<iframe src="%s" height="%s" width="%s"></iframe>' % (filepath.replace("\\", "/"), height, width), level='INFO', html=True)
+        logger.write('<iframe src="%s" height="%s" width="%s"></iframe>' % (filepath.replace("\\", "/"), height, width),
+                     level='INFO', html=True)
 
     def wait_field_detected(self):
         """Wait until the screen is ready, the cursor has been positioned
@@ -231,7 +232,7 @@ class x3270(object):
         self._check_limits(ypos, xpos)
         self._write(txt, ypos=ypos, xpos=xpos, enter='1')
 
-    def write_bare_in_position(self,txt, ypos, xpos):
+    def write_bare_in_position(self, txt, ypos, xpos):
         """Send only the string to the screen at screen co-ordinates "ypos"/"xpos".
 
            Co-ordinates are 1 based, as listed in the status area of the
@@ -245,34 +246,35 @@ class x3270(object):
 
     def _write(self, txt, ypos=None, xpos=None, enter='0'):
         txt = txt.encode('utf-8')
-        if not ypos is None and not xpos is None:
+        if ypos is not None and xpos is not None:
             self.mf.move_to(int(ypos), int(xpos))
-        if not isinstance(txt, (list, tuple)) : txt = [txt]
-        [self.mf.send_string(el) for el in txt if el!='']
+        if not isinstance(txt, (list, tuple)): txt = [txt]
+        [self.mf.send_string(el) for el in txt if el != '']
         for i in range(int(enter)):
             self.mf.send_enter()
             time.sleep(self.wait)
 
-    def wait_until_string(self, txt, timeout):
+    def wait_until_string(self, txt, timeout=5):
         """Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on
-           the specified time the keyword will raise a exception. 
+           5 seconds the keyword will raise a exception. You can define a different timeout.
 
            Example:
-               | Wait Until String | something | 3 |
+               | Wait Until String | something |
+               | Wait Until String | something | timeout=10 |
         """
         max_time = time.ctime(int(time.time())+int(timeout))
         while time.ctime(int(time.time())) < max_time:
             result = self._search_string(str(txt))
             if result:
                 return txt
-        raise Exception('String "' + txt + '" not found in ' + timeout + ' seconds' )
+        raise Exception('String "' + txt + '" not found in ' + timeout + ' seconds')
 
     def _search_string(self, string, ignore_case=False):
         """Search if a string exists on the mainframe screen and return True or False.
         """
         def __read_screen(string, ignore_case):
-            for ypos in range (24):
-                line = self.mf.string_get(ypos+1,1,80)
+            for ypos in range(24):
+                line = self.mf.string_get(ypos+1, 1, 80)
                 if ignore_case: line = line.lower()
                 if string in line:
                     return True
@@ -280,7 +282,7 @@ class x3270(object):
         status = __read_screen(string, ignore_case)
         return status
 
-    def page_should_contain_string (self, txt, ignore_case=False, error_message=None):
+    def page_should_contain_string(self, txt, ignore_case=False, error_message=None):
         """Search if a given string exists on the mainframe screen.
 
            The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
@@ -298,7 +300,7 @@ class x3270(object):
         if not result: raise Exception(message)
         logger.info('The string "' + txt + '" was found')
 
-    def page_should_not_contain_string (self, txt, ignore_case=False, error_message=None):
+    def page_should_not_contain_string(self, txt, ignore_case=False, error_message=None):
         """Search if a given string NOT exists on the mainframe screen.
 
            The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
@@ -335,43 +337,43 @@ class x3270(object):
         if not result: raise Exception(message)
 
     def page_should_not_contain_any_string(self, list_string, ignore_case=False, error_message=None):
-        """Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the string
-           are found, the keyword will raise a exception.
+        """Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the
+        string are found, the keyword will raise a exception.
 
-           The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-           and you can edit the raise exception message with error_message.
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
+        and you can edit the raise exception message with error_message.
 
-           Example:
-               | Page Should Not Contain Any Strings | ${list_of_string} |
-               | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=${True} |
-               | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |
+        Example:
+            | Page Should Not Contain Any Strings | ${list_of_string} |
+            | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=${True} |
+            | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |
         """
         self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=False)
 
     def page_should_contain_all_strings(self, list_string, ignore_case=False, error_message=None):
         """Search if all of the strings in a given list exists on the mainframe screen.
 
-           The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-           and you can edit the raise exception message with error_message.
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
+        and you can edit the raise exception message with error_message.
 
-           Example:
-               | Page Should Contain All Strings | ${list_of_string} |
-               | Page Should Contain All Strings | ${list_of_string} | ignore_case=${True} |
-               | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |
+        Example:
+            | Page Should Contain All Strings | ${list_of_string} |
+            | Page Should Contain All Strings | ${list_of_string} | ignore_case=${True} |
+            | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |
         """
         self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=True)
 
     def page_should_not_contain_all_strings(self, list_string, ignore_case=False, error_message=None):
         """Fails if one of the strings in a given list exists on the mainframe screen. if one of the string
-           are found, the keyword will raise a exception.
+        are found, the keyword will raise a exception.
 
-           The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-           and you can edit the raise exception message with error_message.
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
+        and you can edit the raise exception message with error_message.
 
-           Example:
-               | Page Should Not Contain All Strings | ${list_of_string} |
-               | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=${True} |
-               | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |
+        Example:
+            | Page Should Not Contain All Strings | ${list_of_string} |
+            | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=${True} |
+            | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |
         """
         message = error_message
         if ignore_case: list_string = [item.lower() for item in list_string]
@@ -382,10 +384,11 @@ class x3270(object):
                     message = 'The string "' + string + '" was found'
                 raise Exception(message)
 
-    def page_should_contain_string_x_times (self, txt, number, ignore_case=False, error_message=None):
+    def page_should_contain_string_x_times(self, txt, number, ignore_case=False, error_message=None):
         """Search if the entered string appears the desired number of times on the mainframe screen.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
+        can edit the raise exception message with error_message.
 
         Example:
                | Page Should Contain String X Times | something | 3 |
@@ -401,19 +404,19 @@ class x3270(object):
         number_of_times = all_screen.count(txt)
         if number_of_times != number:
             if message is None:
-                message = 'The string "' + txt + '" was not found "'+ str(number) + '" times, it appears "' \
+                message = 'The string "' + txt + '" was not found "' + str(number) + '" times, it appears "' \
                           + str(number_of_times) + '" times'
             raise Exception(message)
         logger.info('The string "' + txt + '" was found "' + str(number) + '" times')
 
     def page_should_match_regex(self, regex_pattern):
         """Fails if string does not match pattern as a regular expression. Regular expression check is
-           implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
-           regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
-           for example, in Java, Ruby and .NET.
+        implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
+        regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
+        for example, in Java, Ruby and .NET.
 
-           Backslash is an escape character in the test data, and possible backslashes in the pattern must
-           thus be escaped with another backslash (e.g. \\\d\\\w+).
+        Backslash is an escape character in the test data, and possible backslashes in the pattern must
+        thus be escaped with another backslash (e.g. \\\d\\\w+).
         """
         page_text = self._read_all_screen()
         if not re.findall(regex_pattern, page_text, re.MULTILINE):
@@ -421,12 +424,12 @@ class x3270(object):
 
     def page_should_not_match_regex(self, regex_pattern):
         """Fails if string does match pattern as a regular expression. Regular expression check is
-           implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
-           regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
-           for example, in Java, Ruby and .NET.
+        implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
+        regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
+        for example, in Java, Ruby and .NET.
 
-           Backslash is an escape character in the test data, and possible backslashes in the pattern must
-           thus be escaped with another backslash (e.g. \\\d\\\w+).
+        Backslash is an escape character in the test data, and possible backslashes in the pattern must
+        thus be escaped with another backslash (e.g. \\\d\\\w+).
         """
         page_text = self._read_all_screen()
         if re.findall(regex_pattern, page_text, re.MULTILINE):
