@@ -121,3 +121,13 @@ Verify List Found
     [Arguments]    ${keyword}    ${string_list}    ${string_position}    ${ignore_case}=${False}
     ${expected_error}=    Set Variable    The string "${string_list[${${string_position}-1}]}" was found
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string_list}    ignore_case=${ignore_case}
+
+Verify Wait Until String
+    [Arguments]    ${keyword}    ${string}
+    ${expected_error}=    Set Variable    String "${string}" not found in 5 seconds
+    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}
+
+Verify Wait Until String With Timeout
+    [Arguments]    ${keyword}    ${string}    ${timeout}
+    ${expected_error}=    Set Variable    String "${string}" not found in ${timeout} seconds
+    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ${timeout}
