@@ -8,8 +8,7 @@ Test Teardown     Run Keyword If Test Failed    Fatal Error
 # we know that this is not the best way to do keyword tests, but that's what we can do right now. When possible we will improve the tests.
 Test Open Connection
     Open Connection    ${host}
-    Sleep    1s
-    Page Should Contain String    ${welcome_title}
+    Wait Until String    ${welcome_title}
 
 Test Wait Field Detected
     Wait Field Detected
@@ -184,5 +183,5 @@ Test Execute Command
 
 Test Wait Until String
     Logon
-    Wait Until String    ${main_menu_title}    5
+    Wait Until String    ${main_menu_title}    timeout=4
     Logout
