@@ -267,7 +267,7 @@ class x3270(object):
             result = self._search_string(str(txt))
             if result:
                 return txt
-        raise Exception('String "' + txt + '" not found in ' + timeout + ' seconds')
+        raise Exception('String "' + txt + '" not found in ' + str(timeout) + ' seconds')
 
     def _search_string(self, string, ignore_case=False):
         """Search if a string exists on the mainframe screen and return True or False.
@@ -445,7 +445,8 @@ class x3270(object):
         for the string "something" and it is somewhere other than at the beginning or end of the screen it
         should be reported as follows: **something**
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
+        can edit the raise exception message with error_message.
 
         Example:
             | Page Should Contain Match | **something** |
@@ -475,7 +476,8 @@ class x3270(object):
         for the string "something" and it is somewhere other than at the beginning or end of the screen it
         should be reported as follows: **something**
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
+        can edit the raise exception message with error_message.
 
         Example:
             | Page Should Not Contain Match | **something** |

@@ -211,6 +211,7 @@ class ExecutableAppWin(object):
             raise NotConnectedException
         return self.socket_fh.readline()
 
+
 class x3270App(ExecutableAppLinux):
     executable = 'x3270'
     # Per Paul Mattes, in the first days of x3270, there were servers that
@@ -234,15 +235,17 @@ class NotConnectedException(Exception):
 class wc3270App(ExecutableAppWin):
     executable = 'wc3270'
     # see notes for args in x3270App
-    args = ['-xrm','wc3270.unlockDelay: False', '-xrm', 'wc3270.model: 2']
+    args = ['-xrm', 'wc3270.unlockDelay: False', '-xrm', 'wc3270.model: 2']
+
 
 class ws3270App(ExecutableAppWin):
     executable = 'ws3270'
     # see notes for args in x3270App
-    args = ['-xrm', 'ws3270.unlockDelay: False',]
+    args = ['-xrm', 'ws3270.unlockDelay: False', ]
+
 
 class EmulatorBase(object):
-    def __init__(self, visible=False, timeout=30, app=None, _sp=None):
+    def __init__(self, _sp=None):
         raise Exception("EmulatorBase has been replaced by Emulator.  See readme.rst.")
 
 

@@ -64,3 +64,9 @@ Test Page Should Not Contain Any String
     Verify List Found    Page Should Not Contain Any String     ${list_strings_right_on_the_first}    1
     Verify List Found    Page Should Not Contain Any String    ${list_strings_right_on_the_second}    2
     Verify List Found    Page Should Not Contain Any String    ${list_strings_right_on_the_third}    3
+
+Test Wait Until String
+    Verify Wait Until String    Wait Until String    ${string_not_existant}
+
+Test Wait Until String With Timeout
+    Verify Wait Until String With Timeout    Wait Until String    ${string_not_existant}    timeout=2
