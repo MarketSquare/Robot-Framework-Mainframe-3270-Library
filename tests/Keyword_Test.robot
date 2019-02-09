@@ -1,5 +1,6 @@
 *** Settings ***
 Resource          pub400_resources.txt
+Suite Setup       Open Connection    ${host}
 Suite Teardown    Close Connection    
 Test Teardown     Run Keyword If Test Failed    Fatal Error
 
@@ -7,7 +8,6 @@ Test Teardown     Run Keyword If Test Failed    Fatal Error
 # Because of a situation on the open400 public mainframe we can not create a new connection to perform each test, 
 # we know that this is not the best way to do keyword tests, but that's what we can do right now. When possible we will improve the tests.
 Test Open Connection
-    Open Connection    ${host}
     Wait Until String    ${welcome_title}
 
 Test Wait Field Detected

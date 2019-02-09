@@ -37,6 +37,16 @@ You can change to hide the emulator screen set the argument visible=${False}
 
 To change the wait_time see Change Wait Time, to change the img_folder see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
 
+## Running with Docker
+
+Docker image contains everything that's needed to run the Mainframe tests. Currently image is not pushed to Docker hub, so steps to use it
+- Build image: ``` docker image build -t Mainframe3270 .```
+- Run all tests: docker container run --rm -it Mainframe3270
+
+Reports are stored to /reports. Those can be get to host by mapping it as volume. E.g. in Windows CMD with current directory mounting command is ```docker container run --rm -it -v %cd%\reports:/reports Mainframe3270```
+
+IF wanting to run just single/specific tests, it can be mentioned at the end of command. Currently only single argument can be given, so multiple tests can be given with wildcards like: ```docker container run --rm -it -v %cd%\reports:/reports Mainframe3270 *PF*``` (this executes just single tests, as PF is mentioned only in one).
+
 ## Notes
 
 By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe, but is you set the visible to false, the py3270 will run the ws3270.exe.
