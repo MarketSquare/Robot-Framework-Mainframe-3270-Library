@@ -1,7 +1,5 @@
 *** Settings ***
 Resource          pub400_resources.txt
-Suite Setup       Open Connection    ${host}
-Suite Teardown    Close Connection    
 Test Teardown     Run Keyword If Test Failed    Fatal Error
 
 *** Test Cases ***

@@ -8,7 +8,7 @@ Library           OperatingSystem
 # host
 ${host}               pub400.com
 # folders
-${folder}      ${CURDIR}${/}screenshot
+${folder}      ${CURDIR}${/}..${/}reports${/}screenshot
 ${new_folder}      ${folder}${/}new_folder
 # Credentials
 ${user}    USER0112
@@ -98,7 +98,7 @@ Verify String Not Found In List
 Verify List Not Found
     [Arguments]    ${keyword}    ${list}    ${ignore_case}=${False}
     ${expected_error}=    Set Variable    The strings "${list}" was not found
-    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${list}    ignore_case=${ignore_case}
+    Run Keyword And Expect Error    EQUALS: ${expected_error}    ${keyword}    ${list}    ignore_case=${ignore_case}
 
 Verify Pattern Not Found
     [Arguments]    ${keyword}    ${string}    ${ignore_case}=${False}

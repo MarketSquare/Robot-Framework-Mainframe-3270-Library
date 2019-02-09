@@ -1,11 +1,9 @@
 *** Settings ***
-Resource          pub400_resources.txt
-Suite Teardown    Close Connection    
+Resource          pub400_resources.txt  
 Test Teardown     Run Keyword If Test Failed    Fatal Error
 
 *** Test Cases ***
 Open Connection
-    Open Connection    ${host}
     Wait Field Detected
     Set Screenshot Folder    ${folder}
 
