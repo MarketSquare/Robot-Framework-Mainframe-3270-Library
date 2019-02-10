@@ -8,7 +8,7 @@ Library           OperatingSystem
 # host
 ${host}               pub400.com
 # folders
-${folder}      ${CURDIR}${/}..${/}reports${/}screenshot
+${folder}      .{/}screenshot
 ${new_folder}      ${folder}${/}new_folder
 # Credentials
 ${user}    USER0112
