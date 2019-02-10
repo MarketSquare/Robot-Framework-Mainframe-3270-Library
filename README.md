@@ -40,8 +40,10 @@ To change the wait_time see Change Wait Time, to change the img_folder see the S
 ## Running with Docker
 
 Docker image contains everything that's needed to run the Mainframe tests. Currently image is not pushed to Docker hub, so steps to use it
-- Build image: ``` docker image build -t Mainframe3270 .```
-- Run all tests: docker container run --rm -it Mainframe3270
+* Build image:
+  * Python 2: `docker image build --build-arg PYTHON_MAJOR=2 -t Mainframe3270-p2 .`
+  * Python 3: `docker image build --build-arg PYTHON_MAJOR=3 -t Mainframe3270-p3 .`
+- Run all tests: docker container run --rm -it Mainframe3270-p<PYTHON_MAJOR>
 
 Reports are stored to /reports. Those can be get to host by mapping it as volume. E.g. in Windows CMD with current directory mounting command is ```docker container run --rm -it -v %cd%\reports:/reports Mainframe3270```
 

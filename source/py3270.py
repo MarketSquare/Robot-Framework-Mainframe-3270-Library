@@ -21,7 +21,7 @@ except NameError:
 
 """
     Python 3+ note: unicode strings should be used when communicating with the Emulator methods.
-    Ascii is used internally when reading from or writing to the 3270 emulator (this includes
+    utf-8 is used internally when reading from or writing to the 3270 emulator (this includes
     reading lines, constructing data to write, reading statuses).
 """
 
@@ -53,7 +53,7 @@ class Command(object):
     def __init__(self, app, cmdstr):
         if isinstance(cmdstr, six.text_type):
             warnings.warn('Commands should be byte strings', stacklevel=3)
-            cmdstr = cmdstr.encode('ascii')
+            cmdstr = cmdstr.encode("utf-8")
         self.app = app
         self.cmdstr = cmdstr
         self.status_line = None
@@ -69,15 +69,15 @@ class Command(object):
         while True:
             line = self.app.readline()
             log.debug('stdout line: %s', line.rstrip())
-            if not line.startswith('data:'.encode('ascii')):
+            if not line.startswith('data:'.encode("ascii")):
                 # ok, we are at the status line
                 self.status_line = line.rstrip()
                 result = self.app.readline().rstrip()
                 log.debug('result line: %s', result)
-                return self.handle_result(result.decode('ascii'))
+                return self.handle_result(result.decode("utf-8"))
 
             # remove the 'data: ' prefix and trailing newline char(s) and store
-            self.data.append(line[6:].rstrip('\n\r'.encode('ascii')))
+            self.data.append(line[6:].rstrip('\n\r'.encode("utf-8")))
 
     def handle_result(self, result):
         # should receive 'ok' for almost everything, but Quit returns a '' for
@@ -91,8 +91,8 @@ class Command(object):
 
         msg = b'[no error message]'
         if self.data:
-            msg = ''.encode('ascii').join(self.data).rstrip()
-        raise CommandError(msg.decode('ascii'))
+            msg = ''.encode("utf-8").join(self.data).rstrip()
+        raise CommandError(msg.decode("utf-8"))
 
 
 class Status(object):
@@ -101,9 +101,9 @@ class Status(object):
     """
     def __init__(self, status_line):
         if not status_line:
-            status_line = (' ' * 12).encode('ascii')
-        parts = status_line.split(' '.encode('ascii'))
-        self.as_string = status_line.rstrip().decode('ascii')
+            status_line = (' ' * 12).encode("utf-8")
+        parts = status_line.split(' '.encode("utf-8"))
+        self.as_string = status_line.rstrip().decode("utf-8")
         self.keyboard = parts[0] or None
         self.screen_format = parts[1] or None
         self.field_protection = parts[2] or None
@@ -350,7 +350,7 @@ class Emulator(object):
             Connect to a host
         """
         if not self.app.connect(host):
-            command = 'Connect({0})'.format(host).encode('ascii')
+            command = 'Connect({0})'.format(host).encode("utf-8")
             self.exec_command(command)
         self.last_host = host
 
@@ -374,10 +374,10 @@ class Emulator(object):
             Using this method tells the client to wait until a field is
             detected and the cursor has been positioned on it.
         """
-        self.exec_command('Wait({0}, InputField)'.format(self.timeout).encode('ascii'))
+        self.exec_command('Wait({0}, InputField)'.format(self.timeout).encode("utf-8"))
         if self.status.keyboard != b'U':
             raise KeyboardStateError('keyboard not unlocked, state was: {0}'.format(
-                self.status.keyboard.decode('ascii')))
+                self.status.keyboard.decode("utf-8")))
 
     def move_to(self, ypos, xpos):
         """
@@ -387,7 +387,7 @@ class Emulator(object):
         # the screen's co-ordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
-        self.exec_command('MoveCursor({0}, {1})'.format(ypos, xpos).encode('ascii'))
+        self.exec_command('MoveCursor({0}, {1})'.format(ypos, xpos).encode("utf-8"))
 
     def send_string(self, tosend, ypos=None, xpos=None):
         """
@@ -401,9 +401,9 @@ class Emulator(object):
             self.move_to(ypos, xpos)
 
         # escape double quotes in the data to send
-        tosend = tosend.replace('"', '\"')
+        tosend = tosend.decode("utf-8").replace('"', '\"')
 
-        self.exec_command('String("{0}")'.format(tosend).encode('ascii'))
+        self.exec_command('String("{0}")'.format(tosend).encode("utf-8"))
 
     def send_enter(self):
         self.exec_command(b'Enter')
@@ -436,10 +436,10 @@ class Emulator(object):
         # the screen's co-ordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
-        cmd = self.exec_command('Ascii({0},{1},{2})'.format(ypos, xpos, length).encode('ascii'))
-        # this usage of ascii should only return a single line of data
+        cmd = self.exec_command('ascii({0},{1},{2})'.format(ypos, xpos, length).encode("utf-8"))
+        # this usage of utf-8 should only return a single line of data
         assert len(cmd.data) == 1, cmd.data
-        return cmd.data[0].decode('ascii')
+        return cmd.data[0].decode("utf-8")
 
     def string_found(self, ypos, xpos, string):
         """
@@ -482,4 +482,4 @@ class Emulator(object):
         self.send_string(tosend)
 
     def save_screen(self, file_path):
-        self.exec_command('PrintText(html,file,{0})'.format(file_path).encode('ascii'))
+        self.exec_command('PrintText(html,file,{0})'.format(file_path).encode("utf-8"))

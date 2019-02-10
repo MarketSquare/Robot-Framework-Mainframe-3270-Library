@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from x3270 import x3270
+from .x3270 import x3270
 
 __version__ = "2.1"
 

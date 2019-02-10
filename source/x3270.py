@@ -1,5 +1,5 @@
 # -*- encoding: utf-8 -*-
-from py3270 import Emulator
+from .py3270 import Emulator
 import time
 import os
 import socket
@@ -100,7 +100,7 @@ class x3270(object):
                | Execute Command | Tab |
                | Execute Command | PF(1) |
         """
-        self.mf.exec_command(str(cmd))
+        self.mf.exec_command((str(cmd)).encode("utf-8"))
         time.sleep(self.wait)
 
     def set_screenshot_folder(self, path):
@@ -201,7 +201,7 @@ class x3270(object):
         Example:
                | Send PF | 3 |
         """
-        self.mf.exec_command(b'PF('+str(PF)+')')
+        self.mf.exec_command(('PF('+str(PF)+')').encode("utf-8"))
         time.sleep(self.wait)
 
     def write(self, txt):

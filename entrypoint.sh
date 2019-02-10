@@ -7,4 +7,4 @@ if [ ! -z $1 ]
 then
    singleTest="--test $1"
 fi
-robot $singleTest /tests 
+robot $singleTest --logLevel TRACE:INFO /tests 
