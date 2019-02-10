@@ -45,9 +45,11 @@ Docker image contains everything that's needed to run the Mainframe tests. Curre
   * Python 3: `docker image build --build-arg PYTHON_MAJOR=3 -t Mainframe3270-p3 .`
 - Run all tests: docker container run --rm -it Mainframe3270-p<PYTHON_MAJOR>
 
-Reports are stored to /reports. Those can be get to host by mapping it as volume. E.g. in Windows CMD with current directory mounting command is ```docker container run --rm -it -v %cd%\reports:/reports Mainframe3270```
+Reports are stored to /reports. Those can be get to host by mapping it as volume. E.g. in Windows CMD with current directory mounting command is `docker container run --rm -it -v %cd%\reports:/reports Mainframe3270`
 
-IF wanting to run just single/specific tests, it can be mentioned at the end of command. Currently only single argument can be given, so multiple tests can be given with wildcards like: ```docker container run --rm -it -v %cd%\reports:/reports Mainframe3270 *PF*``` (this executes just single tests, as PF is mentioned only in one).
+If wanting to run just single/specific tests, it can be mentioned at the end of command. Currently only single argument can be given, so multiple tests can be given with wildcards like: `docker container run --rm -it -v %cd%\reports:/reports Mainframe3270 *PF*` (this executes just single tests, as PF is mentioned only in one).
+
+
 
 ## Notes
 
