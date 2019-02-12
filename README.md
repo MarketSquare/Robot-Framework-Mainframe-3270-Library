@@ -49,7 +49,9 @@ Reports are stored to /reports. Those can be get to host by mapping it as volume
 
 If wanting to run just single/specific tests, it can be mentioned at the end of command. Currently only single argument can be given, so multiple tests can be given with wildcards like: `docker container run --rm -it -v %cd%\reports:/reports mainframe3270-p<PYTHON_MAJOR> *PF*` (this executes just single tests, as PF is mentioned only in one).
 
-When developing tests, also source code and tests can be mounted to container. Command in Windows is (with Python 3): `docker container run --rm -it -v %cd%\reports:/reports -v %cd%\tests:/tests -v %cd%\source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3`
+When developing tests, also source code and tests can be mounted to container. Command to run tests using current sources with Python 3 (without need to recreate container all the time):
+* Windows: `docker container run --rm -it -v %cd%\reports:/reports -v %cd%\tests:/tests -v %cd%\source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3` (_reports_ -dir needs to be created beforehand)
+* Linux/MacOSX: `docker container run --rm -it -v $(pwd)/reports:/reports -v $(pwd)/tests:/tests -v $(pwd)/source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3`  
 
 ## Notes
 
