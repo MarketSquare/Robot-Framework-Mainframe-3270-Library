@@ -10,7 +10,7 @@ ${python_version}     ${NONE}
 # host
 ${host}               pub400.com
 # folders
-${folder}      .{/}screenshot
+${folder}       ${CURDIR}${/}..${/}screenshots
 ${new_folder}      ${folder}${/}new_folder
 # Credentials
 ${user}    USER0112
