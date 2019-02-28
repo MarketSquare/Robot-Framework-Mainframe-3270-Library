@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
 from .source.x3270 import x3270
 
-__version__ = "2.1"
+__version__ = "2.5"
 
 class Mainframe3270(x3270):
     """Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
