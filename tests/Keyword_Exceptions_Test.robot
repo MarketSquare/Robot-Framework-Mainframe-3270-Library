@@ -1,5 +1,5 @@
 *** Settings ***
-Resource          pub400_resources.txt  
+Resource          pub400_resources.txt
 Test Teardown     Run Keyword If Test Failed    Fatal Error
 Force Tags        KET
 
