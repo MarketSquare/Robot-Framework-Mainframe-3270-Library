@@ -37,6 +37,22 @@ You can change to hide the emulator screen set the argument visible=${False}
 
 To change the wait_time see Change Wait Time, to change the img_folder see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
 
+## Running with Docker
+
+Docker image contains everything that's needed to run the Mainframe tests. Currently image is not pushed to Docker hub, so steps to use it
+* Build image:
+  * Python 2: `docker image build --build-arg PYTHON_MAJOR=2 -t mainframe3270-p2 .`
+  * Python 3: `docker image build --build-arg PYTHON_MAJOR=3 -t mainframe3270-p3 .`
+- Run all tests: docker container run --rm -it mainframe3270-p<PYTHON_MAJOR>
+
+Reports are stored to /reports. Those can be get to host by mapping it as volume. E.g. in Windows CMD with current directory mounting command is `docker container run --rm -it -v %cd%\reports:/reports mainframe3270-p<PYTHON_MAJOR>`
+
+If wanting to run just single/specific tests, it can be mentioned at the end of command. Currently only single argument can be given, so multiple tests can be given with wildcards like: `docker container run --rm -it -v %cd%\reports:/reports mainframe3270-p<PYTHON_MAJOR> *PF*` (this executes just single tests, as PF is mentioned only in one).
+
+When developing tests, also source code and tests can be mounted to container. Command to run tests using current sources with Python 3 (without need to recreate container all the time):
+* Windows: `docker container run --rm -it -v %cd%\reports:/reports -v %cd%\tests:/tests -v %cd%\source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3` (_reports_ -dir needs to be created beforehand)
+* Linux/MacOSX: `docker container run --rm -it -v $(pwd)/reports:/reports -v $(pwd)/tests:/tests -v $(pwd)/source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3`  
+
 ## Notes
 
 By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe, but is you set the visible to false, the py3270 will run the ws3270.exe.

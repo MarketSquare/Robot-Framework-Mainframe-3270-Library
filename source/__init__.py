@@ -1,7 +1,7 @@
 # -*- encoding: utf-8 -*-
-from x3270 import x3270
+from .x3270 import x3270
 
-__version__ = "2.1"
+__version__ = "2.5"
 
 
 class Mainframe3270(x3270):
