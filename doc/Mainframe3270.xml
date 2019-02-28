@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20190205 11:07:34" type="library" name="Mainframe3270" format="ROBOT">
-<version>2.1</version>
+<keywordspec generated="20190228 16:53:58" type="library" name="Mainframe3270" format="ROBOT">
+<version>2.5</version>
 <scope>global</scope>
 <namedargs>yes</namedargs>
 <doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
@@ -214,7 +214,8 @@ Note that the entire screen is only considered a string for this keyword, so if 
 for the string "something" and it is somewhere other than at the beginning or end of the screen it
 should be reported as follows: **something**
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
+can edit the raise exception message with error_message.
 
 Example:
     | Page Should Contain Match | **something** |
@@ -328,7 +329,8 @@ Note that the entire screen is only considered a string for this keyword, so if 
 for the string "something" and it is somewhere other than at the beginning or end of the screen it
 should be reported as follows: **something**
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you can edit the raise exception message with error_message.
+The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
+can edit the raise exception message with error_message.
 
 Example:
     | Page Should Not Contain Match | **something** |
