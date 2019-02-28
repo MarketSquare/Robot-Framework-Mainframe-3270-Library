@@ -1,9 +1,9 @@
 # -*- encoding: utf-8 -*-
-from .py3270 import Emulator
 import time
 import os
 import socket
 import re
+from .py3270 import Emulator
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils import Matcher
@@ -21,7 +21,12 @@ class x3270(object):
         self.port = None
         self.credential = None
         self.imgfolder = img_folder
-        self.output_folder = BuiltIn().get_variable_value('${OUTPUT DIR}')
+        # if not self.plugin_folder : self.plugin_folder = os.getcwd() ## For PyCharm
+        try:
+            self.output_folder = BuiltIn().get_variable_value('${OUTPUT DIR}')
+        except Exception as e:
+            if hasattr(e, 'message') and e.message == 'Cannot access execution context': self.output_folder = os.getcwd()
+            else: raise AssertionError(e)
         self.wait = float(wait_time)
         self.timeout = int(timeout)
         self.mf = Emulator(visible=bool(visible), timeout=int(timeout))
