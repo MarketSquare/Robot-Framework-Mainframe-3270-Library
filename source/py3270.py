@@ -68,12 +68,12 @@ class Command(object):
         # 2: 'ok' or 'error' indicating whether the command succeeded or failed
         while True:
             line = self.app.readline()
-            log.debug('stdout line: %s', line.rstrip())
+            # log.debug('stdout line: %s', line.rstrip())       # commented line to reduce log size
             if not line.startswith('data:'.encode("ascii")):
                 # ok, we are at the status line
                 self.status_line = line.rstrip()
                 result = self.app.readline().rstrip()
-                log.debug('result line: %s', result)
+                # log.debug('result line: %s', result)          # commented line to reduce log size
                 return self.handle_result(result.decode("utf-8"))
 
             # remove the 'data: ' prefix and trailing newline char(s) and store
@@ -298,12 +298,12 @@ class Emulator(object):
         if self.is_terminated:
             raise TerminatedError('this TerminalClient instance has been terminated')
 
-        log.debug('sending command: %s', cmdstr)
+        # log.debug('sending command: %s', cmdstr)             # commented line to reduce log size
         c = Command(self.app, cmdstr)
-        start = time.time()
+        # start = time.time()                                  # unnecessary variable if the log is commented out.
         c.execute()
-        elapsed = time.time() - start
-        log.debug('elapsed execution: {0}'.format(elapsed))
+        # elapsed = time.time() - start                        # unnecessary variable if the log is commented out.
+        # log.debug('elapsed execution: {0}'.format(elapsed))  # commented line to reduce log size
         self.status = Status(c.status_line)
 
         return c
