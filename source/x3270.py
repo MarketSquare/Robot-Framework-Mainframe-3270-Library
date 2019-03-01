@@ -21,7 +21,7 @@ class x3270(object):
         self.port = None
         self.credential = None
         self.imgfolder = img_folder
-        # if not self.plugin_folder : self.plugin_folder = os.getcwd() ## For PyCharm
+        # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
             self.output_folder = BuiltIn().get_variable_value('${OUTPUT DIR}')
         except Exception as e:
