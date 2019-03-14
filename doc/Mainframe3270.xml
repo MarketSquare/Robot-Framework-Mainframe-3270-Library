@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20190228 16:53:58" type="library" name="Mainframe3270" format="ROBOT">
-<version>2.5</version>
+<keywordspec generated="20190314 16:58:13" type="library" name="Mainframe3270" format="ROBOT">
+<version>2.6</version>
 <scope>global</scope>
 <namedargs>yes</namedargs>
 <doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
@@ -38,6 +38,7 @@ but is you set the visible to false, the py3270 will run the ws3270.exe.
 <arg>visible=True</arg>
 <arg>timeout=30</arg>
 <arg>wait_time=0.5</arg>
+<arg>wait_time_after_write=0</arg>
 <arg>img_folder=.</arg>
 </arguments>
 <doc>You can change to hide the emulator screen set the argument visible=${False}
@@ -59,9 +60,8 @@ see the `Set Screenshot Folder` and to change the timeout see the `Change Timeou
 <arguments>
 <arg>wait_time</arg>
 </arguments>
-<doc>To give time for the mainframe screen to be "drawn" and receive the 
-next commands, a "wait time" has been created which by default is set to
-0.5 seconds. This is a sleep applied after the follow keywords:
+<doc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
+created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:
 
 `Execute Command`
 `Send Enter`
@@ -72,8 +72,31 @@ next commands, a "wait time" has been created which by default is set to
 If you want to change this value just use this keyword passing the time in seconds.
 
 Examples:
-    | Change Wait Time | 0.5 |
+    | Change Wait Time | 0.1 |
     | Change Wait Time | 2 |</doc>
+<tags>
+</tags>
+</kw>
+<kw name="Change Wait Time After Write">
+<arguments>
+<arg>wait_time_after_write</arg>
+</arguments>
+<doc>To give the user time to see what is happening inside the mainframe, a "change wait time after write" has
+been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this
+keywords:
+
+`Write`
+`Write Bare`
+`Write in position`
+`Write Bare in position`
+
+If you want to change this value just use this keyword passing the time in seconds.
+
+Note: This keyword is useful for debug purpose
+
+Examples:
+    | Change Wait Time After Write | 0.5 |
+    | Change Wait Time After Write | 2 |</doc>
 <tags>
 </tags>
 </kw>
@@ -154,7 +177,7 @@ Examples:
 <arg>port=23</arg>
 </arguments>
 <doc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
-you only must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
+you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
 
 Example:
     | Open Connection | Hostname |
