@@ -10,7 +10,7 @@ from robot.utils import Matcher
 
 
 class x3270(object):
-    def __init__(self, visible=True, timeout='30', wait_time='0.5', img_folder='.'):
+    def __init__(self, visible=True, timeout='30', wait_time='0.5', wait_time_after_write='0', img_folder='.'):
         """You can change to hide the emulator screen set the argument visible=${False}
            
            For change the wait_time see `Change Wait Time`, to change the img_folder
@@ -28,17 +28,18 @@ class x3270(object):
             if hasattr(e, 'message') and e.message == 'Cannot access execution context': self.output_folder = os.getcwd()
             else: raise AssertionError(e)
         self.wait = float(wait_time)
+        self.wait_write = float(wait_time_after_write)
         self.timeout = int(timeout)
         self.mf = Emulator(visible=bool(visible), timeout=int(timeout))
 
     def change_timeout(self, seconds):
         """Change the timeout for connection in seconds.
         """
-        self.timeout = int(seconds)
+        self.timeout = float(seconds)
 
     def open_connection(self, host, LU=None, port=23):
         """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
-        you only must inform the Host. You can pass the Logical Unit Name and the Port as opcional.
+        you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
 
         Example:
             | Open Connection | Hostname |
@@ -63,9 +64,8 @@ class x3270(object):
             pass
 
     def change_wait_time(self, wait_time):
-        """To give time for the mainframe screen to be "drawn" and receive the 
-        next commands, a "wait time" has been created which by default is set to
-        0.5 seconds. This is a sleep applied after the follow keywords:
+        """To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
+        created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:
 
         `Execute Command`
         `Send Enter`
@@ -76,10 +76,30 @@ class x3270(object):
         If you want to change this value just use this keyword passing the time in seconds.
 
         Examples:
-            | Change Wait Time | 0.5 |
+            | Change Wait Time | 0.1 |
             | Change Wait Time | 2 |
         """
         self.wait = float(wait_time)
+
+    def change_wait_time_after_write(self, wait_time_after_write):
+        """To give the user time to see what is happening inside the mainframe, a "change wait time after write" has
+        been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this
+        keywords:
+
+        `Write`
+        `Write Bare`
+        `Write in position`
+        `Write Bare in position`
+
+        If you want to change this value just use this keyword passing the time in seconds.
+
+        Note: This keyword is useful for debug purpose
+
+        Examples:
+            | Change Wait Time After Write | 0.5 |
+            | Change Wait Time After Write | 2 |
+        """
+        self.wait_write = float(wait_time_after_write)
 
     def read(self, ypos, xpos, length):
         """Get a string of "length" at screen co-ordinates "ypos"/"xpos".
@@ -234,7 +254,6 @@ class x3270(object):
            Example:
                | Write in Position | something | 9 | 11 |
         """
-        self._check_limits(ypos, xpos)
         self._write(txt, ypos=ypos, xpos=xpos, enter='1')
 
     def write_bare_in_position(self, txt, ypos, xpos):
@@ -246,15 +265,16 @@ class x3270(object):
            Example:
                | Write Bare in Position | something | 9 | 11 |
         """
-        self._check_limits(ypos, xpos)
         self._write(txt, ypos=ypos, xpos=xpos)
 
     def _write(self, txt, ypos=None, xpos=None, enter='0'):
         txt = txt.encode('utf-8')
         if ypos is not None and xpos is not None:
+            self._check_limits(int(ypos), int(xpos))
             self.mf.move_to(int(ypos), int(xpos))
         if not isinstance(txt, (list, tuple)): txt = [txt]
         [self.mf.send_string(el) for el in txt if el != '']
+        time.sleep(self.wait_write)
         for i in range(int(enter)):
             self.mf.send_enter()
             time.sleep(self.wait)
