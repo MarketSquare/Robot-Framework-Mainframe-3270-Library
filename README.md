@@ -8,6 +8,8 @@ Mainframe3270 is a library for Robot Framework based on [py3270 project](https:/
 
 In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html). More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Instalation) of this project.
 
+`pip install robotframework-mainframe3270`
+
 ## Example
 
     *** Settings ***
