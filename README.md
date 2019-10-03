@@ -18,10 +18,12 @@ In order to use this library you need to install the [x3270 project](http://x327
     *** Test Cases ***
     Example
         Open Connection    Hostname    LUname
-        Change Wait Time    0.9
+        Change Wait Time    0.5
+        Change Wait Time After Write    0.5
         Set Screenshot Folder    C:\\Temp\\IMG
         ${value}    Read    3    10    17
         Page Should Contain String    ENTER APPLICATION
+        Wait Field Detected
         Write Bare    applicationname
         Send Enter
         Take Screenshot
