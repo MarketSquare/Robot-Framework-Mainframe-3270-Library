@@ -27,14 +27,16 @@ class Mainframe3270(x3270):
        | ***** Test Cases *****
        | Example
        |     Open Connection    Hostname    LUname
-       |     Change Wait Time    0.9
+       |     Change Wait Time    0.4
+       |     Change Wait Time After Write    0.4
        |     Set Screenshot Folder    C:\\\Temp\\\IMG
        |     ${value}    Read    3    10    17
        |     Page Should Contain String    ENTER APPLICATION
+       |     Wait Field Detected
        |     Write Bare    applicationname
        |     Send Enter
        |     Take Screenshot
        |     Close Connection
     """
-    ROBOT_LIBRARY_SCOPE = 'GLOBAL'
+    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
     ROBOT_LIBRARY_VERSION = VERSION

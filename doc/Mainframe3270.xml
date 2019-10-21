@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20190314 16:58:13" type="library" name="Mainframe3270" format="ROBOT">
-<version>2.6</version>
-<scope>global</scope>
+<keywordspec generated="20191021 14:46:32" type="library" name="Mainframe3270" format="ROBOT">
+<version>2.7</version>
+<scope>test suite</scope>
 <namedargs>yes</namedargs>
 <doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
-= Instalation  =
+= Installation  =
 
 For use this library you need to install the [http://x3270.bgp.nu/download.html|x3270 project]
 and put the directory on your PATH. On Windows, you need to download wc3270 and put
@@ -21,14 +21,17 @@ but is you set the visible to false, the py3270 will run the ws3270.exe.
 
 | ***** Settings *****
 | Library           Mainframe3270
+| Library           BuiltIn
 |
 | ***** Test Cases *****
 | Example
 |     Open Connection    Hostname    LUname
-|     Change Wait Time    0.9
+|     Change Wait Time    0.4
+|     Change Wait Time After Write    0.4
 |     Set Screenshot Folder    C:\\Temp\\IMG
 |     ${value}    Read    3    10    17
 |     Page Should Contain String    ENTER APPLICATION
+|     Wait Field Detected
 |     Write Bare    applicationname
 |     Send Enter
 |     Take Screenshot

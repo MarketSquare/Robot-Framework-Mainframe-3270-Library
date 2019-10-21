@@ -3,7 +3,7 @@ import time
 import os
 import socket
 import re
-from .py3270 import Emulator
+from py3270 import Emulator
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
 from robot.utils import Matcher
