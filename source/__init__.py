@@ -1,7 +1,6 @@
 # -*- encoding: utf-8 -*-
 from .x3270 import x3270
-
-__version__ = "2.6"
+from .version import VERSION
 
 
 class Mainframe3270(x3270):
@@ -38,4 +37,4 @@ class Mainframe3270(x3270):
        |     Close Connection
     """
     ROBOT_LIBRARY_SCOPE = 'GLOBAL'
-    ROBOT_LIBRARY_VERSION = __version__
+    ROBOT_LIBRARY_VERSION = VERSION
