@@ -63,7 +63,7 @@ By default the import set the visible argument to true, on this option the py327
 
 ## Keyword Documentation
 
-You can find the keywords documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/documentation.html)
+You can find the keywords documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/install/doc/Mainframe3270.html)
 
 ## WIKI
 For more information visit this repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
