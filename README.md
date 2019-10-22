@@ -18,8 +18,8 @@ In order to use this library you need to install the [x3270 project](http://x327
     *** Test Cases ***
     Example
         Open Connection    Hostname    LUname
-        Change Wait Time    0.5
-        Change Wait Time After Write    0.5
+        Change Wait Time    0.4
+        Change Wait Time After Write    0.4
         Set Screenshot Folder    C:\\Temp\\IMG
         ${value}    Read    3    10    17
         Page Should Contain String    ENTER APPLICATION
@@ -63,7 +63,11 @@ By default the import set the visible argument to true, on this option the py327
 
 ## Keyword Documentation
 
-You can find the keywords documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/documentation.html)
+You can find the keywords documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/install/doc/Mainframe3270.html)
+
+## Keyword Tests
+
+To run all the library tests, you will need to create a user in the https://www.pub400.com/ website.
 
 ## WIKI
 For more information visit this repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
