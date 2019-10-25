@@ -57,14 +57,6 @@ Test With Login
     Test Send Enter
     Test Send PF
 
-#test1
-#    Open Mainframe
-#    log    antes do write    WARN
-#    Write Bare In Position    ${write_text}    5    25
-#    log    antes do sleep    WARN
-#    sleep    1
-#    log   log antes do disconnect    WARN
-
 *** Keywords ***
 Open Mainframe
     Open Connection    ${host}
