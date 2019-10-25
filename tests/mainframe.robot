@@ -5,7 +5,7 @@ Documentation     These tests verify that all keywords are working correctly and
 Suite Setup       Open Mainframe
 Suite Teardown    Close Mainframe
 Test Teardown     Run Keyword If Test Failed    Fatal Error
-Library           Mainframe3270
+Library           ../Mainframe3270/
 Library           Dialogs
 Library           OperatingSystem
 Library           String
@@ -92,7 +92,7 @@ Test Page Should Contain Match
 
 Test Page Should Contain String X Times
     Page Should Contain String X Times    ${text_to_count}    3
-    Page Should Contain String X Times    ${text_to_count_wrong_case}    3    ignore_case=${True}
+    Page Should Contain String X Times    ${text_to_count_wrong_case}    4    ignore_case=${True}
 
 Test Page Should Match Regex
     Page Should Match Regex    ${valid_regex}
@@ -233,7 +233,7 @@ Exception Test Page Should Contain Match
 
 Exception Test Page Should Contain String X Times
     Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count}    2    3
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count_wrong_case}    2    3    ignore_case=${True}
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count_wrong_case}    2    4    ignore_case=${True}
 
 Exception Test Page Should Match Regex
     Verify Pattern Not Found    Page Should Match Regex    ${invalid_regex}
