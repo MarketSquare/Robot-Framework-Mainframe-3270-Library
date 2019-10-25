@@ -8,6 +8,7 @@ import socket
 import subprocess
 import time
 import warnings
+import errno
 
 log = logging.getLogger(__name__)
 
@@ -194,7 +195,8 @@ class ExecutableAppWin(object):
                 sock.connect(('127.0.0.1', self.script_port))
                 break
             except socket.error as e:
-                if 'actively refused it' not in str(e):
+                log.warn(e)
+                if e.errno != errno.ECONNREFUSED:
                     raise
                 time.sleep(1)
                 count += 1
@@ -278,7 +280,8 @@ class Emulator(object):
             to clean these up when done. Note, not terminating at this point will usually have no
             ill effect - only Python 3+ on Windows had problems in this regard.
         """
-        self.terminate()
+        # self.terminate()     # The terminate function is no longer needed in python 3.8
+        pass
 
     def create_app(self, visible):
         if os.name == 'nt':
@@ -321,7 +324,8 @@ class Emulator(object):
                 # x3270 was terminated, since we are just quitting anyway, ignore it.
                 pass
             except socket.error as e:
-                if 'was forcibly closed' not in str(e):
+                # if 'was forcibly closed' not in str(e):
+                if e.errno != errno.ECONNRESET:
                     raise
                 # this can happen because wc3270 closes the socket before
                 # the read() can happen, causing a socket error
