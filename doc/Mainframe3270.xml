@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20191021 14:46:32" type="library" name="Mainframe3270" format="ROBOT">
-<version>2.7</version>
+<keywordspec generated="20191025 16:42:36" type="library" name="Mainframe3270" format="ROBOT">
+<version>2.8</version>
 <scope>test suite</scope>
 <namedargs>yes</namedargs>
 <doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
