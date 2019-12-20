@@ -29,7 +29,7 @@ class x3270(object):
             if "Cannot access execution context" in str(rnrex):
                 self.output_folder = os.getcwd()
             else:
-                raise RobotNotRunningError
+                raise RobotNotRunningError()
         except Exception as e:
             raise AssertionError(e)
         self.wait = float(wait_time)
