@@ -6,6 +6,7 @@ import re
 from .py3270 import Emulator
 from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn
+from robot.libraries.BuiltIn import RobotNotRunningError
 from robot.utils import Matcher
 
 
@@ -23,10 +24,14 @@ class x3270(object):
         self.imgfolder = img_folder
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
-            self.output_folder = BuiltIn().get_variable_value('${OUTPUT DIR}')
+            self.output_folder = BuiltIn().get_variable_value('${OUTPUT_DIR}')
+        except RobotNotRunningError as rnrex:
+            if "Cannot access execution context" in str(rnrex):
+                self.output_folder = os.getcwd()
+            else:
+                raise RobotNotRunningError
         except Exception as e:
-            if hasattr(e, 'message') and e.message == 'Cannot access execution context': self.output_folder = os.getcwd()
-            else: raise AssertionError(e)
+            raise AssertionError(e)
         self.wait = float(wait_time)
         self.wait_write = float(wait_time_after_write)
         self.timeout = int(timeout)
