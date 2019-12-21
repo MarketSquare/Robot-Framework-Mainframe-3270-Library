@@ -24,7 +24,7 @@ class x3270(object):
         self.imgfolder = img_folder
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
-            self.output_folder = BuiltIn().get_variable_value('${OUTPUT_DIR}')
+            self.output_folder = BuiltIn().get_variable_value('${OUTPUT DIR}')
         except RobotNotRunningError as rnrex:
             if "Cannot access execution context" in str(rnrex):
                 self.output_folder = os.getcwd()
