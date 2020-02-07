@@ -61,7 +61,7 @@ class x3270(object):
             self.credential = self.host
         if self.mf:
             self.close_connection()
-        self.mf = Emulator(visible=bool(visible), timeout=int(timeout))
+        self.mf = Emulator(visible=bool(self.visible), timeout=int(self.timeout))
         self.mf.connect(self.credential)
 
     def close_connection(self):
