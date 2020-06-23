@@ -35,7 +35,8 @@ class x3270(object):
         self.wait = float(wait_time)
         self.wait_write = float(wait_time_after_write)
         self.timeout = int(timeout)
-        self.mf = Emulator(visible=bool(visible), timeout=int(timeout))
+        self.visible = visible
+        self.mf = None
 
     def change_timeout(self, seconds):
         """Change the timeout for connection in seconds.
@@ -58,6 +59,9 @@ class x3270(object):
             self.credential = "%s@%s:%s" % (self.lu, self.host, self.port)
         else:
             self.credential = self.host
+        if self.mf:
+            self.close_connection()
+        self.mf = Emulator(visible=bool(self.visible), timeout=int(self.timeout))
         self.mf.connect(self.credential)
 
     def close_connection(self):
@@ -67,6 +71,7 @@ class x3270(object):
             self.mf.terminate()
         except socket.error:
             pass
+        self.mf = None
 
     def change_wait_time(self, wait_time):
         """To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
