@@ -58,7 +58,7 @@ class x3270(object):
         if self.lu:
             self.credential = "%s@%s:%s" % (self.lu, self.host, self.port)
         else:
-            self.credential = self.host
+            self.credential = "%s:%s" % (self.host, self.port)
         if self.mf:
             self.close_connection()
         self.mf = Emulator(visible=bool(self.visible), timeout=int(self.timeout))
