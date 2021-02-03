@@ -6,9 +6,21 @@ Mainframe3270 is a library for Robot Framework based on [py3270 project](https:/
 
 ## Instalation
 
-In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html). More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Instalation) of this project.
+In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html).
 
 `pip install robotframework-mainframe3270`
+
+### Windows
+
+In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH. 
+
+The default folder is "C:\Program Files\wc3270" and this needs to be in the PATH of the Environment Variables.
+
+## Unix
+
+You can install the x3270 project from [their instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through the `sudo apt-get install x3270`
+
+More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Instalation) of this project.
 
 ## Example
 
