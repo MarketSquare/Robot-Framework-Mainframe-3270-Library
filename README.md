@@ -12,7 +12,7 @@ In order to use this library you need to install the [x3270 project](http://x327
 
 ### Windows
 
-In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH. 
+You need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH. 
 
 The default folder is "C:\Program Files\wc3270" and this needs to be in the PATH of the Environment Variables.
 
