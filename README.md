@@ -16,7 +16,7 @@ You need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put 
 
 The default folder is "C:\Program Files\wc3270" and this needs to be in the PATH of the Environment Variables.
 
-## Unix
+### Unix
 
 You can install the x3270 project from [their instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through the `sudo apt-get install x3270`
 
