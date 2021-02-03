@@ -9,7 +9,7 @@ ${welcome_title}    Welcome to PUB400.COM * your public IBM i server
 ${main_menu}       IBM i Main Menu
 ${user_task}       User Tasks
 ${text_match}     *PUB???.COM*
-${text_to_count}    IBM
+${text_to_count}    PUB400
 ${text_not_match}     *PUB???400.COM*
 # Texts after write
 ${text_after_delete_char}     EST TEST
@@ -19,7 +19,7 @@ ${text_after_move_next_field}     ${SPACE * 4}
 ${welcome_title_wrong_case}    WELCOME TO PUB400.COM * YOUR PUBLIC IBM I SERVER
 ${welcome_wrong_case}    WELCOME TO PUB400.COM
 ${text_match_wrong_case}     *pub???.com*
-${text_to_count_wrong_case}    ibm
+${text_to_count_wrong_case}    pub400
 ${text_not_match_wrong_case}     *pub???400.com*
 # Regex
 ${valid_regex}    PUB\\d{3}
