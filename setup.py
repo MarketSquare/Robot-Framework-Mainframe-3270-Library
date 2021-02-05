@@ -14,7 +14,7 @@ with open(version_file) as file:
     exec(code)
 
 setup(name         		= 'robotframework-mainframe3270',
-      version      		= '2.9',
+      version      		= '2.10',
       description  		= 'Mainframe Test library for Robot Framework',
 	  long_description	= 'Test library for Robot Framework to enable to create automated test scripts to test IBM Mainframe 3270',
       author       		= 'Altran Portugal',
@@ -22,6 +22,5 @@ setup(name         		= 'robotframework-mainframe3270',
 	  license      		= 'MIT License',
       url          		= 'https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library',
       packages  		= ['Mainframe3270'],
-      package_data 		= {'Mainframe3270': []},
-      requires     		= ['robotframework', 'six']
+      install_requires  = ['robotframework', 'six']
       )
