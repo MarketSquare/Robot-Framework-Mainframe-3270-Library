@@ -443,7 +443,7 @@ class Emulator(object):
         cmd = self.exec_command('ascii({0},{1},{2})'.format(ypos, xpos, length).encode("utf-8"))
         # this usage of utf-8 should only return a single line of data
         assert len(cmd.data) == 1, cmd.data
-        return cmd.data[0].decode("utf-8")
+        return cmd.data[0].decode("unicode_escape")
 
     def string_found(self, ypos, xpos, string):
         """
