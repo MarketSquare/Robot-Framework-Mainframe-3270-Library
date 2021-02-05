@@ -132,10 +132,10 @@ Test Write Bare
     Sleep    1s
 
 Test Write Bare In Position
-    Write Bare In Position    ${write_text}    5    30
+    Write Bare In Position    ${write_text_utf8}    5    30
     ${read_text}    Read    5    30    4
     Take Screenshot
-    Should Be Equal As Strings    ${write_text}    ${read_text}
+    Should Be Equal As Strings    ${write_text_utf8}    ${read_text}
     Sleep    1s
 
 Test Delete Char
