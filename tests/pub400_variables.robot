@@ -3,6 +3,7 @@ ${host}           pub400.com
 ${folder}         ${CURDIR}${/}screenshots
 # Text to write
 ${write_text}         TEST
+${write_text_utf8}         _ëçá
 # Texts in the Mainframe
 ${welcome}        Welcome to PUB400.COM
 ${welcome_title}    Welcome to PUB400.COM * your public IBM i server
@@ -12,7 +13,7 @@ ${text_match}     *PUB???.COM*
 ${text_to_count}    PUB400
 ${text_not_match}     *PUB???400.COM*
 # Texts after write
-${text_after_delete_char}     EST TEST
+${text_after_delete_char}     EST _ëçá
 ${text_after_delete_field}     ${SPACE * 8}
 ${text_after_move_next_field}     ${SPACE * 4}
 # Texts in the Mainframe with wrong case
