@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec generated="20191025 16:42:36" type="library" name="Mainframe3270" format="ROBOT">
-<version>2.8</version>
-<scope>test suite</scope>
-<namedargs>yes</namedargs>
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2021-03-29T13:19:45Z" specversion="3" source="C:\Python38\lib\site-packages\Mainframe3270\__init__.py" lineno="6">
+<version>2.10</version>
 <doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
@@ -36,32 +34,54 @@ but is you set the visible to false, the py3270 will run the ws3270.exe.
 |     Send Enter
 |     Take Screenshot
 |     Close Connection</doc>
-<init>
-<arguments>
-<arg>visible=True</arg>
-<arg>timeout=30</arg>
-<arg>wait_time=0.5</arg>
-<arg>wait_time_after_write=0</arg>
-<arg>img_folder=.</arg>
+<tags>
+</tags>
+<inits>
+<init name="Init" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="14">
+<arguments repr="visible=True, timeout=30, wait_time=0.5, wait_time_after_write=0, img_folder=.">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="visible=True">
+<name>visible</name>
+<default>True</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout=30">
+<name>timeout</name>
+<default>30</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time=0.5">
+<name>wait_time</name>
+<default>0.5</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time_after_write=0">
+<name>wait_time_after_write</name>
+<default>0</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="img_folder=.">
+<name>img_folder</name>
+<default>.</default>
+</arg>
 </arguments>
 <doc>You can change to hide the emulator screen set the argument visible=${False}
 
 For change the wait_time see `Change Wait Time`, to change the img_folder
 see the `Set Screenshot Folder` and to change the timeout see the `Change Timeout` keyword.</doc>
-<tags>
-</tags>
+<shortdoc>You can change to hide the emulator screen set the argument visible=${False}</shortdoc>
 </init>
-<kw name="Change Timeout">
-<arguments>
-<arg>seconds</arg>
+</inits>
+<keywords>
+<kw name="Change Timeout" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="41">
+<arguments repr="seconds">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="seconds">
+<name>seconds</name>
+</arg>
 </arguments>
 <doc>Change the timeout for connection in seconds.</doc>
-<tags>
-</tags>
+<shortdoc>Change the timeout for connection in seconds.</shortdoc>
 </kw>
-<kw name="Change Wait Time">
-<arguments>
-<arg>wait_time</arg>
+<kw name="Change Wait Time" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="76">
+<arguments repr="wait_time">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time">
+<name>wait_time</name>
+</arg>
 </arguments>
 <doc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
 created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:
@@ -77,12 +97,13 @@ If you want to change this value just use this keyword passing the time in secon
 Examples:
     | Change Wait Time | 0.1 |
     | Change Wait Time | 2 |</doc>
-<tags>
-</tags>
+<shortdoc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:</shortdoc>
 </kw>
-<kw name="Change Wait Time After Write">
-<arguments>
-<arg>wait_time_after_write</arg>
+<kw name="Change Wait Time After Write" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="94">
+<arguments repr="wait_time_after_write">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time_after_write">
+<name>wait_time_after_write</name>
+</arg>
 </arguments>
 <doc>To give the user time to see what is happening inside the mainframe, a "change wait time after write" has
 been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this
@@ -100,20 +121,24 @@ Note: This keyword is useful for debug purpose
 Examples:
     | Change Wait Time After Write | 0.5 |
     | Change Wait Time After Write | 2 |</doc>
-<tags>
-</tags>
+<shortdoc>To give the user time to see what is happening inside the mainframe, a "change wait time after write" has been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this keywords:</shortdoc>
 </kw>
-<kw name="Close Connection">
-<arguments>
+<kw name="Close Connection" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="67">
+<arguments repr="">
 </arguments>
 <doc>Disconnect from the host.</doc>
-<tags>
-</tags>
+<shortdoc>Disconnect from the host.</shortdoc>
 </kw>
-<kw name="Delete Char">
-<arguments>
-<arg>ypos=None</arg>
-<arg>xpos=None</arg>
+<kw name="Delete Char" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="186">
+<arguments repr="ypos=None, xpos=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos=None">
+<name>ypos</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos=None">
+<name>xpos</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Delete character under cursor. If you want to delete a character that is in
 another position, simply pass the coordinates "ypos"/"xpos".
@@ -124,13 +149,18 @@ terminal.
 Examples:
     | Delete Char |
     | Delete Char | ypos=9 | xpos=25 |</doc>
-<tags>
-</tags>
+<shortdoc>Delete character under cursor. If you want to delete a character that is in another position, simply pass the coordinates "ypos"/"xpos".</shortdoc>
 </kw>
-<kw name="Delete Field">
-<arguments>
-<arg>ypos=None</arg>
-<arg>xpos=None</arg>
+<kw name="Delete Field" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="201">
+<arguments repr="ypos=None, xpos=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos=None">
+<name>ypos</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos=None">
+<name>xpos</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Delete a entire contents in field at current cursor location and positions
 cursor at beginning of field. If you want to delete a field that is in
@@ -142,12 +172,13 @@ terminal.
 Examples:
     | Delete Field |
     | Delete Field | ypos=12 | xpos=6 |</doc>
-<tags>
-</tags>
+<shortdoc>Delete a entire contents in field at current cursor location and positions cursor at beginning of field. If you want to delete a field that is in another position, simply pass the coordinates "ypos"/"xpos" of any part of the field.</shortdoc>
 </kw>
-<kw name="Execute Command">
-<arguments>
-<arg>cmd</arg>
+<kw name="Execute Command" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="129">
+<arguments repr="cmd">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="cmd">
+<name>cmd</name>
+</arg>
 </arguments>
 <doc>Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
 
@@ -156,28 +187,33 @@ Examples:
     | Execute Command | Home |
     | Execute Command | Tab |
     | Execute Command | PF(1) |</doc>
-<tags>
-</tags>
+<shortdoc>Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].</shortdoc>
 </kw>
-<kw name="Move Next Field">
-<arguments>
+<kw name="Move Next Field" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="223">
+<arguments repr="">
 </arguments>
 <doc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</doc>
-<tags>
-</tags>
+<shortdoc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</shortdoc>
 </kw>
-<kw name="Move Previous Field">
-<arguments>
+<kw name="Move Previous Field" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="228">
+<arguments repr="">
 </arguments>
 <doc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</doc>
-<tags>
-</tags>
+<shortdoc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</shortdoc>
 </kw>
-<kw name="Open Connection">
-<arguments>
-<arg>host</arg>
-<arg>LU=None</arg>
-<arg>port=23</arg>
+<kw name="Open Connection" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="46">
+<arguments repr="host, LU=None, port=23">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="host">
+<name>host</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="LU=None">
+<name>LU</name>
+<default>None</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="port=23">
+<name>port</name>
+<default>23</default>
+</arg>
 </arguments>
 <doc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
 you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
@@ -186,14 +222,21 @@ Example:
     | Open Connection | Hostname |
     | Open Connection | Hostname | LU=LUname |
     | Open Connection | Hostname | port=992 |</doc>
-<tags>
-</tags>
+<shortdoc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.</shortdoc>
 </kw>
-<kw name="Page Should Contain All Strings">
-<arguments>
-<arg>list_string</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Contain All Strings" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="388">
+<arguments repr="list_string, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<name>list_string</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Search if all of the strings in a given list exists on the mainframe screen.
 
@@ -204,14 +247,21 @@ Example:
     | Page Should Contain All Strings | ${list_of_string} |
     | Page Should Contain All Strings | ${list_of_string} | ignore_case=${True} |
     | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Search if all of the strings in a given list exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Any String">
-<arguments>
-<arg>list_string</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Contain Any String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="355">
+<arguments repr="list_string, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<name>list_string</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Search if one of the strings in a given list exists on the mainframe screen.
 
@@ -222,14 +272,21 @@ Example:
     | Page Should Contain Any String | ${list_of_string} |
     | Page Should Contain Any String | ${list_of_string} | ignore_case=${True} |
     | Page Should Contain Any String | ${list_of_string} | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Search if one of the strings in a given list exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Match">
-<arguments>
-<arg>txt</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Contain Match" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="473">
+<arguments repr="txt, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Fails unless the given string matches the given pattern.
 
@@ -248,14 +305,21 @@ Example:
     | Page Should Contain Match | **so???hing** |
     | Page Should Contain Match | **someTHING** | ignore_case=${True} |
     | Page Should Contain Match | **something** | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Fails unless the given string matches the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Contain String">
-<arguments>
-<arg>txt</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Contain String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="320">
+<arguments repr="txt, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Search if a given string exists on the mainframe screen.
 
@@ -266,15 +330,24 @@ Example:
     | Page Should Contain String | something |
     | Page Should Contain String | someTHING | ignore_case=${True} |
     | Page Should Contain String | something | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Search if a given string exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain String X Times">
-<arguments>
-<arg>txt</arg>
-<arg>number</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Contain String X Times" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="422">
+<arguments repr="txt, number, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="number">
+<name>number</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Search if the entered string appears the desired number of times on the mainframe screen.
 
@@ -285,12 +358,13 @@ Example:
        | Page Should Contain String X Times | something | 3 |
        | Page Should Contain String X Times | someTHING | 3 | ignore_case=${True} |
        | Page Should Contain String X Times | something | 3 | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Search if the entered string appears the desired number of times on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Match Regex">
-<arguments>
-<arg>regex_pattern</arg>
+<kw name="Page Should Match Regex" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="447">
+<arguments repr="regex_pattern">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern">
+<name>regex_pattern</name>
+</arg>
 </arguments>
 <doc>Fails if string does not match pattern as a regular expression. Regular expression check is
 implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
@@ -299,14 +373,21 @@ for example, in Java, Ruby and .NET.
 
 Backslash is an escape character in the test data, and possible backslashes in the pattern must
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
-<tags>
-</tags>
+<shortdoc>Fails if string does not match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain All Strings">
-<arguments>
-<arg>list_string</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Not Contain All Strings" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="401">
+<arguments repr="list_string, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<name>list_string</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Fails if one of the strings in a given list exists on the mainframe screen. if one of the string
 are found, the keyword will raise a exception.
@@ -318,14 +399,21 @@ Example:
     | Page Should Not Contain All Strings | ${list_of_string} |
     | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=${True} |
     | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Fails if one of the strings in a given list exists on the mainframe screen. if one of the string are found, the keyword will raise a exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Any String">
-<arguments>
-<arg>list_string</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Not Contain Any String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="374">
+<arguments repr="list_string, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<name>list_string</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the
 string are found, the keyword will raise a exception.
@@ -337,14 +425,21 @@ Example:
     | Page Should Not Contain Any Strings | ${list_of_string} |
     | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=${True} |
     | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the string are found, the keyword will raise a exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Match">
-<arguments>
-<arg>txt</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Not Contain Match" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="504">
+<arguments repr="txt, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Fails if the given string matches the given pattern.
 
@@ -363,14 +458,21 @@ Example:
     | Page Should Not Contain Match | **so???hing** |
     | Page Should Not Contain Match | **someTHING** | ignore_case=${True} |
     | Page Should Not Contain Match | **something** | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Fails if the given string matches the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain String">
-<arguments>
-<arg>txt</arg>
-<arg>ignore_case=False</arg>
-<arg>error_message=None</arg>
+<kw name="Page Should Not Contain String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="338">
+<arguments repr="txt, ignore_case=False, error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<name>ignore_case</name>
+<default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<name>error_message</name>
+<default>None</default>
+</arg>
 </arguments>
 <doc>Search if a given string NOT exists on the mainframe screen.
 
@@ -381,12 +483,13 @@ Example:
     | Page Should Not Contain String | something |
     | Page Should Not Contain String | someTHING | ignore_case=${True} |
     | Page Should Not Contain String | something | error_message=New error message |</doc>
-<tags>
-</tags>
+<shortdoc>Search if a given string NOT exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Not Match Regex">
-<arguments>
-<arg>regex_pattern</arg>
+<kw name="Page Should Not Match Regex" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="460">
+<arguments repr="regex_pattern">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern">
+<name>regex_pattern</name>
+</arg>
 </arguments>
 <doc>Fails if string does match pattern as a regular expression. Regular expression check is
 implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
@@ -395,14 +498,19 @@ for example, in Java, Ruby and .NET.
 
 Backslash is an escape character in the test data, and possible backslashes in the pattern must
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
-<tags>
-</tags>
+<shortdoc>Fails if string does match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Read">
-<arguments>
-<arg>ypos</arg>
-<arg>xpos</arg>
-<arg>length</arg>
+<kw name="Read" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="114">
+<arguments repr="ypos, xpos, length">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos">
+<name>ypos</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos">
+<name>xpos</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="length">
+<name>length</name>
+</arg>
 </arguments>
 <doc>Get a string of "length" at screen co-ordinates "ypos"/"xpos".
 
@@ -410,42 +518,48 @@ Co-ordinates are 1 based, as listed in the status area of the terminal.
 
 Example for read a string in the position y=8 / x=10 of a length 15:
     | ${value} | Read | 8 | 10 | 15 |</doc>
-<tags>
-</tags>
+<shortdoc>Get a string of "length" at screen co-ordinates "ypos"/"xpos".</shortdoc>
 </kw>
-<kw name="Send Enter">
-<arguments>
+<kw name="Send Enter" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="217">
+<arguments repr="">
 </arguments>
 <doc>Send a Enter to the screen.</doc>
-<tags>
-</tags>
+<shortdoc>Send a Enter to the screen.</shortdoc>
 </kw>
-<kw name="Send PF">
-<arguments>
-<arg>PF</arg>
+<kw name="Send PF" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="233">
+<arguments repr="PF">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="PF">
+<name>PF</name>
+</arg>
 </arguments>
 <doc>Send a Program Function to the screen.
 
 Example:
        | Send PF | 3 |</doc>
-<tags>
-</tags>
+<shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder">
-<arguments>
-<arg>path</arg>
+<kw name="Set Screenshot Folder" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="141">
+<arguments repr="path">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<name>path</name>
+</arg>
 </arguments>
 <doc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.
 
 Example:
     | Set Screenshot Folder | C:\\Temp\\Images |</doc>
-<tags>
-</tags>
+<shortdoc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.</shortdoc>
 </kw>
-<kw name="Take Screenshot">
-<arguments>
-<arg>height=410</arg>
-<arg>width=670</arg>
+<kw name="Take Screenshot" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="153">
+<arguments repr="height=410, width=670">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="height=410">
+<name>height</name>
+<default>410</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="width=670">
+<name>width</name>
+<default>670</default>
+</arg>
 </arguments>
 <doc>Generate a screenshot of the IBM 3270 Mainframe in a html format. The
 default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
@@ -456,11 +570,10 @@ can change this values passing them from the keyword.
 Examples:
     | Take Screenshot |
     | Take Screenshot | height=500 | width=700 |</doc>
-<tags>
-</tags>
+<shortdoc>Generate a screenshot of the IBM 3270 Mainframe in a html format. The default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.</shortdoc>
 </kw>
-<kw name="Wait Field Detected">
-<arguments>
+<kw name="Wait Field Detected" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="172">
+<arguments repr="">
 </arguments>
 <doc>Wait until the screen is ready, the cursor has been positioned
 on a modifiable field, and the keyboard is unlocked.
@@ -472,13 +585,17 @@ a screen that is not yet ready.
 
 Using this method tells the client to wait until a field is
 detected and the cursor has been positioned on it.</doc>
-<tags>
-</tags>
+<shortdoc>Wait until the screen is ready, the cursor has been positioned on a modifiable field, and the keyboard is unlocked.</shortdoc>
 </kw>
-<kw name="Wait Until String">
-<arguments>
-<arg>txt</arg>
-<arg>timeout=5</arg>
+<kw name="Wait Until String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="292">
+<arguments repr="txt, timeout=5">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout=5">
+<name>timeout</name>
+<default>5</default>
+</arg>
 </arguments>
 <doc>Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on
 5 seconds the keyword will raise a exception. You can define a different timeout.
@@ -486,36 +603,43 @@ detected and the cursor has been positioned on it.</doc>
 Example:
     | Wait Until String | something |
     | Wait Until String | something | timeout=10 |</doc>
-<tags>
-</tags>
+<shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on 5 seconds the keyword will raise a exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write">
-<arguments>
-<arg>txt</arg>
+<kw name="Write" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="242">
+<arguments repr="txt">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
 </arguments>
 <doc>Send a string to the screen at the current cursor location *and a Enter.*
 
 Example:
     | Write | something |</doc>
-<tags>
-</tags>
+<shortdoc>Send a string to the screen at the current cursor location *and a Enter.*</shortdoc>
 </kw>
-<kw name="Write Bare">
-<arguments>
-<arg>txt</arg>
+<kw name="Write Bare" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="250">
+<arguments repr="txt">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
 </arguments>
 <doc>Send only the string to the screen at the current cursor location.
 
 Example:
     | Write Bare | something |</doc>
-<tags>
-</tags>
+<shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position">
-<arguments>
-<arg>txt</arg>
-<arg>ypos</arg>
-<arg>xpos</arg>
+<kw name="Write Bare In Position" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="269">
+<arguments repr="txt, ypos, xpos">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos">
+<name>ypos</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos">
+<name>xpos</name>
+</arg>
 </arguments>
 <doc>Send only the string to the screen at screen co-ordinates "ypos"/"xpos".
 
@@ -524,14 +648,19 @@ terminal.
 
 Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
-<tags>
-</tags>
+<shortdoc>Send only the string to the screen at screen co-ordinates "ypos"/"xpos".</shortdoc>
 </kw>
-<kw name="Write In Position">
-<arguments>
-<arg>txt</arg>
-<arg>ypos</arg>
-<arg>xpos</arg>
+<kw name="Write In Position" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="258">
+<arguments repr="txt, ypos, xpos">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<name>txt</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos">
+<name>ypos</name>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos">
+<name>xpos</name>
+</arg>
 </arguments>
 <doc>Send a string to the screen at screen co-ordinates "ypos"/"xpos" and a Enter.
 
@@ -540,7 +669,9 @@ terminal.
 
 Example:
     | Write in Position | something | 9 | 11 |</doc>
-<tags>
-</tags>
+<shortdoc>Send a string to the screen at screen co-ordinates "ypos"/"xpos" and a Enter.</shortdoc>
 </kw>
+</keywords>
+<datatypes>
+</datatypes>
 </keywordspec>
