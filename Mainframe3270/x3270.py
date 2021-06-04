@@ -165,6 +165,11 @@ class x3270(object):
         string = self.mf.string_get(int(ypos), int(xpos), int(length))
         return str(string)
 
+    def read_all_screen(self):
+        """Reads the current screen and returns content in one string.
+        """
+        return self._read_all_screen()
+
     def execute_command(self, cmd):
         """Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
 

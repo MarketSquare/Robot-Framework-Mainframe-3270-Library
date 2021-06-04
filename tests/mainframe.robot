@@ -45,6 +45,7 @@ Test Without Login
     Test Page Should Not Contain Match
     Test Page Should Not Contain String
     Test Read
+    Test Read All Screen
     Test Write Bare
     Test Write Bare In Position
     Test Delete Char
@@ -123,6 +124,12 @@ Test Page Should Not Contain String
 Test Read
     ${read_text}    Read    1    10    48
     Should Be Equal As Strings    ${welcome_title}    ${read_text}
+
+Test Read All Screen
+    ${screen_content}   Read All Screen
+    Should Contain    ${screen_content}    i
+    Should Contain    ${screen_content}    c I
+    Should Not Contain    ${screen_content}    xyz
 
 Test Write Bare
     Write Bare    ${write_text}
