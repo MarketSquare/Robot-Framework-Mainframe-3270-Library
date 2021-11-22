@@ -1,43 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2021-03-29T13:19:45Z" specversion="3" source="C:\Python38\lib\site-packages\Mainframe3270\__init__.py" lineno="6">
-<version>2.10</version>
-<doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
-a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
-
-= Installation  =
-
-For use this library you need to install the [http://x3270.bgp.nu/download.html|x3270 project]
-and put the directory on your PATH. On Windows, you need to download wc3270 and put
-the "C:\Program Files\wc3270" in PATH of the Environment Variables.
-
-= Notes  =
-
-By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe,
-but is you set the visible to false, the py3270 will run the ws3270.exe.
-
-= Example =
-
-| ***** Settings *****
-| Library           Mainframe3270
-| Library           BuiltIn
-|
-| ***** Test Cases *****
-| Example
-|     Open Connection    Hostname    LUname
-|     Change Wait Time    0.4
-|     Change Wait Time After Write    0.4
-|     Set Screenshot Folder    C:\\Temp\\IMG
-|     ${value}    Read    3    10    17
-|     Page Should Contain String    ENTER APPLICATION
-|     Wait Field Detected
-|     Write Bare    applicationname
-|     Send Enter
-|     Take Screenshot
-|     Close Connection</doc>
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2021-11-22T13:30:06Z" specversion="3" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="6">
+<version>2.11</version>
+<doc>Documentation for library ``Mainframe3270``.</doc>
 <tags>
 </tags>
 <inits>
-<init name="Init" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="14">
+<init name="Init" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="53">
 <arguments repr="visible=True, timeout=30, wait_time=0.5, wait_time_after_write=0, img_folder=.">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="visible=True">
 <name>visible</name>
@@ -68,7 +36,7 @@ see the `Set Screenshot Folder` and to change the timeout see the `Change Timeou
 </init>
 </inits>
 <keywords>
-<kw name="Change Timeout" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="41">
+<kw name="Change Timeout" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="80">
 <arguments repr="seconds">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="seconds">
 <name>seconds</name>
@@ -77,7 +45,7 @@ see the `Set Screenshot Folder` and to change the timeout see the `Change Timeou
 <doc>Change the timeout for connection in seconds.</doc>
 <shortdoc>Change the timeout for connection in seconds.</shortdoc>
 </kw>
-<kw name="Change Wait Time" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="76">
+<kw name="Change Wait Time" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="115">
 <arguments repr="wait_time">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time">
 <name>wait_time</name>
@@ -99,7 +67,7 @@ Examples:
     | Change Wait Time | 2 |</doc>
 <shortdoc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:</shortdoc>
 </kw>
-<kw name="Change Wait Time After Write" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="94">
+<kw name="Change Wait Time After Write" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="133">
 <arguments repr="wait_time_after_write">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time_after_write">
 <name>wait_time_after_write</name>
@@ -123,13 +91,13 @@ Examples:
     | Change Wait Time After Write | 2 |</doc>
 <shortdoc>To give the user time to see what is happening inside the mainframe, a "change wait time after write" has been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this keywords:</shortdoc>
 </kw>
-<kw name="Close Connection" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="67">
+<kw name="Close Connection" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="106">
 <arguments repr="">
 </arguments>
 <doc>Disconnect from the host.</doc>
 <shortdoc>Disconnect from the host.</shortdoc>
 </kw>
-<kw name="Delete Char" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="186">
+<kw name="Delete Char" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="233">
 <arguments repr="ypos=None, xpos=None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos=None">
 <name>ypos</name>
@@ -151,7 +119,7 @@ Examples:
     | Delete Char | ypos=9 | xpos=25 |</doc>
 <shortdoc>Delete character under cursor. If you want to delete a character that is in another position, simply pass the coordinates "ypos"/"xpos".</shortdoc>
 </kw>
-<kw name="Delete Field" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="201">
+<kw name="Delete Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="248">
 <arguments repr="ypos=None, xpos=None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos=None">
 <name>ypos</name>
@@ -174,7 +142,7 @@ Examples:
     | Delete Field | ypos=12 | xpos=6 |</doc>
 <shortdoc>Delete a entire contents in field at current cursor location and positions cursor at beginning of field. If you want to delete a field that is in another position, simply pass the coordinates "ypos"/"xpos" of any part of the field.</shortdoc>
 </kw>
-<kw name="Execute Command" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="129">
+<kw name="Execute Command" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="176">
 <arguments repr="cmd">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="cmd">
 <name>cmd</name>
@@ -189,19 +157,19 @@ Examples:
     | Execute Command | PF(1) |</doc>
 <shortdoc>Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].</shortdoc>
 </kw>
-<kw name="Move Next Field" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="223">
+<kw name="Move Next Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="270">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</doc>
 <shortdoc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</shortdoc>
 </kw>
-<kw name="Move Previous Field" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="228">
+<kw name="Move Previous Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="275">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</doc>
 <shortdoc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</shortdoc>
 </kw>
-<kw name="Open Connection" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="46">
+<kw name="Open Connection" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="85">
 <arguments repr="host, LU=None, port=23">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="host">
 <name>host</name>
@@ -224,7 +192,7 @@ Example:
     | Open Connection | Hostname | port=992 |</doc>
 <shortdoc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.</shortdoc>
 </kw>
-<kw name="Page Should Contain All Strings" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="388">
+<kw name="Page Should Contain All Strings" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="435">
 <arguments repr="list_string, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
 <name>list_string</name>
@@ -249,7 +217,7 @@ Example:
     | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Search if all of the strings in a given list exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Any String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="355">
+<kw name="Page Should Contain Any String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="402">
 <arguments repr="list_string, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
 <name>list_string</name>
@@ -274,7 +242,7 @@ Example:
     | Page Should Contain Any String | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Search if one of the strings in a given list exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Match" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="473">
+<kw name="Page Should Contain Match" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="520">
 <arguments repr="txt, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -307,7 +275,7 @@ Example:
     | Page Should Contain Match | **something** | error_message=New error message |</doc>
 <shortdoc>Fails unless the given string matches the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Contain String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="320">
+<kw name="Page Should Contain String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="367">
 <arguments repr="txt, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -332,7 +300,7 @@ Example:
     | Page Should Contain String | something | error_message=New error message |</doc>
 <shortdoc>Search if a given string exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain String X Times" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="422">
+<kw name="Page Should Contain String X Times" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="469">
 <arguments repr="txt, number, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -360,7 +328,7 @@ Example:
        | Page Should Contain String X Times | something | 3 | error_message=New error message |</doc>
 <shortdoc>Search if the entered string appears the desired number of times on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Match Regex" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="447">
+<kw name="Page Should Match Regex" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="494">
 <arguments repr="regex_pattern">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern">
 <name>regex_pattern</name>
@@ -375,7 +343,7 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does not match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain All Strings" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="401">
+<kw name="Page Should Not Contain All Strings" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="448">
 <arguments repr="list_string, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
 <name>list_string</name>
@@ -401,7 +369,7 @@ Example:
     | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Fails if one of the strings in a given list exists on the mainframe screen. if one of the string are found, the keyword will raise a exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Any String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="374">
+<kw name="Page Should Not Contain Any String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="421">
 <arguments repr="list_string, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
 <name>list_string</name>
@@ -427,7 +395,7 @@ Example:
     | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the string are found, the keyword will raise a exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Match" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="504">
+<kw name="Page Should Not Contain Match" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="551">
 <arguments repr="txt, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -460,7 +428,7 @@ Example:
     | Page Should Not Contain Match | **something** | error_message=New error message |</doc>
 <shortdoc>Fails if the given string matches the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="338">
+<kw name="Page Should Not Contain String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="385">
 <arguments repr="txt, ignore_case=False, error_message=None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -485,7 +453,7 @@ Example:
     | Page Should Not Contain String | something | error_message=New error message |</doc>
 <shortdoc>Search if a given string NOT exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Not Match Regex" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="460">
+<kw name="Page Should Not Match Regex" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="507">
 <arguments repr="regex_pattern">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern">
 <name>regex_pattern</name>
@@ -500,7 +468,7 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Read" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="114">
+<kw name="Read" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="153">
 <arguments repr="ypos, xpos, length">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos">
 <name>ypos</name>
@@ -520,13 +488,22 @@ Example for read a string in the position y=8 / x=10 of a length 15:
     | ${value} | Read | 8 | 10 | 15 |</doc>
 <shortdoc>Get a string of "length" at screen co-ordinates "ypos"/"xpos".</shortdoc>
 </kw>
-<kw name="Send Enter" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="217">
+<kw name="Read All Screen" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="168">
+<arguments repr="">
+</arguments>
+<doc>Reads the current screen and returns all content in one string.
+
+Example:
+    | ${content} | Read All Screen |</doc>
+<shortdoc>Reads the current screen and returns all content in one string.</shortdoc>
+</kw>
+<kw name="Send Enter" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="264">
 <arguments repr="">
 </arguments>
 <doc>Send a Enter to the screen.</doc>
 <shortdoc>Send a Enter to the screen.</shortdoc>
 </kw>
-<kw name="Send PF" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="233">
+<kw name="Send PF" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="280">
 <arguments repr="PF">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="PF">
 <name>PF</name>
@@ -538,7 +515,7 @@ Example:
        | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="141">
+<kw name="Set Screenshot Folder" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="188">
 <arguments repr="path">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
 <name>path</name>
@@ -550,7 +527,7 @@ Example:
     | Set Screenshot Folder | C:\\Temp\\Images |</doc>
 <shortdoc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.</shortdoc>
 </kw>
-<kw name="Take Screenshot" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="153">
+<kw name="Take Screenshot" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="200">
 <arguments repr="height=410, width=670">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="height=410">
 <name>height</name>
@@ -572,7 +549,7 @@ Examples:
     | Take Screenshot | height=500 | width=700 |</doc>
 <shortdoc>Generate a screenshot of the IBM 3270 Mainframe in a html format. The default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.</shortdoc>
 </kw>
-<kw name="Wait Field Detected" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="172">
+<kw name="Wait Field Detected" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="219">
 <arguments repr="">
 </arguments>
 <doc>Wait until the screen is ready, the cursor has been positioned
@@ -587,7 +564,7 @@ Using this method tells the client to wait until a field is
 detected and the cursor has been positioned on it.</doc>
 <shortdoc>Wait until the screen is ready, the cursor has been positioned on a modifiable field, and the keyboard is unlocked.</shortdoc>
 </kw>
-<kw name="Wait Until String" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="292">
+<kw name="Wait Until String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="339">
 <arguments repr="txt, timeout=5">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -605,7 +582,7 @@ Example:
     | Wait Until String | something | timeout=10 |</doc>
 <shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on 5 seconds the keyword will raise a exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="242">
+<kw name="Write" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="289">
 <arguments repr="txt">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -617,7 +594,7 @@ Example:
     | Write | something |</doc>
 <shortdoc>Send a string to the screen at the current cursor location *and a Enter.*</shortdoc>
 </kw>
-<kw name="Write Bare" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="250">
+<kw name="Write Bare" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="297">
 <arguments repr="txt">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -629,7 +606,7 @@ Example:
     | Write Bare | something |</doc>
 <shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="269">
+<kw name="Write Bare In Position" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="316">
 <arguments repr="txt, ypos, xpos">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
@@ -650,7 +627,7 @@ Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
 <shortdoc>Send only the string to the screen at screen co-ordinates "ypos"/"xpos".</shortdoc>
 </kw>
-<kw name="Write In Position" source="C:\Python38\lib\site-packages\Mainframe3270\x3270.py" lineno="258">
+<kw name="Write In Position" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="305">
 <arguments repr="txt, ypos, xpos">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
 <name>txt</name>
