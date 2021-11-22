@@ -166,7 +166,10 @@ class x3270(object):
         return str(string)
 
     def read_all_screen(self):
-        """Reads the current screen and returns content in one string.
+        """Reads the current screen and returns all content in one string.
+
+           Example:
+               | ${content} | Read All Screen |
         """
         return self._read_all_screen()
 
