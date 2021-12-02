@@ -5,7 +5,7 @@ Documentation     These tests verify that all keywords are working correctly and
 Suite Setup       Open Mainframe
 Suite Teardown    Close Mainframe
 Test Teardown     Run Keyword If Test Failed    Fatal Error
-Library           ../Mainframe3270/
+Library           ../Mainframe3270/    run_on_failure_keyword=None
 Library           Dialogs
 Library           OperatingSystem
 Library           String
@@ -65,6 +65,7 @@ Open Mainframe
 
 Close Mainframe
     Close Connection
+    Sleep    1s
 
 Initial Setting
     Create Directory    ${folder}

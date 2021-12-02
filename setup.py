@@ -22,5 +22,5 @@ setup(name             = 'robotframework-mainframe3270',
       license          = 'MIT License',
       url              = 'https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library',
       packages         = ['Mainframe3270'],
-      install_requires = ['robotframework', 'six']
+      install_requires = ['robotframework', 'robotframework-pythonlibcore', 'six']
       )

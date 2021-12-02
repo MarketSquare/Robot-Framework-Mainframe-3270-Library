@@ -1,61 +1,19 @@
 # -*- encoding: utf-8 -*-
-import time
 import os
-import socket
 import re
-from .py3270 import Emulator
+import socket
+import time
+
 from robot.api import logger
-from robot.libraries.BuiltIn import BuiltIn
-from robot.libraries.BuiltIn import RobotNotRunningError
+from robot.api.deco import keyword
+from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import Matcher
-from .version import VERSION
+
+from .py3270 import Emulator
 
 
 class x3270(object):
-    """
-    Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
-           a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
-
-           = Installation  =
-
-           For use this library you need to install the [http://x3270.bgp.nu/download.html|x3270 project]
-           and put the directory on your PATH. On Windows, you need to download wc3270 and put
-           the "C:\Program Files\wc3270" in PATH of the Environment Variables.
-
-           = Notes  =
-
-           By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe,
-           but is you set the visible to false, the py3270 will run the ws3270.exe.
-
-           = Example =
-
-           | ***** Settings *****
-           | Library           Mainframe3270
-           | Library           BuiltIn
-           |
-           | ***** Test Cases *****
-           | Example
-           |     Open Connection    Hostname    LUname
-           |     Change Wait Time    0.4
-           |     Change Wait Time After Write    0.4
-           |     Set Screenshot Folder    C:\\\Temp\\\IMG
-           |     ${value}    Read    3    10    17
-           |     Page Should Contain String    ENTER APPLICATION
-           |     Wait Field Detected
-           |     Write Bare    applicationname
-           |     Send Enter
-           |     Take Screenshot
-           |     Close Connection
-        """
-    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
-    ROBOT_LIBRARY_VERSION = VERSION
-
-    def __init__(self, visible=True, timeout='30', wait_time='0.5', wait_time_after_write='0', img_folder='.'):
-        """You can change to hide the emulator screen set the argument visible=${False}
-           
-           For change the wait_time see `Change Wait Time`, to change the img_folder
-           see the `Set Screenshot Folder` and to change the timeout see the `Change Timeout` keyword.
-        """
+    def __init__(self, visible, timeout, wait_time, wait_time_after_write, img_folder):
         self.lu = None
         self.host = None
         self.port = None
@@ -77,11 +35,13 @@ class x3270(object):
         self.visible = visible
         self.mf = None
 
+    @keyword
     def change_timeout(self, seconds):
         """Change the timeout for connection in seconds.
         """
         self.timeout = float(seconds)
 
+    @keyword
     def open_connection(self, host, LU=None, port=23):
         """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
         you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
@@ -103,6 +63,7 @@ class x3270(object):
         self.mf = Emulator(visible=bool(self.visible), timeout=int(self.timeout))
         self.mf.connect(self.credential)
 
+    @keyword
     def close_connection(self):
         """Disconnect from the host.
         """
@@ -112,6 +73,7 @@ class x3270(object):
             pass
         self.mf = None
 
+    @keyword
     def change_wait_time(self, wait_time):
         """To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
         created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:
@@ -130,6 +92,7 @@ class x3270(object):
         """
         self.wait = float(wait_time)
 
+    @keyword
     def change_wait_time_after_write(self, wait_time_after_write):
         """To give the user time to see what is happening inside the mainframe, a "change wait time after write" has
         been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this
@@ -150,6 +113,7 @@ class x3270(object):
         """
         self.wait_write = float(wait_time_after_write)
 
+    @keyword
     def read(self, ypos, xpos, length):
         """Get a string of "length" at screen co-ordinates "ypos"/"xpos".
 
@@ -165,6 +129,7 @@ class x3270(object):
         string = self.mf.string_get(int(ypos), int(xpos), int(length))
         return str(string)
 
+    @keyword
     def read_all_screen(self):
         """Reads the current screen and returns all content in one string.
 
@@ -173,6 +138,7 @@ class x3270(object):
         """
         return self._read_all_screen()
 
+    @keyword
     def execute_command(self, cmd):
         """Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
 
@@ -185,6 +151,7 @@ class x3270(object):
         self.mf.exec_command((str(cmd)).encode("utf-8"))
         time.sleep(self.wait)
 
+    @keyword
     def set_screenshot_folder(self, path):
         """Set a folder to keep the html files generated by the `Take Screenshot` keyword.
 
@@ -197,12 +164,13 @@ class x3270(object):
             logger.error('Given screenshots path "%s" does not exist' % path)
             logger.warn('Screenshots will be saved in "%s"' % self.imgfolder)
 
+    @keyword
     def take_screenshot(self, height='410', width='670'):
         """Generate a screenshot of the IBM 3270 Mainframe in a html format. The
            default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
 
            The Screenshot is printed in a iframe log, with the values of height=410 and width=670, you
-           can change this values passing them from the keyword. 
+           can change this values passing them from the keyword.
 
            Examples:
                | Take Screenshot |
@@ -216,6 +184,7 @@ class x3270(object):
         logger.write('<iframe src="%s" height="%s" width="%s"></iframe>' % (filepath.replace("\\", "/"), height, width),
                      level='INFO', html=True)
 
+    @keyword
     def wait_field_detected(self):
         """Wait until the screen is ready, the cursor has been positioned
         on a modifiable field, and the keyboard is unlocked.
@@ -230,6 +199,7 @@ class x3270(object):
         """
         self.mf.wait_for_field()
 
+    @keyword
     def delete_char(self, ypos=None, xpos=None):
         """Delete character under cursor. If you want to delete a character that is in
            another position, simply pass the coordinates "ypos"/"xpos".
@@ -245,6 +215,7 @@ class x3270(object):
             self.mf.move_to(int(ypos), int(xpos))
         self.mf.exec_command(b'Delete')
 
+    @keyword
     def delete_field(self, ypos=None, xpos=None):
         """Delete a entire contents in field at current cursor location and positions
            cursor at beginning of field. If you want to delete a field that is in
@@ -261,22 +232,26 @@ class x3270(object):
             self.mf.move_to(int(ypos), int(xpos))
         self.mf.exec_command(b'DeleteField')
 
+    @keyword
     def send_enter(self):
         """Send a Enter to the screen.
         """
         self.mf.send_enter()
         time.sleep(self.wait)
 
+    @keyword
     def move_next_field(self):
         """Move the cursor to the next input field. Equivalent to pressing the Tab key.
         """
         self.mf.exec_command(b'Tab')
 
+    @keyword
     def move_previous_field(self):
         """Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.
         """
         self.mf.exec_command(b'BackTab')
 
+    @keyword
     def send_PF(self, PF):
         """Send a Program Function to the screen.
 
@@ -286,6 +261,7 @@ class x3270(object):
         self.mf.exec_command(('PF('+str(PF)+')').encode("utf-8"))
         time.sleep(self.wait)
 
+    @keyword
     def write(self, txt):
         """Send a string to the screen at the current cursor location *and a Enter.*
 
@@ -294,6 +270,7 @@ class x3270(object):
         """
         self._write(txt, enter='1')
 
+    @keyword
     def write_bare(self, txt):
         """Send only the string to the screen at the current cursor location.
 
@@ -302,6 +279,7 @@ class x3270(object):
         """
         self._write(txt)
 
+    @keyword
     def write_in_position(self, txt, ypos, xpos):
         """Send a string to the screen at screen co-ordinates "ypos"/"xpos" and a Enter.
 
@@ -313,6 +291,7 @@ class x3270(object):
         """
         self._write(txt, ypos=ypos, xpos=xpos, enter='1')
 
+    @keyword
     def write_bare_in_position(self, txt, ypos, xpos):
         """Send only the string to the screen at screen co-ordinates "ypos"/"xpos".
 
@@ -336,6 +315,7 @@ class x3270(object):
             self.mf.send_enter()
             time.sleep(self.wait)
 
+    @keyword
     def wait_until_string(self, txt, timeout=5):
         """Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on
            5 seconds the keyword will raise a exception. You can define a different timeout.
@@ -364,6 +344,7 @@ class x3270(object):
         status = __read_screen(string, ignore_case)
         return status
 
+    @keyword
     def page_should_contain_string(self, txt, ignore_case=False, error_message=None):
         """Search if a given string exists on the mainframe screen.
 
@@ -382,6 +363,7 @@ class x3270(object):
         if not result: raise Exception(message)
         logger.info('The string "' + txt + '" was found')
 
+    @keyword
     def page_should_not_contain_string(self, txt, ignore_case=False, error_message=None):
         """Search if a given string NOT exists on the mainframe screen.
 
@@ -399,6 +381,7 @@ class x3270(object):
         result = self._search_string(txt, ignore_case)
         if result: raise Exception(message)
 
+    @keyword
     def page_should_contain_any_string(self, list_string, ignore_case=False, error_message=None):
         """Search if one of the strings in a given list exists on the mainframe screen.
 
@@ -418,6 +401,7 @@ class x3270(object):
             if result: break
         if not result: raise Exception(message)
 
+    @keyword
     def page_should_not_contain_any_string(self, list_string, ignore_case=False, error_message=None):
         """Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the
         string are found, the keyword will raise a exception.
@@ -432,6 +416,7 @@ class x3270(object):
         """
         self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=False)
 
+    @keyword
     def page_should_contain_all_strings(self, list_string, ignore_case=False, error_message=None):
         """Search if all of the strings in a given list exists on the mainframe screen.
 
@@ -445,6 +430,7 @@ class x3270(object):
         """
         self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=True)
 
+    @keyword
     def page_should_not_contain_all_strings(self, list_string, ignore_case=False, error_message=None):
         """Fails if one of the strings in a given list exists on the mainframe screen. if one of the string
         are found, the keyword will raise a exception.
@@ -466,6 +452,7 @@ class x3270(object):
                     message = 'The string "' + string + '" was found'
                 raise Exception(message)
 
+    @keyword
     def page_should_contain_string_x_times(self, txt, number, ignore_case=False, error_message=None):
         """Search if the entered string appears the desired number of times on the mainframe screen.
 
@@ -491,6 +478,7 @@ class x3270(object):
             raise Exception(message)
         logger.info('The string "' + txt + '" was found "' + str(number) + '" times')
 
+    @keyword
     def page_should_match_regex(self, regex_pattern):
         """Fails if string does not match pattern as a regular expression. Regular expression check is
         implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
@@ -504,6 +492,7 @@ class x3270(object):
         if not re.findall(regex_pattern, page_text, re.MULTILINE):
             raise Exception('No matches found for "' + regex_pattern + '" pattern')
 
+    @keyword
     def page_should_not_match_regex(self, regex_pattern):
         """Fails if string does match pattern as a regular expression. Regular expression check is
         implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
@@ -517,6 +506,7 @@ class x3270(object):
         if re.findall(regex_pattern, page_text, re.MULTILINE):
             raise Exception('There are matches found for "' + regex_pattern + '" pattern')
 
+    @keyword
     def page_should_contain_match(self, txt, ignore_case=False, error_message=None):
         """Fails unless the given string matches the given pattern.
 
@@ -548,6 +538,7 @@ class x3270(object):
                 message = 'No matches found for "' + txt + '" pattern'
             raise Exception(message)
 
+    @keyword
     def page_should_not_contain_match(self, txt, ignore_case=False, error_message=None):
         """Fails if the given string matches the given pattern.
 
