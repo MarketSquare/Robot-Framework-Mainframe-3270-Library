@@ -54,7 +54,6 @@ Test Without Login
     Test Move Previous Field
 
 Test With Login
-    [Setup]    Initial Setting
     Test Send Enter
     Test Send PF
 
