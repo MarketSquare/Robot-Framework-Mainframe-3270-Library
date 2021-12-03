@@ -9,4 +9,5 @@ License: MIT License
 Description: Test library for Robot Framework to enable to create automated test scripts to test IBM Mainframe 3270
 Platform: UNKNOWN
 Requires: robotframework
+Requires: robotframework-pythonlibcore
 Requires: six
