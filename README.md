@@ -8,7 +8,7 @@
 
 Mainframe3270 is a library for Robot Framework based on [py3270 project](https://pypi.org/project/py3270/), a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
-## Instalation
+## Installation
 
 In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html).
 
@@ -24,7 +24,7 @@ The default folder is "C:\Program Files\wc3270" and this needs to be in the PATH
 
 You can install the x3270 project from [their instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through the `sudo apt-get install x3270`
 
-More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Instalation) of this project.
+More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
 
 ## Example
 
@@ -51,11 +51,16 @@ Arguments:
    - visible = True
    - timeout = 30
    - wait_time = 0.5
-   - img_folder = . 	
+   - wait_time_after_write = 0
+   - img_folder = .
+   - run_on_failure_keyword = Take Screenshot
 
 You can change to hide the emulator screen set the argument visible=${False}
 
-To change the wait_time see Change Wait Time, to change the img_folder see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
+To change the wait_time see Change Wait Time, to change the img_folder
+see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
+
+By default, Mainframe3270 will take a screenshot on failure. You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option. If you pass ``None`` to this argument, no keyword will be run.
 
 ## Running with Docker
 
