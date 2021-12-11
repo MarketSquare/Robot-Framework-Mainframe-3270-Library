@@ -1,0 +1,25 @@
+changelog_type: 'pull_request'
+header_prefix: 'Version:'
+commit_changelog: true
+comment_changelog: true
+include_unlabeled_changes: true
+unlabeled_group_title: 'Unlabeled Changes'
+pull_request_title_regex: '(^.*[0-9]{1,2}[.]+[0-9]{1,2})'
+version_regex: '([0-9]{1,2}[.]+[0-9]{1,2})'
+group_config:
+  - title: Bug Fixes
+    labels:
+      - bug
+      - bugfix
+  - title: Code Improvements
+    labels:
+      - improvements
+      - enhancement
+  - title: New Features
+    labels:
+      - feature
+  - title: Documentation Updates
+    labels:
+      - docs
+      - documentation
+      - doc
