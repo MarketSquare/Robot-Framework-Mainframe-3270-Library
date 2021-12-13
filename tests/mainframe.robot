@@ -95,8 +95,8 @@ Test Page Should Contain Match
     Page Should Contain Match    ${text_match_wrong_case}    ignore_case=${True}
 
 Test Page Should Contain String X Times
-    Page Should Contain String X Times    ${text_to_count}    2
-    Page Should Contain String X Times    ${text_to_count_wrong_case}    3    ignore_case=${True}
+    Page Should Contain String X Times    ${text_to_count}    3
+    Page Should Contain String X Times    ${text_to_count_wrong_case}    4    ignore_case=${True}
 
 Test Page Should Match Regex
     Page Should Match Regex    ${valid_regex}
@@ -242,8 +242,8 @@ Exception Test Page Should Contain Match
     Verify Pattern Not Found    Page Should Contain Match    ${string_not_existant}    ignore_case=${True}
 
 Exception Test Page Should Contain String X Times
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count}    1    2
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count_wrong_case}    1    3    ignore_case=${True}
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count}    1    3
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count_wrong_case}    1    4    ignore_case=${True}
 
 Exception Test Page Should Match Regex
     Verify Pattern Not Found    Page Should Match Regex    ${invalid_regex}
