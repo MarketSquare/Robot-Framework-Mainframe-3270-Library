@@ -7,9 +7,11 @@ jobs:
   tests:
     
     runs-on: ubuntu-latest
+
     strategy:
       matrix:
         python-version: [3.7, 3.9]
+
     steps:
     - uses: actions/checkout@v2
 
@@ -20,11 +22,13 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get install -y xvfb x3270
+        sudo apt-get install -y xvfb x3270 locales
         python -m pip install -r robotframework_mainframe3270.egg-info/requires.txt
+        
     - name: Run tests
       run: |
-        xvfb-run robot --exclude No-CI --loglevel DEBUG tests
+        sudo locale-gen en_US
+        LANG=en_US.iso88591 xvfb-run robot --exclude No-CI --loglevel DEBUG tests
     
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
