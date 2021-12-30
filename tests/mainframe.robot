@@ -54,6 +54,7 @@ Test Without Login
     Test Move Previous Field
 
 Test With Login
+    [Tags]    No-CI
     Test Send Enter
     Test Send PF
 
