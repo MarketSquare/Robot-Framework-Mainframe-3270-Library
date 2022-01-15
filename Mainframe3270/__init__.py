@@ -45,17 +45,17 @@ class Mainframe3270(DynamicCore):
     |     Close Connection
     """
 
-    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
+    ROBOT_LIBRARY_SCOPE = "TEST SUITE"
     ROBOT_LIBRARY_VERSION = VERSION
 
     def __init__(
         self,
         visible=True,
-        timeout='30',
-        wait_time='0.5',
-        wait_time_after_write='0',
-        img_folder='.',
-        run_on_failure_keyword='Take Screenshot'
+        timeout="30",
+        wait_time="0.5",
+        wait_time_after_write="0",
+        img_folder=".",
+        run_on_failure_keyword="Take Screenshot",
     ):
         """
         You can change to hide the emulator screen set the argument visible=${False}
@@ -69,13 +69,7 @@ class Mainframe3270(DynamicCore):
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
         libraries = [
-            x3270(
-                visible,
-                timeout,
-                wait_time,
-                wait_time_after_write,
-                img_folder
-            )
+            x3270(visible, timeout, wait_time, wait_time_after_write, img_folder)
         ]
         DynamicCore.__init__(self, libraries)
 
@@ -87,7 +81,7 @@ class Mainframe3270(DynamicCore):
 
         You can set ``None`` to this keyword, if you do not want to run any keyword on failure.
         """
-        if keyword.lower() == 'none':
+        if keyword.lower() == "none":
             self.run_on_failure_keyword = None
         else:
             self.run_on_failure_keyword = keyword

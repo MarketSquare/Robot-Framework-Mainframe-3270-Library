@@ -1,14 +1,14 @@
-from __future__ import absolute_import
-from __future__ import unicode_literals
+from __future__ import absolute_import, unicode_literals
 
+import errno
 import logging
 import os
-import six
 import socket
 import subprocess
 import time
 import warnings
-import errno
+
+import six
 
 log = logging.getLogger(__name__)
 
@@ -16,6 +16,7 @@ log = logging.getLogger(__name__)
 try:
     BrokenPipeError
 except NameError:
+
     class BrokenPipeError(Exception):
         pass
 
@@ -49,11 +50,12 @@ class FieldTruncateError(Exception):
 
 class Command(object):
     """
-        Represents a x3270 script command
+    Represents a x3270 script command
     """
+
     def __init__(self, app, cmdstr):
         if isinstance(cmdstr, six.text_type):
-            warnings.warn('Commands should be byte strings', stacklevel=3)
+            warnings.warn("Commands should be byte strings", stacklevel=3)
             cmdstr = cmdstr.encode("utf-8")
         self.app = app
         self.cmdstr = cmdstr
@@ -61,7 +63,7 @@ class Command(object):
         self.data = []
 
     def execute(self):
-        self.app.write(self.cmdstr + b'\n')
+        self.app.write(self.cmdstr + b"\n")
 
         # x3270 puts data lines (if any) on stdout prefixed with 'data: '
         # followed by two more lines without the prefix.
@@ -70,7 +72,7 @@ class Command(object):
         while True:
             line = self.app.readline()
             # log.debug('stdout line: %s', line.rstrip())       # commented line to reduce log size
-            if not line.startswith('data:'.encode("ascii")):
+            if not line.startswith("data:".encode("ascii")):
                 # ok, we are at the status line
                 self.status_line = line.rstrip()
                 result = self.app.readline().rstrip()
@@ -78,32 +80,35 @@ class Command(object):
                 return self.handle_result(result.decode("utf-8"))
 
             # remove the 'data: ' prefix and trailing newline char(s) and store
-            self.data.append(line[6:].rstrip('\n\r'.encode("utf-8")))
+            self.data.append(line[6:].rstrip("\n\r".encode("utf-8")))
 
     def handle_result(self, result):
         # should receive 'ok' for almost everything, but Quit returns a '' for
         # some reason
-        if result == '' and self.cmdstr == b'Quit':
+        if result == "" and self.cmdstr == b"Quit":
             return
-        if result == 'ok':
+        if result == "ok":
             return
-        if result != 'error':
-            raise ValueError('expected "ok" or "error" result, but received: {0}'.format(result))
+        if result != "error":
+            raise ValueError(
+                'expected "ok" or "error" result, but received: {0}'.format(result)
+            )
 
-        msg = b'[no error message]'
+        msg = b"[no error message]"
         if self.data:
-            msg = ''.encode("utf-8").join(self.data).rstrip()
+            msg = "".encode("utf-8").join(self.data).rstrip()
         raise CommandError(msg.decode("utf-8"))
 
 
 class Status(object):
     """
-        Represents a status line as returned by x3270 following a command
+    Represents a status line as returned by x3270 following a command
     """
+
     def __init__(self, status_line):
         if not status_line:
-            status_line = (' ' * 12).encode("utf-8")
-        parts = status_line.split(' '.encode("utf-8"))
+            status_line = (" " * 12).encode("utf-8")
+        parts = status_line.split(" ".encode("utf-8"))
         self.as_string = status_line.rstrip().decode("utf-8")
         self.keyboard = parts[0] or None
         self.screen_format = parts[1] or None
@@ -119,14 +124,12 @@ class Status(object):
         self.exec_time = parts[11] or None
 
     def __str__(self):
-        return 'STATUS: {0}'.format(self.as_string)
+        return "STATUS: {0}".format(self.as_string)
 
 
 class ExecutableAppLinux(object):
     executable = None
-    args = [
-        '-xrm', 's3270.unlockDelay: False'
-    ]
+    args = ["-xrm", "s3270.unlockDelay: False"]
 
     def __init__(self):
         self.sp = None
@@ -142,7 +145,7 @@ class ExecutableAppLinux(object):
         )
 
     def connect(self, host):
-        """ this is a no-op for all but wc3270 """
+        """this is a no-op for all but wc3270"""
         return False
 
     def close(self):
@@ -158,9 +161,7 @@ class ExecutableAppLinux(object):
 
 class ExecutableAppWin(object):
     executable = None
-    args = [
-        '-xrm', 'wc3270.unlockDelay: False'
-    ]
+    args = ["-xrm", "wc3270.unlockDelay: False"]
     script_port = 17938
 
     def __init__(self):
@@ -175,10 +176,10 @@ class ExecutableAppWin(object):
     def close(self):
         # failing to close the socket ourselves will result in a ResourceWarning
         self.socket.close()
-        
+
     def spawn_app(self, host):
-        args = ['start', '/wait', self.executable] + self.args
-        args.extend(['-scriptport', str(self.script_port), host])
+        args = ["start", "/wait", self.executable] + self.args
+        args.extend(["-scriptport", str(self.script_port), host])
         self.sp = subprocess.Popen(
             args,
             shell=True,
@@ -192,7 +193,7 @@ class ExecutableAppWin(object):
         count = 0
         while count < 15:
             try:
-                sock.connect(('127.0.0.1', self.script_port))
+                sock.connect(("127.0.0.1", self.script_port))
                 break
             except socket.error as e:
                 log.warn(e)
@@ -201,7 +202,7 @@ class ExecutableAppWin(object):
                 time.sleep(1)
                 count += 1
         # open a file handle for the socket that can both read and write, using bytestrings
-        self.socket_fh = sock.makefile(mode='rwb')
+        self.socket_fh = sock.makefile(mode="rwb")
 
     def write(self, data):
         if self.socket_fh is None:
@@ -216,19 +217,19 @@ class ExecutableAppWin(object):
 
 
 class x3270App(ExecutableAppLinux):
-    executable = 'x3270'
+    executable = "x3270"
     # Per Paul Mattes, in the first days of x3270, there were servers that
     # would unlock the keyboard before they had processed the command. To
     # work around that, when AID commands are sent, there is a 350ms delay
     # before the command returns. This arg turns that feature off for
     # performance reasons.
-    args = ['-xrm', 'x3270.unlockDelay: False', '-xrm', 'x3270.model: 2', '-script']
+    args = ["-xrm", "x3270.unlockDelay: False", "-xrm", "x3270.model: 2", "-script"]
 
 
 class s3270App(ExecutableAppLinux):
-    executable = 's3270'
+    executable = "s3270"
     # see notes for args in x3270App
-    args = ['-xrm', 's3270.unlockDelay: False']
+    args = ["-xrm", "s3270.unlockDelay: False"]
 
 
 class NotConnectedException(Exception):
@@ -236,15 +237,18 @@ class NotConnectedException(Exception):
 
 
 class wc3270App(ExecutableAppWin):
-    executable = 'wc3270'
+    executable = "wc3270"
     # see notes for args in x3270App
-    args = ['-xrm', 'wc3270.unlockDelay: False', '-xrm', 'wc3270.model: 2']
+    args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
 
 
 class ws3270App(ExecutableAppWin):
-    executable = 'ws3270'
+    executable = "ws3270"
     # see notes for args in x3270App
-    args = ['-xrm', 'ws3270.unlockDelay: False', ]
+    args = [
+        "-xrm",
+        "ws3270.unlockDelay: False",
+    ]
 
 
 class EmulatorBase(object):
@@ -254,19 +258,19 @@ class EmulatorBase(object):
 
 class Emulator(object):
     """
-        Represents an x/s3270 emulator subprocess and provides an API for interacting
-        with it.
+    Represents an x/s3270 emulator subprocess and provides an API for interacting
+    with it.
     """
 
     def __init__(self, visible=False, timeout=30, app=None, _sp=None):
         """
-            Create an emulator instance
+        Create an emulator instance
 
-            `visible` controls which executable will be used.
-            `timeout` controls the timeout paramater to any Wait() command sent
-                to x3270.
-            `_sp` is normally not used but can be set to a mock object
-                during testing.
+        `visible` controls which executable will be used.
+        `timeout` controls the timeout paramater to any Wait() command sent
+            to x3270.
+        `_sp` is normally not used but can be set to a mock object
+            during testing.
         """
         self.app = app or self.create_app(visible)
         self.is_terminated = False
@@ -276,15 +280,15 @@ class Emulator(object):
 
     def __del__(self):
         """
-            Since an emulator creates a process (and sometimes a socket handle), it is good practice
-            to clean these up when done. Note, not terminating at this point will usually have no
-            ill effect - only Python 3+ on Windows had problems in this regard.
+        Since an emulator creates a process (and sometimes a socket handle), it is good practice
+        to clean these up when done. Note, not terminating at this point will usually have no
+        ill effect - only Python 3+ on Windows had problems in this regard.
         """
         # self.terminate()     # The terminate function is no longer needed in python 3.8
         pass
 
     def create_app(self, visible):
-        if os.name == 'nt':
+        if os.name == "nt":
             if visible:
                 return wc3270App()
             return ws3270App()
@@ -294,12 +298,12 @@ class Emulator(object):
 
     def exec_command(self, cmdstr):
         """
-            Execute an x3270 command
+        Execute an x3270 command
 
-            `cmdstr` gets sent directly to the x3270 subprocess on it's stdin.
+        `cmdstr` gets sent directly to the x3270 subprocess on it's stdin.
         """
         if self.is_terminated:
-            raise TerminatedError('this TerminalClient instance has been terminated')
+            raise TerminatedError("this TerminalClient instance has been terminated")
 
         # log.debug('sending command: %s', cmdstr)             # commented line to reduce log size
         c = Command(self.app, cmdstr)
@@ -313,13 +317,13 @@ class Emulator(object):
 
     def terminate(self):
         """
-            terminates the underlying x3270 subprocess. Once called, this
-            Emulator instance must no longer be used.
+        terminates the underlying x3270 subprocess. Once called, this
+        Emulator instance must no longer be used.
         """
         if not self.is_terminated:
-            log.debug('terminal client terminated')
+            log.debug("terminal client terminated")
             try:
-                self.exec_command(b'Quit')
+                self.exec_command(b"Quit")
             except BrokenPipeError:  # noqa
                 # x3270 was terminated, since we are just quitting anyway, ignore it.
                 pass
@@ -336,122 +340,127 @@ class Emulator(object):
 
     def is_connected(self):
         """
-            Return bool indicating connection state
+        Return bool indicating connection state
         """
         # need to wrap in try/except b/c of wc3270's socket connection dynamics
         try:
             # this is basically a no-op, but it results in the the current status
             # getting updated
-            self.exec_command(b'ignore')
+            self.exec_command(b"ignore")
 
             # connected status is like 'C(192.168.1.1)', disconnected is 'N'
-            return self.status.connection_state.startswith(b'C(')
+            return self.status.connection_state.startswith(b"C(")
         except NotConnectedException:
             return False
 
     def connect(self, host):
         """
-            Connect to a host
+        Connect to a host
         """
         if not self.app.connect(host):
-            command = 'Connect({0})'.format(host).encode("utf-8")
+            command = "Connect({0})".format(host).encode("utf-8")
             self.exec_command(command)
         self.last_host = host
 
     def reconnect(self):
         """
-            Disconnect from the host and re-connect to the same host
+        Disconnect from the host and re-connect to the same host
         """
-        self.exec_command(b'Disconnect')
+        self.exec_command(b"Disconnect")
         self.connect(self.last_host)
 
     def wait_for_field(self):
         """
-            Wait until the screen is ready, the cursor has been positioned
-            on a modifiable field, and the keyboard is unlocked.
+        Wait until the screen is ready, the cursor has been positioned
+        on a modifiable field, and the keyboard is unlocked.
 
-            Sometimes the server will "unlock" the keyboard but the screen will
-            not yet be ready.  In that case, an attempt to read or write to the
-            screen will result in a 'E' keyboard status because we tried to
-            read from a screen that is not yet ready.
+        Sometimes the server will "unlock" the keyboard but the screen will
+        not yet be ready.  In that case, an attempt to read or write to the
+        screen will result in a 'E' keyboard status because we tried to
+        read from a screen that is not yet ready.
 
-            Using this method tells the client to wait until a field is
-            detected and the cursor has been positioned on it.
+        Using this method tells the client to wait until a field is
+        detected and the cursor has been positioned on it.
         """
-        self.exec_command('Wait({0}, InputField)'.format(self.timeout).encode("utf-8"))
-        if self.status.keyboard != b'U':
-            raise KeyboardStateError('keyboard not unlocked, state was: {0}'.format(
-                self.status.keyboard.decode("utf-8")))
+        self.exec_command("Wait({0}, InputField)".format(self.timeout).encode("utf-8"))
+        if self.status.keyboard != b"U":
+            raise KeyboardStateError(
+                "keyboard not unlocked, state was: {0}".format(
+                    self.status.keyboard.decode("utf-8")
+                )
+            )
 
     def move_to(self, ypos, xpos):
         """
-            move the cursor to the given co-ordinates.  Co-ordinates are 1
-            based, as listed in the status area of the terminal.
+        move the cursor to the given co-ordinates.  Co-ordinates are 1
+        based, as listed in the status area of the terminal.
         """
         # the screen's co-ordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
-        self.exec_command('MoveCursor({0}, {1})'.format(ypos, xpos).encode("utf-8"))
+        self.exec_command("MoveCursor({0}, {1})".format(ypos, xpos).encode("utf-8"))
 
     def send_string(self, tosend, ypos=None, xpos=None):
         """
-            Send a string to the screen at the current cursor location or at
-            screen co-ordinates `ypos`/`xpos` if they are both given.
+        Send a string to the screen at the current cursor location or at
+        screen co-ordinates `ypos`/`xpos` if they are both given.
 
-            Co-ordinates are 1 based, as listed in the status area of the
-            terminal.
+        Co-ordinates are 1 based, as listed in the status area of the
+        terminal.
         """
         if xpos is not None and ypos is not None:
             self.move_to(ypos, xpos)
 
         # escape double quotes in the data to send
-        tosend = tosend.decode("utf-8").replace('"', '\"')
+        tosend = tosend.decode("utf-8").replace('"', '"')
 
         self.exec_command('String("{0}")'.format(tosend).encode("utf-8"))
 
     def send_enter(self):
-        self.exec_command(b'Enter')
+        self.exec_command(b"Enter")
 
     def send_pf3(self):
-        self.exec_command(b'PF(3)')
+        self.exec_command(b"PF(3)")
 
     def send_pf4(self):
-        self.exec_command(b'PF(4)')
+        self.exec_command(b"PF(4)")
 
     def send_pf5(self):
-        self.exec_command(b'PF(5)')
+        self.exec_command(b"PF(5)")
 
     def send_pf6(self):
-        self.exec_command(b'PF(6)')
+        self.exec_command(b"PF(6)")
 
     def send_pf7(self):
-        self.exec_command(b'PF(7)')
+        self.exec_command(b"PF(7)")
 
     def send_pf8(self):
-        self.exec_command(b'PF(8)')
+        self.exec_command(b"PF(8)")
 
     def string_get(self, ypos, xpos, length):
         """
-            Get a string of `length` at screen co-ordinates `ypos`/`xpos`
+        Get a string of `length` at screen co-ordinates `ypos`/`xpos`
 
-            Co-ordinates are 1 based, as listed in the status area of the
-            terminal.
+        Co-ordinates are 1 based, as listed in the status area of the
+        terminal.
         """
         # the screen's co-ordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
-        cmd = self.exec_command('ascii({0},{1},{2})'.format(ypos, xpos, length).encode("utf-8"))
+        cmd = self.exec_command(
+            "ascii({0},{1},{2})".format(ypos, xpos, length).encode("utf-8")
+        )
         # this usage of utf-8 should only return a single line of data
         assert len(cmd.data) == 1, cmd.data
         return cmd.data[0].decode("unicode_escape")
 
     def string_found(self, ypos, xpos, string):
         """
-            Return True if `string` is found at screen co-ordinates
-            `ypos`/`xpos`, False otherwise.
+        Return True if `string` is found at screen co-ordinates
+        `ypos`/`xpos`, False otherwise.
 
-            Co-ordinates are 1 based, as listed in the status area of the
-            terminal.
+        Co-ordinates are 1 based, as listed in the status area of the
+        terminal.
         """
         found = self.string_get(ypos, xpos, len(string))
         log.debug('string_found() saw "{0}"'.format(found))
@@ -459,24 +468,24 @@ class Emulator(object):
 
     def delete_field(self):
         """
-            Delete contents in field at current cursor location and positions
-            cursor at beginning of field.
+        Delete contents in field at current cursor location and positions
+        cursor at beginning of field.
         """
-        self.exec_command(b'DeleteField')
+        self.exec_command(b"DeleteField")
 
     def fill_field(self, ypos, xpos, tosend, length):
         """
-            clears the field at the position given and inserts the string
-            `tosend`
+        clears the field at the position given and inserts the string
+        `tosend`
 
-            tosend: the string to insert
-            length: the length of the field
+        tosend: the string to insert
+        length: the length of the field
 
-            Co-ordinates are 1 based, as listed in the status area of the
-            terminal.
+        Co-ordinates are 1 based, as listed in the status area of the
+        terminal.
 
-            raises: FieldTruncateError if `tosend` is longer than
-                `length`.
+        raises: FieldTruncateError if `tosend` is longer than
+            `length`.
         """
         if length - len(tosend) < 0:
             raise FieldTruncateError('length limit %d, but got "%s"' % (length, tosend))
@@ -486,4 +495,4 @@ class Emulator(object):
         self.send_string(tosend)
 
     def save_screen(self, file_path):
-        self.exec_command('PrintText(html,file,{0})'.format(file_path).encode("utf-8"))
+        self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
