@@ -78,6 +78,23 @@ When developing tests, also source code and tests can be mounted to container. C
 * Windows: `docker container run --rm -it -v %cd%\reports:/reports -v %cd%\tests:/tests -v %cd%\source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3` (_reports_ -dir needs to be created beforehand)
 * Linux/MacOSX: `docker container run --rm -it -v $(pwd)/reports:/reports -v $(pwd)/tests:/tests -v $(pwd)/source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3`  
 
+## Development setup
+Start off by forking this repository and pulling the source code from GitHub.
+
+Depending on your preferences, you can create a virtual environment to
+keep system and project dependencies separate.
+
+`python -m venv .venv`
+
+To activate the virtual environment,
+run `.venv\Scripts\activate` (Windows) or `source .venv/bin/activate` (MacOS & Linux).
+
+Install main and development dependencies by running `python -m pip install -r requirements-dev.txt`
+
+This project is using [invoke](https://www.pyinvoke.org/) as task runner. Before pushing your code, make sure python and robot code is formatted by running `inv lint`.
+
+To run acceptance tests, run `inv test`.
+
 ## Notes
 
 By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe, but is you set the visible to false, the py3270 will run the ws3270.exe.
