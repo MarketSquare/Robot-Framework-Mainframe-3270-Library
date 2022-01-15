@@ -26,14 +26,6 @@ def lint(c):
 
 
 @task
-def test(c, no_ci=False):
-    """Runs robot acceptance tests
-
-    Args:
-        no-ci: Exclude test cases with tag `'no-ci'`
-    """
-    if no_ci:
-        cmd = "robot --loglevel DEBUG --exclude no-ci tests/"
-    else:
-        cmd = "robot --loglevel DEBUG tests/"
-    c.run(cmd)
+def test(c):
+    """Runs robot acceptance tests"""
+    c.run("robot --loglevel DEBUG tests/")

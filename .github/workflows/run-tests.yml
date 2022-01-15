@@ -32,7 +32,7 @@ jobs:
     - name: Run tests
       run: |
         sudo locale-gen en_US
-        LANG=en_US.iso88591 inv test --no-ci
+        LANG=en_US.iso88591 xvfb-run robot --exclude no-ci --loglevel DEBUG tests
     
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
