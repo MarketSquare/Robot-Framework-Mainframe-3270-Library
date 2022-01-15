@@ -9,7 +9,7 @@ from .x3270 import x3270
 
 
 class Mainframe3270(DynamicCore):
-    """
+    r"""
     Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
     a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
@@ -35,7 +35,7 @@ class Mainframe3270(DynamicCore):
     |     Open Connection    Hostname    LUname
     |     Change Wait Time    0.4
     |     Change Wait Time After Write    0.4
-    |     Set Screenshot Folder    C:\\\Temp\\\IMG
+    |     Set Screenshot Folder    C:\\Temp\\IMG
     |     ${value}    Read    3    10    17
     |     Page Should Contain String    ENTER APPLICATION
     |     Wait Field Detected
