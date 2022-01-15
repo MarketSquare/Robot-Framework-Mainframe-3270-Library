@@ -23,3 +23,9 @@ def lint(c):
     Short option for `inv lint-python && inv lint-robot`.
     """
     pass
+
+
+@task
+def test(c):
+    """Runs robot acceptance tests"""
+    c.run("robot --loglevel DEBUG tests/")
