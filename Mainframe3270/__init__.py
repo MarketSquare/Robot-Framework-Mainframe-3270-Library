@@ -9,7 +9,7 @@ from .x3270 import x3270
 
 
 class Mainframe3270(DynamicCore):
-    """
+    r"""
     Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
     a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
@@ -35,7 +35,7 @@ class Mainframe3270(DynamicCore):
     |     Open Connection    Hostname    LUname
     |     Change Wait Time    0.4
     |     Change Wait Time After Write    0.4
-    |     Set Screenshot Folder    C:\\\Temp\\\IMG
+    |     Set Screenshot Folder    C:\\Temp\\IMG
     |     ${value}    Read    3    10    17
     |     Page Should Contain String    ENTER APPLICATION
     |     Wait Field Detected
@@ -45,17 +45,17 @@ class Mainframe3270(DynamicCore):
     |     Close Connection
     """
 
-    ROBOT_LIBRARY_SCOPE = 'TEST SUITE'
+    ROBOT_LIBRARY_SCOPE = "TEST SUITE"
     ROBOT_LIBRARY_VERSION = VERSION
 
     def __init__(
         self,
         visible=True,
-        timeout='30',
-        wait_time='0.5',
-        wait_time_after_write='0',
-        img_folder='.',
-        run_on_failure_keyword='Take Screenshot'
+        timeout="30",
+        wait_time="0.5",
+        wait_time_after_write="0",
+        img_folder=".",
+        run_on_failure_keyword="Take Screenshot",
     ):
         """
         You can change to hide the emulator screen set the argument visible=${False}
@@ -69,13 +69,7 @@ class Mainframe3270(DynamicCore):
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
         libraries = [
-            x3270(
-                visible,
-                timeout,
-                wait_time,
-                wait_time_after_write,
-                img_folder
-            )
+            x3270(visible, timeout, wait_time, wait_time_after_write, img_folder)
         ]
         DynamicCore.__init__(self, libraries)
 
@@ -87,7 +81,7 @@ class Mainframe3270(DynamicCore):
 
         You can set ``None`` to this keyword, if you do not want to run any keyword on failure.
         """
-        if keyword.lower() == 'none':
+        if keyword.lower() == "none":
             self.run_on_failure_keyword = None
         else:
             self.run_on_failure_keyword = keyword

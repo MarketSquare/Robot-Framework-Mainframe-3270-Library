@@ -23,12 +23,16 @@ jobs:
     - name: Install dependencies
       run: |
         sudo apt-get install -y xvfb x3270 locales
-        python -m pip install -r robotframework_mainframe3270.egg-info/requires.txt
+        python -m pip install -r requirements-dev.txt
+
+    - name: Ensure code formatting
+      run: |
+        inv lint
         
     - name: Run tests
       run: |
         sudo locale-gen en_US
-        LANG=en_US.iso88591 xvfb-run robot --exclude No-CI --loglevel DEBUG tests
+        LANG=en_US.iso88591 xvfb-run robot --exclude no-ci --loglevel DEBUG tests
     
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}

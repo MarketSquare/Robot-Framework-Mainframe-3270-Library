@@ -1,15 +1,17 @@
 *** Settings ***
-Documentation     These tests verify that all keywords are working correctly and displaying the expected exception message.
-...               To run all the tests, you will need to create a user in the https://www.pub400.com/ website,
-...               this will affect the last test "Test With Login"
-Suite Setup       Open Mainframe
-Suite Teardown    Close Mainframe
-Test Teardown     Run Keyword If Test Failed    Fatal Error
-Library           ../Mainframe3270/    run_on_failure_keyword=None
-Library           Dialogs
-Library           OperatingSystem
-Library           String
-Resource          pub400_variables.robot
+Documentation       These tests verify that all keywords are working correctly and displaying the expected exception message.
+...                 To run all the tests, you will need to create a user in the https://www.pub400.com/ website,
+...                 this will affect the last test "Test With Login"
+
+Library             ../Mainframe3270/    run_on_failure_keyword=None
+Library             Dialogs
+Library             OperatingSystem
+Library             String
+Resource            pub400_variables.robot
+
+Suite Setup         Open Mainframe
+Suite Teardown      Close Mainframe
+Test Teardown       Run Keyword If Test Failed    Fatal Error
 
 *** Test Cases ***
 Exception Test
@@ -54,7 +56,7 @@ Test Without Login
     Test Move Previous Field
 
 Test With Login
-    [Tags]    No-CI
+    [Tags]    no-ci
     Test Send Enter
     Test Send PF
 
@@ -127,7 +129,7 @@ Test Read
     Should Be Equal As Strings    ${welcome_title}    ${read_text}
 
 Test Read All Screen
-    ${screen_content}   Read All Screen
+    ${screen_content}    Read All Screen
     Should Contain    ${screen_content}    i
     Should Contain    ${screen_content}    c I
     Should Not Contain    ${screen_content}    xyz
@@ -208,7 +210,8 @@ Test Send PF
 Exception Test Read
     Wait Field Detected
     ${read_text}    Read    1    10    21
-    Run Keyword And Expect Error    ${welcome_text_expected_error}    Should Be Equal As Strings    ${welcome_title}    ${read_text}
+    Run Keyword And Expect Error    ${welcome_text_expected_error}    Should Be Equal As Strings    ${welcome_title}
+    ...    ${read_text}
     Run Keyword And Expect Error    ${x_axis_exceed_expected_error}    Read    4    48    34
     Run Keyword And Expect Error    ${x_axis_exceed_expected_error}    Read    4    81    1
     Run Keyword And Expect Error    ${y_axis_exceed_expected_error}    Read    25    48    34
@@ -218,8 +221,10 @@ Exception Test Write In Position
     Run Keyword And Expect Error    ${y_axis_exceed_expected_error}    Write In Position    ${write_text}    25    10
 
 Exception Test Write Bare In Position
-    Run Keyword And Expect Error    ${x_axis_exceed_expected_error}    Write Bare In Position    ${write_text}    10    81
-    Run Keyword And Expect Error    ${y_axis_exceed_expected_error}    Write Bare In Position    ${write_text}    25    10
+    Run Keyword And Expect Error    ${x_axis_exceed_expected_error}    Write Bare In Position    ${write_text}    10
+    ...    81
+    Run Keyword And Expect Error    ${y_axis_exceed_expected_error}    Write Bare In Position    ${write_text}    25
+    ...    10
 
 Exception Test Page Should Contain String
     Verify String Not Found    Page Should Contain String    ${welcome_wrong_case}
@@ -229,13 +234,17 @@ Exception Test Page Should Contain All Strings
     Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_case_in_the_first}    1
     Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_case_in_the_second}    2
     Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_case_in_the_third}    3
-    Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_in_the_first}    1    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_in_the_second}    2    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_in_the_third}    3    ignore_case=${True}
+    Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_in_the_first}    1
+    ...    ignore_case=${True}
+    Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_in_the_second}    2
+    ...    ignore_case=${True}
+    Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_in_the_third}    3
+    ...    ignore_case=${True}
 
 Exception Test Page Should Contain Any String
     Verify List Not Found    Page Should Contain Any String    ${list_strings_all_wrong_case}
-    Verify List Not Found    Page Should Contain Any String    ${list_strings_not_existants_ignore_case}    ignore_case=${True}
+    Verify List Not Found    Page Should Contain Any String    ${list_strings_not_existants_ignore_case}
+    ...    ignore_case=${True}
 
 Exception Test Page Should Contain Match
     Verify Pattern Not Found    Page Should Contain Match    ${text_not_match_wrong_case}
@@ -243,7 +252,8 @@ Exception Test Page Should Contain Match
 
 Exception Test Page Should Contain String X Times
     Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count}    1    2
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count_wrong_case}    1    3    ignore_case=${True}
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${text_to_count_wrong_case}    1
+    ...    3    ignore_case=${True}
 
 Exception Test Page Should Match Regex
     Verify Pattern Not Found    Page Should Match Regex    ${invalid_regex}
@@ -270,48 +280,54 @@ Exception Test Wait Until String With Timeout
 
 Verify String Not Found
     [Arguments]    ${keyword}    ${string}    ${ignore_case}=${False}
-    ${expected_error}=    Set Variable    The string "${string}" was not found
+    ${expected_error}    Set Variable    The string "${string}" was not found
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ignore_case=${ignore_case}
 
 Verify String Not Found In List
     [Arguments]    ${keyword}    ${string_list}    ${string_position}    ${ignore_case}=${False}
-    ${not_found_string}=    Set Variable If    ${ignore_case}==${False}    ${string_list[${${string_position}-1}]}    ${string_list[${${string_position}-1}].lower()}
-    ${expected_error}=    Set Variable    The string "${not_found_string}" was not found
+    ${not_found_string}    Set Variable If    ${ignore_case}==${False}    ${string_list[${${string_position}-1}]}
+    ...    ${string_list[${${string_position}-1}].lower()}
+    ${expected_error}    Set Variable    The string "${not_found_string}" was not found
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string_list}    ignore_case=${ignore_case}
 
 Verify List Not Found
     [Arguments]    ${keyword}    ${list}    ${ignore_case}=${False}
-    ${expected_error}=    Set Variable    The strings "${list}" was not found
+    ${expected_error}    Set Variable    The strings "${list}" was not found
     Run Keyword And Expect Error    EQUALS: ${expected_error}    ${keyword}    ${list}    ignore_case=${ignore_case}
 
 Verify Pattern Not Found
     [Arguments]    ${keyword}    ${string}    ${ignore_case}=${False}
-    ${not_found_string}=    Set Variable If    ${ignore_case}==${False}    ${string}    ${string.lower()}
-    ${expected_error}=    Set Variable    No matches found for "${not_found_string}" pattern
-    Run Keyword If    ${ignore_case}    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ignore_case=${ignore_case}
-    ...    ELSE    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}
+    ${not_found_string}    Set Variable If    ${ignore_case}==${False}    ${string}    ${string.lower()}
+    ${expected_error}    Set Variable    No matches found for "${not_found_string}" pattern
+    IF    ${ignore_case}
+        Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ignore_case=${ignore_case}
+    ELSE
+        Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}
+    END
 
 Verify String Does Not Appear X Times
     [Arguments]    ${keyword}    ${string}    ${wrong_number_of_times}    ${right_number_of_times}    ${ignore_case}=${False}
-    ${expected_error}=    Set Variable    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
-    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${text_to_count}    1    ignore_case=${ignore_case}
+    ${expected_error}    Set Variable
+    ...    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
+    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${text_to_count}    1
+    ...    ignore_case=${ignore_case}
 
 Verify String Found
     [Arguments]    ${keyword}    ${string}    ${ignore_case}=${False}
-    ${expected_error}=    Set Variable    The string "${string}" was found
+    ${expected_error}    Set Variable    The string "${string}" was found
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ignore_case=${ignore_case}
 
 Verify List Found
     [Arguments]    ${keyword}    ${string_list}    ${string_position}    ${ignore_case}=${False}
-    ${expected_error}=    Set Variable    The string "${string_list[${${string_position}-1}]}" was found
+    ${expected_error}    Set Variable    The string "${string_list[${${string_position}-1}]}" was found
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string_list}    ignore_case=${ignore_case}
 
 Verify Wait Until String
     [Arguments]    ${keyword}    ${string}
-    ${expected_error}=    Set Variable    String "${string}" not found in 5 seconds
+    ${expected_error}    Set Variable    String "${string}" not found in 5 seconds
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}
 
 Verify Wait Until String With Timeout
     [Arguments]    ${keyword}    ${string}    ${timeout}
-    ${expected_error}=    Set Variable    String "${string}" not found in ${timeout} seconds
+    ${expected_error}    Set Variable    String "${string}" not found in ${timeout} seconds
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ${timeout}
