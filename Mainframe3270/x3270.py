@@ -41,7 +41,7 @@ class x3270(object):
         self.timeout = float(seconds)
 
     @keyword("Open Connection")
-    def open_connection(self, host, LU=None, port=23):
+    def open_connection(self, host, LU=None, port=23, argfile=None):
         """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
         you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
 
@@ -59,7 +59,9 @@ class x3270(object):
             self.credential = "%s:%s" % (self.host, self.port)
         if self.mf:
             self.close_connection()
-        self.mf = Emulator(visible=bool(self.visible), timeout=int(self.timeout))
+        self.mf = Emulator(
+            visible=bool(self.visible), timeout=int(self.timeout), argfile=argfile
+        )
         self.mf.connect(self.credential)
 
     @keyword("Close Connection")
