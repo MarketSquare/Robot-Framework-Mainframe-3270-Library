@@ -2,11 +2,11 @@ from __future__ import absolute_import, unicode_literals
 
 import errno
 import logging
-import os
 import socket
 import subprocess
 import time
 import warnings
+from os import name as os_name
 
 import six
 
@@ -313,7 +313,7 @@ class Emulator(object):
         pass
 
     def create_app(self, visible, argfile):
-        if os.name == "nt":
+        if os_name == "nt":
             if visible:
                 return wc3270App(argfile)
             return ws3270App(argfile)
