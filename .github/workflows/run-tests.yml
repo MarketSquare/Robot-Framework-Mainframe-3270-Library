@@ -36,7 +36,7 @@ jobs:
     - name: Run atests
       run: |
         sudo locale-gen en_US
-        LANG=en_US.iso88591 xvfb-run robot --exclude no-ci --loglevel DEBUG atests/
+        LANG=en_US.iso88591 xvfb-run robot --exclude no-ci --loglevel DEBUG atest/
     
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}
