@@ -128,11 +128,18 @@ class Status(object):
 
 
 class ExecutableApp(object):
-    def append_args_from_file(self, argfile):
-        with open(argfile) as file:
-            for line in file:
-                for arg in line.replace("\n", "").rstrip().split(" "):
-                    self.args.append(arg)
+    def append_args(self, extra_args):
+        if isinstance(extra_args, list):
+            for arg in extra_args:
+                self.args.append(arg)
+
+        if isinstance(extra_args, str):
+            with open(extra_args) as file:
+                for line in file:
+                    if line.lstrip().startswith(r"#"):
+                        continue
+                    for arg in line.replace("\n", "").rstrip().split(" "):
+                        self.args.append(arg)
 
 
 class ExecutableAppLinux(ExecutableApp):
@@ -225,7 +232,7 @@ class ExecutableAppWin(ExecutableApp):
 
 
 class x3270App(ExecutableAppLinux):
-    def __init__(self, argfile):
+    def __init__(self, extra_args):
         self.executable = "x3270"
         # Per Paul Mattes, in the first days of x3270, there were servers that
         # would unlock the keyboard before they had processed the command. To
@@ -239,18 +246,18 @@ class x3270App(ExecutableAppLinux):
             "x3270.model: 2",
             "-script",
         ]
-        if argfile:
-            self.append_args_from_file(argfile)
+        if extra_args:
+            self.append_args(extra_args)
         super().__init__()
 
 
 class s3270App(ExecutableAppLinux):
-    def __init__(self, argfile):
+    def __init__(self, extra_args):
         self.executable = "s3270"
         # see notes for args in x3270App
         self.args = ["-xrm", "s3270.unlockDelay: False"]
-        if argfile:
-            self.append_args_from_file(argfile)
+        if extra_args:
+            self.append_args(extra_args)
         super().__init__()
 
 
@@ -259,17 +266,17 @@ class NotConnectedException(Exception):
 
 
 class wc3270App(ExecutableAppWin):
-    def __init__(self, argfile):
+    def __init__(self, extra_args):
         super().__init__()
         self.executable = "wc3270"
         # see notes for args in x3270App
         self.args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
-        if argfile:
-            self.append_args_from_file(argfile)
+        if extra_args:
+            self.append_args(extra_args)
 
 
 class ws3270App(ExecutableAppWin):
-    def __init__(self, argfile):
+    def __init__(self, extra_args):
         super().__init__()
         self.executable = "ws3270"
         # see notes for args in x3270App
@@ -277,8 +284,8 @@ class ws3270App(ExecutableAppWin):
             "-xrm",
             "ws3270.unlockDelay: False",
         ]
-        if argfile:
-            self.append_args_from_file(argfile)
+        if extra_args:
+            self.append_args(extra_args)
 
 
 class Emulator(object):
@@ -287,7 +294,7 @@ class Emulator(object):
     with it.
     """
 
-    def __init__(self, visible=False, timeout=30, app=None, argfile=None, _sp=None):
+    def __init__(self, visible=False, timeout=30, extra_args=None, app=None, _sp=None):
         """
         Create an emulator instance
 
@@ -297,7 +304,7 @@ class Emulator(object):
         `_sp` is normally not used but can be set to a mock object
             during testing.
         """
-        self.app = app or self.create_app(visible, argfile)
+        self.app = app or self.create_app(visible, extra_args)
         self.is_terminated = False
         self.status = Status(None)
         self.timeout = timeout
@@ -312,14 +319,14 @@ class Emulator(object):
         # self.terminate()     # The terminate function is no longer needed in python 3.8
         pass
 
-    def create_app(self, visible, argfile):
+    def create_app(self, visible, extra_args):
         if os_name == "nt":
             if visible:
-                return wc3270App(argfile)
-            return ws3270App(argfile)
+                return wc3270App(extra_args)
+            return ws3270App(extra_args)
         if visible:
-            return x3270App(argfile)
-        return s3270App(argfile)
+            return x3270App(extra_args)
+        return s3270App(extra_args)
 
     def exec_command(self, cmdstr):
         """

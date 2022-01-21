@@ -41,14 +41,28 @@ class x3270(object):
         self.timeout = float(seconds)
 
     @keyword("Open Connection")
-    def open_connection(self, host, LU=None, port=23, argfile=None):
+    def open_connection(self, host, LU=None, port=23, extra_args=None):
         """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
         you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
+
+        If you wish, you can provide further configuration data to ``extra_args``. ``extra_args`` takes in a list,
+        or a path to a file, containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
+        Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
+        | # example_argfile_oneline.txt
+        | --accepthostname myhost.com
+
+        | # example_argfile_multiline.txt
+        | --accepthostname myhost.com
+        | # this is a comment
+        | --charset french
 
         Example:
             | Open Connection | Hostname |
             | Open Connection | Hostname | LU=LUname |
             | Open Connection | Hostname | port=992 |
+            | ${extra_args}   | Create List | --accepthostname | myhost.com | --cafile | ${CURDIR}/cafile.crt |
+            | Open Connection | Hostname | extra_args=${extra_args} |
+            | Open Connection | Hostname | extra_args=${CURDIR}/argfile.txt |
         """
         self.host = host
         self.lu = LU
@@ -60,7 +74,7 @@ class x3270(object):
         if self.mf:
             self.close_connection()
         self.mf = Emulator(
-            visible=bool(self.visible), timeout=int(self.timeout), argfile=argfile
+            visible=bool(self.visible), timeout=int(self.timeout), extra_args=extra_args
         )
         self.mf.connect(self.credential)
 
