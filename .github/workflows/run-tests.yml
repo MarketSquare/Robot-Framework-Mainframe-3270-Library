@@ -28,8 +28,12 @@ jobs:
     - name: Ensure code formatting
       run: |
         inv lint
+
+    - name: Run utests
+      run: |
+        inv utest
         
-    - name: Run tests
+    - name: Run atests
       run: |
         sudo locale-gen en_US
         LANG=en_US.iso88591 xvfb-run robot --exclude no-ci --loglevel DEBUG tests
