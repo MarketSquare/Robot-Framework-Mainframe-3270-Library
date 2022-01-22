@@ -22,7 +22,7 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get install -y xvfb x3270 locales
+        sudo apt-get install -y xvfb x3270 locales xterm
         python -m pip install -r requirements-dev.txt
 
     - name: Ensure code formatting
