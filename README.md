@@ -93,7 +93,10 @@ Install main and development dependencies by running `python -m pip install -r r
 
 This project is using [invoke](https://www.pyinvoke.org/) as task runner. Before pushing your code, make sure python and robot code is formatted by running `inv lint`.
 
-To run acceptance tests, run `inv test`.
+Unit tests are invoked with `inv utest`, acceptance tests with `inv atest`. To invoke both unit and
+acceptance tests, simply run `inv test`.
+
+Run `inv -l` to get a list of all available tasks.
 
 ## Notes
 

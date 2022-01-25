@@ -22,17 +22,21 @@ jobs:
 
     - name: Install dependencies
       run: |
-        sudo apt-get install -y xvfb x3270 locales
+        sudo apt-get install -y xvfb x3270 locales xterm
         python -m pip install -r requirements-dev.txt
 
     - name: Ensure code formatting
       run: |
         inv lint
+
+    - name: Run utests
+      run: |
+        inv utest
         
-    - name: Run tests
+    - name: Run atests
       run: |
         sudo locale-gen en_US
-        LANG=en_US.iso88591 xvfb-run robot --exclude no-ci --loglevel DEBUG tests
+        LANG=en_US.iso88591 xvfb-run robot --exclude no-ci --loglevel DEBUG atest/
     
     - uses: actions/upload-artifact@v2
       if: ${{ always() }}

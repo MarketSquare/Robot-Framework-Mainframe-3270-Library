@@ -2,5 +2,7 @@ black
 invoke
 isort
 flake8
+pytest
+pytest-mock
 robotframework-tidy
 -r requirements.txt

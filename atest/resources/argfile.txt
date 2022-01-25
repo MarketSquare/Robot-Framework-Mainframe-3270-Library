@@ -1,0 +1,2 @@
+-trace
+-tracefile ./atest/x3270.trace

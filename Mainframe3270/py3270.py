@@ -2,11 +2,11 @@ from __future__ import absolute_import, unicode_literals
 
 import errno
 import logging
-import os
 import socket
 import subprocess
 import time
 import warnings
+from os import name as os_name
 
 import six
 
@@ -127,7 +127,22 @@ class Status(object):
         return "STATUS: {0}".format(self.as_string)
 
 
-class ExecutableAppLinux(object):
+class ExecutableApp(object):
+    def append_args(self, extra_args):
+        if isinstance(extra_args, list):
+            for arg in extra_args:
+                self.args.append(arg)
+
+        if isinstance(extra_args, str):
+            with open(extra_args) as file:
+                for line in file:
+                    if line.lstrip().startswith(r"#"):
+                        continue
+                    for arg in line.replace("\n", "").rstrip().split(" "):
+                        self.args.append(arg)
+
+
+class ExecutableAppLinux(ExecutableApp):
     executable = None
     args = ["-xrm", "s3270.unlockDelay: False"]
 
@@ -159,7 +174,7 @@ class ExecutableAppLinux(object):
         return self.sp.stdout.readline()
 
 
-class ExecutableAppWin(object):
+class ExecutableAppWin(ExecutableApp):
     executable = None
     args = ["-xrm", "wc3270.unlockDelay: False"]
     script_port = 17938
@@ -217,19 +232,33 @@ class ExecutableAppWin(object):
 
 
 class x3270App(ExecutableAppLinux):
-    executable = "x3270"
-    # Per Paul Mattes, in the first days of x3270, there were servers that
-    # would unlock the keyboard before they had processed the command. To
-    # work around that, when AID commands are sent, there is a 350ms delay
-    # before the command returns. This arg turns that feature off for
-    # performance reasons.
-    args = ["-xrm", "x3270.unlockDelay: False", "-xrm", "x3270.model: 2", "-script"]
+    def __init__(self, extra_args):
+        self.executable = "x3270"
+        # Per Paul Mattes, in the first days of x3270, there were servers that
+        # would unlock the keyboard before they had processed the command. To
+        # work around that, when AID commands are sent, there is a 350ms delay
+        # before the command returns. This arg turns that feature off for
+        # performance reasons.
+        self.args = [
+            "-xrm",
+            "x3270.unlockDelay: False",
+            "-xrm",
+            "x3270.model: 2",
+            "-script",
+        ]
+        if extra_args:
+            self.append_args(extra_args)
+        super().__init__()
 
 
 class s3270App(ExecutableAppLinux):
-    executable = "s3270"
-    # see notes for args in x3270App
-    args = ["-xrm", "s3270.unlockDelay: False"]
+    def __init__(self, extra_args):
+        self.executable = "s3270"
+        # see notes for args in x3270App
+        self.args = ["-xrm", "s3270.unlockDelay: False"]
+        if extra_args:
+            self.append_args(extra_args)
+        super().__init__()
 
 
 class NotConnectedException(Exception):
@@ -237,23 +266,26 @@ class NotConnectedException(Exception):
 
 
 class wc3270App(ExecutableAppWin):
-    executable = "wc3270"
-    # see notes for args in x3270App
-    args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
+    def __init__(self, extra_args):
+        super().__init__()
+        self.executable = "wc3270"
+        # see notes for args in x3270App
+        self.args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
+        if extra_args:
+            self.append_args(extra_args)
 
 
 class ws3270App(ExecutableAppWin):
-    executable = "ws3270"
-    # see notes for args in x3270App
-    args = [
-        "-xrm",
-        "ws3270.unlockDelay: False",
-    ]
-
-
-class EmulatorBase(object):
-    def __init__(self, _sp=None):
-        raise Exception("EmulatorBase has been replaced by Emulator.  See readme.rst.")
+    def __init__(self, extra_args):
+        super().__init__()
+        self.executable = "ws3270"
+        # see notes for args in x3270App
+        self.args = [
+            "-xrm",
+            "ws3270.unlockDelay: False",
+        ]
+        if extra_args:
+            self.append_args(extra_args)
 
 
 class Emulator(object):
@@ -262,7 +294,7 @@ class Emulator(object):
     with it.
     """
 
-    def __init__(self, visible=False, timeout=30, app=None, _sp=None):
+    def __init__(self, visible=False, timeout=30, extra_args=None, app=None, _sp=None):
         """
         Create an emulator instance
 
@@ -272,7 +304,7 @@ class Emulator(object):
         `_sp` is normally not used but can be set to a mock object
             during testing.
         """
-        self.app = app or self.create_app(visible)
+        self.app = app or self.create_app(visible, extra_args)
         self.is_terminated = False
         self.status = Status(None)
         self.timeout = timeout
@@ -287,14 +319,14 @@ class Emulator(object):
         # self.terminate()     # The terminate function is no longer needed in python 3.8
         pass
 
-    def create_app(self, visible):
-        if os.name == "nt":
+    def create_app(self, visible, extra_args):
+        if os_name == "nt":
             if visible:
-                return wc3270App()
-            return ws3270App()
+                return wc3270App(extra_args)
+            return ws3270App(extra_args)
         if visible:
-            return x3270App()
-        return s3270App()
+            return x3270App(extra_args)
+        return s3270App(extra_args)
 
     def exec_command(self, cmdstr):
         """
