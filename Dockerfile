@@ -1,4 +1,4 @@
-ARG PYTHON_MAJOR=2
+ARG BASE_IMAGE=3.7-apline
 FROM alpine as intermediate
 
 RUN apk update && apk add wget gcc build-base libxt-dev libx11-dev xorg-server-dev libxmu-dev libxaw-dev bdftopcf ncurses-dev tcl tcl-dev mkfontdir && \
@@ -8,7 +8,7 @@ RUN apk update && apk add wget gcc build-base libxt-dev libx11-dev xorg-server-d
 	./configure && \
 	make x3270
 
-FROM python:${PYTHON_MAJOR}-alpine
+FROM python:${BASE_IMAGE}
 
 COPY --from=intermediate /suite3270-3.6/obj/x86_64-unknown-linux-gnu/x3270 /usr/lib/x3270
 

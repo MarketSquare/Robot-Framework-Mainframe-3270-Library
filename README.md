@@ -14,9 +14,12 @@ In order to use this library you need to install the [x3270 project](http://x327
 
 `pip install robotframework-mainframe3270`
 
+## Compatibility
+Mainframe3270 requires Python 3. It is tested with Python 3.7 and 3.10.0, but should support all versions in between these.
+
 ### Windows
 
-You need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH. 
+You need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH.
 
 The default folder is "C:\Program Files\wc3270" and this needs to be in the PATH of the Environment Variables.
 
@@ -27,23 +30,24 @@ You can install the x3270 project from [their instructions page](http://x3270.bg
 More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
 
 ## Example
+```python
+*** Settings ***
+Library    Mainframe3270
 
-    *** Settings ***
-    Library           Mainframe3270
-
-    *** Test Cases ***
-    Example
-        Open Connection    Hostname    LUname
-        Change Wait Time    0.4
-        Change Wait Time After Write    0.4
-        Set Screenshot Folder    C:\\Temp\\IMG
-        ${value}    Read    3    10    17
-        Page Should Contain String    ENTER APPLICATION
-        Wait Field Detected
-        Write Bare    applicationname
-        Send Enter
-        Take Screenshot
-        Close Connection
+*** Test Cases ***
+Example
+    Open Connection    Hostname    LUname
+    Change Wait Time    0.4
+    Change Wait Time After Write    0.4
+    Set Screenshot Folder    C:\\Temp\\IMG
+    ${value}    Read    3    10    17
+    Page Should Contain String    ENTER APPLICATION
+    Wait Field Detected
+    Write Bare    applicationname
+    Send Enter
+    Take Screenshot
+    Close Connection
+```
 
 ## Importing
 
@@ -64,19 +68,45 @@ By default, Mainframe3270 will take a screenshot on failure. You can overwrite t
 
 ## Running with Docker
 
-Docker image contains everything that's needed to run the Mainframe tests. Currently image is not pushed to Docker hub, so steps to use it
-* Build image:
-  * Python 2: `docker image build --build-arg PYTHON_MAJOR=2 -t mainframe3270-p2 .`
-  * Python 3: `docker image build --build-arg PYTHON_MAJOR=3 -t mainframe3270-p3 .`
-- Run all tests: docker container run --rm -it mainframe3270-p<PYTHON_MAJOR>
+The Docker image contains everything that is needed to run Mainframe tests. Currently the image is not published to Docker hub, so steps to use it
+- Build image:
+  ```
+  docker image build --build-arg BASE_IMAGE=3.7-alpine -t mainframe3270 .
+  ```
 
-Reports are stored to /reports. Those can be get to host by mapping it as volume. E.g. in Windows CMD with current directory mounting command is `docker container run --rm -it -v %cd%\reports:/reports mainframe3270-p<PYTHON_MAJOR>`
+  Here, `BASE_IMAGE` can be one of the available tags for the [python docker images](https://hub.docker.com/_/python). Please note that only alpine based images (e.g. 3.7-alpine) are supported.
 
-If wanting to run just single/specific tests, it can be mentioned at the end of command. Currently only single argument can be given, so multiple tests can be given with wildcards like: `docker container run --rm -it -v %cd%\reports:/reports mainframe3270-p<PYTHON_MAJOR> *PF*` (this executes just single tests, as PF is mentioned only in one).
+- Run all tests:
+  ```
+  docker container run --rm -it mainframe3270
+  ```
 
-When developing tests, also source code and tests can be mounted to container. Command to run tests using current sources with Python 3 (without need to recreate container all the time):
-* Windows: `docker container run --rm -it -v %cd%\reports:/reports -v %cd%\tests:/tests -v %cd%\source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3` (_reports_ -dir needs to be created beforehand)
-* Linux/MacOSX: `docker container run --rm -it -v $(pwd)/reports:/reports -v $(pwd)/tests:/tests -v $(pwd)/source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3`  
+Reports are saved to /reports. You can retrieve these by mapping the directory as volume. On Windows, run this command to mount your local _reports_ directory with the container:
+```
+docker container run --rm -it -v %cd%\reports:/reports mainframe3270
+```
+
+On Linux/MacOSX, run:
+```
+docker container run --rm -it -v ${pwd}/reports:/reports
+```
+
+If you want to run single/specific tests, they can be mentioned at the end of command. Currently, only a single argument can be given, so multiple tests need to be given with wildcards like:
+```
+docker container run --rm -it -v %cd%\reports:/reports mainframe3270 *PF*
+```
+
+When developing tests, source code and tests can alsp be mounted with the container. The command to run tests using current sources is:
+* Windows:
+```
+docker container run --rm -it -v %cd%\reports:/reports -v %cd%\atests:/tests -v %cd%\Mainframe3270:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270
+```
+The _reports_ directory needs to be created beforehand.
+
+* Linux/MacOSX:
+```
+docker container run --rm -it -v ${pwd}/reports:/reports -v ${pwd}/atests:/tests -v ${pwd}/Mainframe3270:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270
+```
 
 ## Development setup
 Start off by forking this repository and pulling the source code from GitHub.
@@ -119,6 +149,6 @@ For more information visit this repository [Wiki](https://github.com/Altran-PT-G
    - **Joao Gomes**
    - **Bruno Calado**
    - **Ricardo Morgado**
-   
+
 ## License
 This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) file for details.
