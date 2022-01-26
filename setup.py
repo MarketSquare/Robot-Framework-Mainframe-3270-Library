@@ -2,24 +2,43 @@ from os.path import abspath, dirname, join
 
 try:
     from setuptools import setup
-except ImportError as error:
+except ImportError:
     from distutils.core import setup
 
 
-version_file = join(dirname(abspath(__file__)), 'Mainframe3270', 'version.py')
+version_file = join(dirname(abspath(__file__)), "Mainframe3270", "version.py")
 
 with open(version_file) as file:
-    code = compile(file.read(), version_file, 'exec')
+    code = compile(file.read(), version_file, "exec")
     exec(code)
 
-setup(name             = 'robotframework-mainframe3270',
-      version          = '2.12',
-      description      = 'Mainframe Test library for Robot Framework',
-      long_description = 'Test library for Robot Framework to enable to create automated test scripts to test IBM Mainframe 3270',
-      author           = 'Altran Portugal',
-      author_email     = 'samuel.cabral@altran.com',
-      license          = 'MIT License',
-      url              = 'https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library',
-      packages         = ['Mainframe3270'],
-      install_requires = ['robotframework', 'robotframework-pythonlibcore', 'six']
-      )
+with open("README.md", encoding="utf-8") as file:
+    long_description = file.read()
+
+
+package_kwargs = {
+    "name": "robotframework-mainframe3270",
+    "version": "2.12",
+    "description": "Mainframe Test library for Robot Framework",
+    "long_description": long_description,
+    "long_description_content_type": "text/markdown",
+    "author": "Altran Portugal",
+    "author_email": "samuel.cabral@altran.com",
+    "license": "MIT License",
+    "url": "https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library",
+    "packages": ["Mainframe3270"],
+    "install_requires": ["robotframework", "robotframework-pythonlibcore", "six"],
+    "classifiers": [
+        "Development Status :: 5 - Production/Stable",
+        "Framework :: Robot Framework",
+        "Framework :: Robot Framework :: Library",
+        "Intended Audience :: Developers",
+        "License :: OSI Approved :: MIT License",
+        "Operating System :: OS Independent",
+        "Programming Language :: Python :: 3",
+        "Topic :: Software Development :: Testing",
+        "Topic :: Software Development :: Testing :: Acceptance",
+    ],
+}
+
+setup(**package_kwargs)
