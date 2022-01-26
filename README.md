@@ -6,28 +6,30 @@
 
 ## Introduction
 
-Mainframe3270 is a library for Robot Framework based on [py3270 project](https://pypi.org/project/py3270/), a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
-
-## Installation
-
-In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html).
-
-`pip install robotframework-mainframe3270`
+Mainframe3270 is a library for Robot Framework based on the [py3270 project](https://pypi.org/project/py3270/), a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
 ## Compatibility
 Mainframe3270 requires Python 3. It is tested with Python 3.7 and 3.10.0, but should support all versions in between these.
+
+## Installation
+
+In order to use this library, first install the package from PyPI.
+
+```pip install robotframework-mainframe3270```
+
+Then, depending on your OS, proceed with the corresponding chapters in this README.
 
 ### Windows
 
 You need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH.
 
-The default folder is "C:\Program Files\wc3270" and this needs to be in the PATH of the Environment Variables.
+The default folder is "C:\Program Files\wc3270". This needs to be in the `PATH` environment variable.
 
 ### Unix
 
-You can install the x3270 project from [their instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through the `sudo apt-get install x3270`
+You can install the x3270 project from [their instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through `sudo apt-get install x3270`.
 
-More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
+More information can be found on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
 
 ## Example
 ```python
@@ -59,7 +61,10 @@ Arguments:
    - img_folder = .
    - run_on_failure_keyword = Take Screenshot
 
-You can change to hide the emulator screen set the argument visible=${False}
+By default the emulator visibility is set to visible=${True}.
+In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
+You can change this by setting visible=${False}. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
+This is advantageous when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.
 
 To change the wait_time see Change Wait Time, to change the img_folder
 see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
@@ -128,20 +133,16 @@ acceptance tests, simply run `inv test`.
 
 Run `inv -l` to get a list of all available tasks.
 
-## Notes
-
-By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe, but is you set the visible to false, the py3270 will run the ws3270.exe.
-
 ## Keyword Documentation
 
 You can find the keywords documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html)
 
 ## Keyword Tests
 
-To run all the library tests, you will need to create a user in the https://www.pub400.com/ website.
+To run all the library tests, you will need to create a user on the https://www.pub400.com/ website.
 
 ## WIKI
-For more information visit this repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
+For more information visit the repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
 
 ## Authors
    - **Altran -** [Altran Web Site](https://www.altran.com/us/en/)
