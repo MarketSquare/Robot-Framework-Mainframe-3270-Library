@@ -1,4 +1,3 @@
-# -*- encoding: utf-8 -*-
 import os
 import re
 import socket
@@ -55,7 +54,7 @@ class x3270(object):
         | --accepthostname myhost.com
         | # this is a comment
         | --charset french
-        
+
         Please make sure the arguments you are providing are available for your specific x3270 application and version.
 
         Example:
