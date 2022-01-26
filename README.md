@@ -32,7 +32,7 @@ You can install the x3270 project from [their instructions page](http://x3270.bg
 More information can be found on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
 
 ## Example
-```python
+```robot
 *** Settings ***
 Library    Mainframe3270
 
