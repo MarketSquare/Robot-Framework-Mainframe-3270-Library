@@ -27,7 +27,7 @@ The default folder is "C:\Program Files\wc3270". This needs to be in the `PATH` 
 
 ### Unix
 
-You can install the x3270 project from [their instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through `sudo apt-get install x3270`.
+You can install the x3270 project from [the instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through `sudo apt-get install x3270` / `brew install x3270`.
 
 More information can be found on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
 
@@ -64,12 +64,13 @@ Arguments:
 By default the emulator visibility is set to visible=${True}.
 In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
 You can change this by setting visible=${False}. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
-This is advantageous when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.
+This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.
 
-To change the wait_time see Change Wait Time, to change the img_folder
-see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
+Timeout, waits and screenshot folder are set on library import as shown above. However, they can be changed during runtime. To modify the ``wait_time`` see [Change Wait Time](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Wait%20Time),
+to modify the ``img_folder``, see [Set Screenshot Folder](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Set%20Screenshot%20Folder),
+and to modify the ``timeout``, see the [Change Timeout](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Timeout) keyword.
 
-By default, Mainframe3270 will take a screenshot on failure. You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option. If you pass ``None`` to this argument, no keyword will be run.
+By default, Mainframe3270 will take a screenshot on failure. You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option. If you pass ``None`` to this argument, no keyword will be run. To change the ``run_on_failure_keyword`` during runtime, see [Register Run On Failure Keyword](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Register%20Run%20On%20Failure%20Keyword).
 
 ## Running with Docker
 
@@ -135,11 +136,11 @@ Run `inv -l` to get a list of all available tasks.
 
 ## Keyword Documentation
 
-You can find the keywords documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html)
+You can find the keyword documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html).
 
 ## Keyword Tests
 
-To run all the library tests, you will need to create a user on the https://www.pub400.com/ website.
+To run all the library tests, you will need to create a user on the [pub400](https://www.pub400.com/) website.
 
 ## WIKI
 For more information visit the repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
@@ -152,4 +153,4 @@ For more information visit the repository [Wiki](https://github.com/Altran-PT-GD
    - **Ricardo Morgado**
 
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) file for details.
+This project is licensed under the MIT License - see [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.
