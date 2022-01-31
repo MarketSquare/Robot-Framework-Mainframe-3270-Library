@@ -6,44 +6,50 @@
 
 ## Introduction
 
-Mainframe3270 is a library for Robot Framework based on [py3270 project](https://pypi.org/project/py3270/), a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
+Mainframe3270 is a library for Robot Framework based on the [py3270 project](https://pypi.org/project/py3270/), a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
+
+## Compatibility
+Mainframe3270 requires Python 3. It is tested with Python 3.7 and 3.10.0, but should support all versions in between these.
 
 ## Installation
 
-In order to use this library you need to install the [x3270 project](http://x3270.bgp.nu/download.html).
+In order to use this library, first install the package from PyPI.
 
-`pip install robotframework-mainframe3270`
+```pip install robotframework-mainframe3270```
+
+Then, depending on your OS, proceed with the corresponding chapters in this README.
 
 ### Windows
 
-You need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH. 
+You need to install the [x3270 project](http://x3270.bgp.nu/index.html) and put the directory on your PATH.
 
-The default folder is "C:\Program Files\wc3270" and this needs to be in the PATH of the Environment Variables.
+The default folder is "C:\Program Files\wc3270". This needs to be in the `PATH` environment variable.
 
 ### Unix
 
-You can install the x3270 project from [their instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through the `sudo apt-get install x3270`
+You can install the x3270 project from [the instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through `sudo apt-get install x3270` / `brew install x3270`.
 
-More information on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
+More information can be found on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
 
 ## Example
+```robot
+*** Settings ***
+Library    Mainframe3270
 
-    *** Settings ***
-    Library           Mainframe3270
-
-    *** Test Cases ***
-    Example
-        Open Connection    Hostname    LUname
-        Change Wait Time    0.4
-        Change Wait Time After Write    0.4
-        Set Screenshot Folder    C:\\Temp\\IMG
-        ${value}    Read    3    10    17
-        Page Should Contain String    ENTER APPLICATION
-        Wait Field Detected
-        Write Bare    applicationname
-        Send Enter
-        Take Screenshot
-        Close Connection
+*** Test Cases ***
+Example
+    Open Connection    Hostname    LUname
+    Change Wait Time    0.4
+    Change Wait Time After Write    0.4
+    Set Screenshot Folder    C:\\Temp\\IMG
+    ${value}    Read    3    10    17
+    Page Should Contain String    ENTER APPLICATION
+    Wait Field Detected
+    Write Bare    applicationname
+    Send Enter
+    Take Screenshot
+    Close Connection
+```
 
 ## Importing
 
@@ -55,28 +61,58 @@ Arguments:
    - img_folder = .
    - run_on_failure_keyword = Take Screenshot
 
-You can change to hide the emulator screen set the argument visible=${False}
+By default the emulator visibility is set to visible=${True}.
+In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
+You can change this by setting visible=${False}. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
+This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.
 
-To change the wait_time see Change Wait Time, to change the img_folder
-see the Set Screenshot Folder and to change the timeout see the Change Timeout keyword.
+Timeout, waits and screenshot folder are set on library import as shown above. However, they can be changed during runtime. To modify the ``wait_time`` see [Change Wait Time](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Wait%20Time),
+to modify the ``img_folder``, see [Set Screenshot Folder](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Set%20Screenshot%20Folder),
+and to modify the ``timeout``, see the [Change Timeout](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Timeout) keyword.
 
-By default, Mainframe3270 will take a screenshot on failure. You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option. If you pass ``None`` to this argument, no keyword will be run.
+By default, Mainframe3270 will take a screenshot on failure. You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option. If you pass ``None`` to this argument, no keyword will be run. To change the ``run_on_failure_keyword`` during runtime, see [Register Run On Failure Keyword](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Register%20Run%20On%20Failure%20Keyword).
 
 ## Running with Docker
 
-Docker image contains everything that's needed to run the Mainframe tests. Currently image is not pushed to Docker hub, so steps to use it
-* Build image:
-  * Python 2: `docker image build --build-arg PYTHON_MAJOR=2 -t mainframe3270-p2 .`
-  * Python 3: `docker image build --build-arg PYTHON_MAJOR=3 -t mainframe3270-p3 .`
-- Run all tests: docker container run --rm -it mainframe3270-p<PYTHON_MAJOR>
+The Docker image contains everything that is needed to run Mainframe tests. Currently the image is not published to Docker hub, so steps to use it
+- Build image:
+  ```
+  docker image build --build-arg BASE_IMAGE=3.7-alpine -t mainframe3270 .
+  ```
 
-Reports are stored to /reports. Those can be get to host by mapping it as volume. E.g. in Windows CMD with current directory mounting command is `docker container run --rm -it -v %cd%\reports:/reports mainframe3270-p<PYTHON_MAJOR>`
+  Here, `BASE_IMAGE` can be one of the available tags for the [python docker images](https://hub.docker.com/_/python). Please note that only alpine based images (e.g. 3.7-alpine) are supported.
 
-If wanting to run just single/specific tests, it can be mentioned at the end of command. Currently only single argument can be given, so multiple tests can be given with wildcards like: `docker container run --rm -it -v %cd%\reports:/reports mainframe3270-p<PYTHON_MAJOR> *PF*` (this executes just single tests, as PF is mentioned only in one).
+- Run all tests:
+  ```
+  docker container run --rm -it mainframe3270
+  ```
 
-When developing tests, also source code and tests can be mounted to container. Command to run tests using current sources with Python 3 (without need to recreate container all the time):
-* Windows: `docker container run --rm -it -v %cd%\reports:/reports -v %cd%\tests:/tests -v %cd%\source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3` (_reports_ -dir needs to be created beforehand)
-* Linux/MacOSX: `docker container run --rm -it -v $(pwd)/reports:/reports -v $(pwd)/tests:/tests -v $(pwd)/source:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270-p3`  
+Reports are saved to /reports. You can retrieve these by mapping the directory as volume. On Windows, run this command to mount your local _reports_ directory with the container:
+```
+docker container run --rm -it -v %cd%\reports:/reports mainframe3270
+```
+
+On Linux/MacOSX, run:
+```
+docker container run --rm -it -v ${pwd}/reports:/reports
+```
+
+If you want to run single/specific tests, they can be mentioned at the end of command. Currently, only a single argument can be given, so multiple tests need to be given with wildcards like:
+```
+docker container run --rm -it -v %cd%\reports:/reports mainframe3270 *PF*
+```
+
+When developing tests, source code and tests can alsp be mounted with the container. The command to run tests using current sources is:
+* Windows:
+```
+docker container run --rm -it -v %cd%\reports:/reports -v %cd%\atests:/tests -v %cd%\Mainframe3270:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270
+```
+The _reports_ directory needs to be created beforehand.
+
+* Linux/MacOSX:
+```
+docker container run --rm -it -v ${pwd}/reports:/reports -v ${pwd}/atests:/tests -v ${pwd}/Mainframe3270:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270
+```
 
 ## Development setup
 Start off by forking this repository and pulling the source code from GitHub.
@@ -98,20 +134,16 @@ acceptance tests, simply run `inv test`.
 
 Run `inv -l` to get a list of all available tasks.
 
-## Notes
-
-By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe, but is you set the visible to false, the py3270 will run the ws3270.exe.
-
 ## Keyword Documentation
 
-You can find the keywords documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html)
+You can find the keyword documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html).
 
 ## Keyword Tests
 
-To run all the library tests, you will need to create a user in the https://www.pub400.com/ website.
+To run all the library tests, you will need to create a user on the [pub400](https://www.pub400.com/) website.
 
 ## WIKI
-For more information visit this repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
+For more information visit the repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
 
 ## Authors
    - **Altran -** [Altran Web Site](https://www.altran.com/us/en/)
@@ -119,6 +151,6 @@ For more information visit this repository [Wiki](https://github.com/Altran-PT-G
    - **Joao Gomes**
    - **Bruno Calado**
    - **Ricardo Morgado**
-   
+
 ## License
-This project is licensed under the MIT License - see the [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) file for details.
+This project is licensed under the MIT License - see [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.

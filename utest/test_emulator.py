@@ -1,7 +1,6 @@
 import os
 
 import pytest
-from pytest_mock import mocker  # noqa
 
 from Mainframe3270.py3270 import Emulator
 
@@ -9,12 +8,12 @@ CURDIR = os.path.dirname(os.path.realpath(__file__))
 
 
 @pytest.fixture
-def mock_windows(mocker):  # noqa
+def mock_windows(mocker):
     mocker.patch("Mainframe3270.py3270.os_name", "nt")
 
 
 @pytest.fixture
-def mock_posix(mocker):  # noqa
+def mock_posix(mocker):
     mocker.patch("Mainframe3270.py3270.os_name", "posix")
     mocker.patch("subprocess.Popen")
 
