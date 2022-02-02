@@ -7,6 +7,7 @@ def lint_python(c):
     c.run("black ./setup.py ./tasks.py Mainframe3270/ utest/")
     c.run("isort ./setup.py ./tasks.py Mainframe3270/ utest/")
     c.run("flake8 ./setup.py ./tasks.py Mainframe3270/ utest/")
+    c.run("mypy ./setup.py ./tasks.py Mainframe3270/ utest/")
 
 
 @task

@@ -1,3 +1,5 @@
+from typing import Any
+
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
@@ -49,13 +51,13 @@ class Mainframe3270(DynamicCore):
 
     def __init__(
         self,
-        visible=True,
-        timeout="30",
-        wait_time="0.5",
-        wait_time_after_write="0",
-        img_folder=".",
-        run_on_failure_keyword="Take Screenshot",
-    ):
+        visible: bool = True,
+        timeout: int = 30,
+        wait_time: float = 0.5,
+        wait_time_after_write: float = 0,
+        img_folder: str = ".",
+        run_on_failure_keyword: str = "Take Screenshot",
+    ) -> None:
         """
         You can change to hide the emulator screen set the argument visible=${False}
 
@@ -73,7 +75,7 @@ class Mainframe3270(DynamicCore):
         DynamicCore.__init__(self, libraries)
 
     @keyword
-    def register_run_on_failure_keyword(self, keyword):
+    def register_run_on_failure_keyword(self, keyword: str) -> None:
         """
         This keyword lets you change the keyword that runs on failure during test execution.
         The default is `Take Screenshot`, which is set on library import.
@@ -85,14 +87,14 @@ class Mainframe3270(DynamicCore):
         else:
             self.run_on_failure_keyword = keyword
 
-    def run_keyword(self, name, args, kwargs=None):
+    def run_keyword(self, name: str, args: list, kwargs: dict) -> Any:
         try:
             return DynamicCore.run_keyword(self, name, args, kwargs)
         except Exception:
             self.run_on_failure()
             raise
 
-    def run_on_failure(self):
+    def run_on_failure(self) -> None:
         if self._running_on_failure_keyword or not self.run_on_failure_keyword:
             return
         try:

@@ -1,8 +1,10 @@
 black
+flake8
 invoke
 isort
-flake8
+mypy
 pytest
 pytest-mock
 robotframework-tidy
+types-six
 -r requirements.txt
