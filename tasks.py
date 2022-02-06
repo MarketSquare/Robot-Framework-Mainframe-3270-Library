@@ -45,3 +45,13 @@ def test(c):
     Short option for `inv utest && inv atest`.
     """
     pass
+
+
+@task
+def kw_docs(c):
+    """Generates the keyword documentation with libdoc.
+
+    Creates a html and a xml file and places them under doc/.
+    """
+    c.run("python -m robot.libdoc Mainframe3270/ doc/Mainframe3270.html")
+    c.run("python -m robot.libdoc Mainframe3270/ doc/Mainframe3270.xml")

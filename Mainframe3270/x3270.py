@@ -21,11 +21,11 @@ class x3270(object):
         wait_time_after_write: float,
         img_folder: str,
     ) -> None:
-        self.visible: bool = visible
-        self.timeout: int = timeout
-        self.wait: float = wait_time
-        self.wait_write: float = wait_time_after_write
-        self.imgfolder: str = img_folder
+        self.visible = visible
+        self.timeout = timeout
+        self.wait = wait_time
+        self.wait_write = wait_time_after_write
+        self.imgfolder = img_folder
         self.mf: Emulator = None  # type: ignore
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
@@ -40,7 +40,12 @@ class x3270(object):
 
     @keyword("Change Timeout")
     def change_timeout(self, seconds: int) -> None:
-        """Change the timeout for connection in seconds."""
+        """
+        Change the timeout for connection in seconds.
+
+        Example:
+            | Change Timeout | 3 |
+        """
         self.timeout = seconds
 
     @keyword("Open Connection")
@@ -51,7 +56,7 @@ class x3270(object):
         port: int = 23,
         extra_args: Optional[Union[List[str], os.PathLike]] = None,
     ):
-        """Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
+        """Create a connection to IBM3270 mainframe with the default port 23. To make a connection with the mainframe
         you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
 
         If you wish, you can provide further configuration data to ``extra_args``. ``extra_args`` takes in a list,
@@ -99,17 +104,17 @@ class x3270(object):
     @keyword("Change Wait Time")
     def change_wait_time(self, wait_time: float) -> None:
         """To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
-        created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:
+        created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:
 
-        `Execute Command`
-        `Send Enter`
-        `Send PF`
-        `Write`
-        `Write in position`
+        - `Execute Command`
+        - `Send Enter`
+        - `Send PF`
+        - `Write`
+        - `Write in position`
 
-        If you want to change this value just use this keyword passing the time in seconds.
+        If you want to change this value, just use this keyword passing the time in seconds.
 
-        Examples:
+        Example:
             | Change Wait Time | 0.1 |
             | Change Wait Time | 2 |
         """
@@ -117,20 +122,20 @@ class x3270(object):
 
     @keyword("Change Wait Time After Write")
     def change_wait_time_after_write(self, wait_time_after_write: float) -> None:
-        """To give the user time to see what is happening inside the mainframe, a "change wait time after write" has
-        been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this
+        """To give the user time to see what is happening inside the mainframe, a "wait time after write" has
+        been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these
         keywords:
 
-        `Write`
-        `Write Bare`
-        `Write in position`
-        `Write Bare in position`
+        - `Write`
+        - `Write Bare`
+        - `Write in position`
+        - `Write Bare in position`
 
-        If you want to change this value just use this keyword passing the time in seconds.
+        If you want to change this value, just use this keyword passing the time in seconds.
 
         Note: This keyword is useful for debug purpose
 
-        Examples:
+        Example:
             | Change Wait Time After Write | 0.5 |
             | Change Wait Time After Write | 2 |
         """
@@ -138,7 +143,7 @@ class x3270(object):
 
     @keyword("Read")
     def read(self, ypos: int, xpos: int, length: int) -> str:
-        """Get a string of "length" at screen co-ordinates "ypos"/"xpos".
+        """Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.
 
         Co-ordinates are 1 based, as listed in the status area of the terminal.
 
@@ -156,18 +161,26 @@ class x3270(object):
 
     @keyword("Read All Screen")
     def read_all_screen(self) -> str:
-        """Reads the current screen and returns all content in one string.
+        """Read the current screen and returns all content in one string.
+
+        This is useful if your automation scripts should take different routes depending
+        on a message shown on the screen.
 
         Example:
-            | ${content} | Read All Screen |
+            | ${screen} | Read All Screen              |
+            | IF   | 'certain text' in '''${screen}''' |
+            |      | Do Something                      |
+            | ELSE |                                   |
+            |      | Do Something Else                 |
+            | END  |                                   |
         """
         return self._read_all_screen()
 
     @keyword("Execute Command")
     def execute_command(self, cmd: str) -> None:
-        """Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
+        """Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
 
-        Examples:
+        Example:
             | Execute Command | Enter |
             | Execute Command | Home |
             | Execute Command | Tab |
@@ -179,6 +192,9 @@ class x3270(object):
     @keyword("Set Screenshot Folder")
     def set_screenshot_folder(self, path: str) -> None:
         r"""Set a folder to keep the html files generated by the `Take Screenshot` keyword.
+
+        Note that the folder needs to exist before running your automation scripts. Else the images
+        will be stored in the ``${OUTPUT DIR}`` set by robotframework.
 
         Example:
             | Set Screenshot Folder | C:\\Temp\\Images |
@@ -195,9 +211,9 @@ class x3270(object):
         default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
 
         The Screenshot is printed in a iframe log, with the values of height=410 and width=670, you
-        can change this values passing them from the keyword.
+        can change this values passing them to the keyword.
 
-        Examples:
+        Example:
             | Take Screenshot |
             | Take Screenshot | height=500 | width=700 |
         """
@@ -223,7 +239,7 @@ class x3270(object):
         Sometimes the server will "unlock" the keyboard but the screen
         will not yet be ready.  In that case, an attempt to read or write to the
         screen will result in a 'E' keyboard status because we tried to read from
-        a screen that is not yet ready.
+        a screen that is not ready yet.
 
         Using this method tells the client to wait until a field is
         detected and the cursor has been positioned on it.
@@ -234,13 +250,13 @@ class x3270(object):
     def delete_char(
         self, ypos: Optional[int] = None, xpos: Optional[int] = None
     ) -> None:
-        """Delete character under cursor. If you want to delete a character that is in
-        another position, simply pass the coordinates "ypos"/"xpos".
+        """Delete the character under the cursor. If you want to delete a character that is in
+        another position, simply pass the coordinates ``ypos`` / ``xpos``.
 
         Co-ordinates are 1 based, as listed in the status area of the
         terminal.
 
-        Examples:
+        Example:
             | Delete Char |
             | Delete Char | ypos=9 | xpos=25 |
         """
@@ -252,14 +268,14 @@ class x3270(object):
     def delete_field(
         self, ypos: Optional[int] = None, xpos: Optional[int] = None
     ) -> None:
-        """Delete a entire contents in field at current cursor location and positions
-        cursor at beginning of field. If you want to delete a field that is in
-        another position, simply pass the coordinates "ypos"/"xpos" of any part of the field.
+        """Delete the entire content of a field at the current cursor location and positions
+        the cursor at beginning of field. If you want to delete a field that is in
+        another position, simply pass the coordinates ``ypos`` / ``xpos`` of any part in the field.
 
         Co-ordinates are 1 based, as listed in the status area of the
         terminal.
 
-        Examples:
+        Example:
             | Delete Field |
             | Delete Field | ypos=12 | xpos=6 |
         """
@@ -269,7 +285,7 @@ class x3270(object):
 
     @keyword("Send Enter")
     def send_enter(self) -> None:
-        """Send a Enter to the screen."""
+        """Send an Enter to the screen."""
         self.mf.send_enter()
         time.sleep(self.wait)
 
@@ -295,7 +311,7 @@ class x3270(object):
 
     @keyword("Write")
     def write(self, txt: str) -> None:
-        """Send a string to the screen at the current cursor location *and a Enter.*
+        """Send a string *and Enter* to the screen at the current cursor location.
 
         Example:
             | Write | something |
@@ -313,7 +329,7 @@ class x3270(object):
 
     @keyword("Write In Position")
     def write_in_position(self, txt: str, ypos: int, xpos: int) -> None:
-        """Send a string to the screen at screen co-ordinates "ypos"/"xpos" and a Enter.
+        """Send a string *and Enter* to the screen at screen co-ordinates ``ypos`` / ``xpos``.
 
         Co-ordinates are 1 based, as listed in the status area of the
         terminal.
@@ -325,7 +341,7 @@ class x3270(object):
 
     @keyword("Write Bare In Position")
     def write_bare_in_position(self, txt: str, ypos: int, xpos: int):
-        """Send only the string to the screen at screen co-ordinates "ypos"/"xpos".
+        """Send only the string to the screen at screen co-ordinates ``ypos`` / ``xpos``.
 
         Co-ordinates are 1 based, as listed in the status area of the
         terminal.
@@ -356,8 +372,8 @@ class x3270(object):
 
     @keyword("Wait Until String")
     def wait_until_string(self, txt: str, timeout: int = 5) -> str:
-        """Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on
-        5 seconds the keyword will raise a exception. You can define a different timeout.
+        """Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in
+        5 seconds, the keyword will raise an exception. You can define a different timeout.
 
         Example:
             | Wait Until String | something |
@@ -391,14 +407,15 @@ class x3270(object):
     def page_should_contain_string(
         self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
     ) -> None:
-        """Search if a given string exists on the mainframe screen.
+        """Assert that a given string exists on the mainframe screen.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-        and you can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Contain String | something |
-            | Page Should Contain String | someTHING | ignore_case=${True} |
+            | Page Should Contain String | someTHING | ignore_case=True |
             | Page Should Contain String | something | error_message=New error message |
         """
         message = 'The string "' + txt + '" was not found'
@@ -415,14 +432,15 @@ class x3270(object):
     def page_should_not_contain_string(
         self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
     ) -> None:
-        """Search if a given string NOT exists on the mainframe screen.
+        """Assert that a given string does NOT exists on the mainframe screen.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-        and you can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Not Contain String | something |
-            | Page Should Not Contain String | someTHING | ignore_case=${True} |
+            | Page Should Not Contain String | someTHING | ignore_case=True |
             | Page Should Not Contain String | something | error_message=New error message |
         """
         message = 'The string "' + txt + '" was found'
@@ -441,14 +459,15 @@ class x3270(object):
         ignore_case: bool = False,
         error_message: Optional[str] = None,
     ) -> None:
-        """Search if one of the strings in a given list exists on the mainframe screen.
+        """Assert that one of the strings in a given list exists on the mainframe screen.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-        and you can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Contain Any String | ${list_of_string} |
-            | Page Should Contain Any String | ${list_of_string} | ignore_case=${True} |
+            | Page Should Contain Any String | ${list_of_string} | ignore_case=True |
             | Page Should Contain Any String | ${list_of_string} | error_message=New error message |
         """
         message = 'The strings "' + str(list_string) + '" was not found'
@@ -470,15 +489,16 @@ class x3270(object):
         ignore_case: bool = False,
         error_message: Optional[str] = None,
     ) -> None:
-        """Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the
+        """Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the
         string are found, the keyword will raise a exception.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-        and you can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Not Contain Any Strings | ${list_of_string} |
-            | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=${True} |
+            | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=True |
             | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |
         """
         self._compare_all_list_with_screen_text(
@@ -492,14 +512,15 @@ class x3270(object):
         ignore_case: bool = False,
         error_message: Optional[str] = None,
     ) -> None:
-        """Search if all of the strings in a given list exists on the mainframe screen.
+        """Assert that all of the strings in a given list exist on the mainframe screen.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-        and you can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Contain All Strings | ${list_of_string} |
-            | Page Should Contain All Strings | ${list_of_string} | ignore_case=${True} |
+            | Page Should Contain All Strings | ${list_of_string} | ignore_case=True |
             | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |
         """
         self._compare_all_list_with_screen_text(
@@ -513,15 +534,16 @@ class x3270(object):
         ignore_case: bool = False,
         error_message: Optional[str] = None,
     ) -> None:
-        """Fails if one of the strings in a given list exists on the mainframe screen. if one of the string
+        """Fails if one of the strings in a given list exists on the mainframe screen. If one of the string
         are found, the keyword will raise a exception.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-        and you can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Not Contain All Strings | ${list_of_string} |
-            | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=${True} |
+            | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=True |
             | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |
         """
         message = error_message
@@ -542,14 +564,15 @@ class x3270(object):
         ignore_case: bool = False,
         error_message: Optional[str] = None,
     ) -> None:
-        """Search if the entered string appears the desired number of times on the mainframe screen.
+        """Asserts that the entered string appears the desired number of times on the mainframe screen.
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
-        can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
                | Page Should Contain String X Times | something | 3 |
-               | Page Should Contain String X Times | someTHING | 3 | ignore_case=${True} |
+               | Page Should Contain String X Times | someTHING | 3 | ignore_case=True |
                | Page Should Contain String X Times | something | 3 | error_message=New error message |
         """
         message = error_message
@@ -599,22 +622,23 @@ class x3270(object):
     def page_should_contain_match(
         self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
     ) -> None:
-        """Fails unless the given string matches the given pattern.
+        """Assert that the text displayed on the mainframe screen matches the given pattern.
 
-        Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
-        In the pattern, * matches to anything and ? matches to any single character.
+        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+        In the pattern, * matches anything and ? matches any single character.
 
-        Note that the entire screen is only considered a string for this keyword, so if you want to search
-        for the string "something" and it is somewhere other than at the beginning or end of the screen it
+        Note that for this keyword the entire screen is considered a string. So if you want to search
+        for the string "something" and it is somewhere other than at the beginning or end of the screen, it
         should be reported as follows: **something**
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
-        can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Contain Match | **something** |
             | Page Should Contain Match | **so???hing** |
-            | Page Should Contain Match | **someTHING** | ignore_case=${True} |
+            | Page Should Contain Match | **someTHING** | ignore_case=True |
             | Page Should Contain Match | **something** | error_message=New error message |
         """
         message = error_message
@@ -633,22 +657,23 @@ class x3270(object):
     def page_should_not_contain_match(
         self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
     ) -> None:
-        """Fails if the given string matches the given pattern.
+        """Assert that the text displayed on the mainframe screen does NOT match the given pattern.
 
-        Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
-        In the pattern, * matches to anything and ? matches to any single character.
+        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+        In the pattern, * matches anything and ? matches any single character.
 
-        Note that the entire screen is only considered a string for this keyword, so if you want to search
-        for the string "something" and it is somewhere other than at the beginning or end of the screen it
+        Note that for this keyword the entire screen is considered a string. So if you want to search
+        for the string "something" and it is somewhere other than at the beginning or end of the screen, it
         should be reported as follows: **something**
 
-        The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
-        can edit the raise exception message with error_message.
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Not Contain Match | **something** |
             | Page Should Not Contain Match | **so???hing** |
-            | Page Should Not Contain Match | **someTHING** | ignore_case=${True} |
+            | Page Should Not Contain Match | **someTHING** | ignore_case=True |
             | Page Should Not Contain Match | **something** | error_message=New error message |
         """
         message = error_message
