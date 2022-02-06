@@ -5,7 +5,7 @@ try:
 except ImportError:
     from distutils.core import setup
 
-
+VERSION = None
 version_file = join(dirname(abspath(__file__)), "Mainframe3270", "version.py")
 
 with open(version_file) as file:
@@ -18,7 +18,7 @@ with open("README.md", encoding="utf-8") as file:
 
 package_kwargs = {
     "name": "robotframework-mainframe3270",
-    "version": "2.12",
+    "version": VERSION,
     "description": "Mainframe Test library for Robot Framework",
     "long_description": long_description,
     "long_description_content_type": "text/markdown",
