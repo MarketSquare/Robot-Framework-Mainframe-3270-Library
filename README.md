@@ -1,6 +1,7 @@
 [![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-mainframe3270.svg)](https://pypi.org/project/robotframework-mainframe3270/)
 [![Total downloads](https://static.pepy.tech/personalized-badge/robotframework-mainframe3270?period=total&units=international_system&left_color=lightgrey&right_color=yellow&left_text=total)](https://pypi.org/project/robotframework-mainframe3270/)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-mainframe3270.svg)](https://pypi.org/project/robotframework-mainframe3270/)
+[![tests](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml/badge.svg)](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml)
 
 # Mainframe3270Library
 
@@ -61,12 +62,12 @@ Arguments:
    - img_folder = .
    - run_on_failure_keyword = Take Screenshot
 
-By default the emulator visibility is set to visible=${True}.
+By default the emulator visibility is set to visible=True.
 In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
-You can change this by setting visible=${False}. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
+You can change this by setting visible=False. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
 This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.
 
-Timeout, waits and screenshot folder are set on library import as shown above. However, they can be changed during runtime. To modify the ``wait_time`` see [Change Wait Time](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Wait%20Time),
+Timeout, waits and screenshot folder are set on library import as shown above. However, they can be changed during runtime. To modify the ``wait_time``, see [Change Wait Time](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Wait%20Time),
 to modify the ``img_folder``, see [Set Screenshot Folder](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Set%20Screenshot%20Folder),
 and to modify the ``timeout``, see the [Change Timeout](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Timeout) keyword.
 

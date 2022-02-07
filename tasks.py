@@ -7,6 +7,7 @@ def lint_python(c):
     c.run("black ./setup.py ./tasks.py Mainframe3270/ utest/")
     c.run("isort ./setup.py ./tasks.py Mainframe3270/ utest/")
     c.run("flake8 ./setup.py ./tasks.py Mainframe3270/ utest/")
+    c.run("mypy ./setup.py ./tasks.py Mainframe3270/ utest/")
 
 
 @task
@@ -44,3 +45,13 @@ def test(c):
     Short option for `inv utest && inv atest`.
     """
     pass
+
+
+@task
+def kw_docs(c):
+    """Generates the keyword documentation with libdoc.
+
+    Creates a html and a xml file and places them under doc/.
+    """
+    c.run("python -m robot.libdoc Mainframe3270/ doc/Mainframe3270.html")
+    c.run("python -m robot.libdoc Mainframe3270/ doc/Mainframe3270.xml")
