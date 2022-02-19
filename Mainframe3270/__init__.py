@@ -84,7 +84,7 @@ class Mainframe3270(DynamicCore):
 
         You can set ``None`` to this keyword, if you do not want to run any keyword on failure.
 
-        Examples:
+        Example:
             | Register Run On Failure Keyword | None | # no keyword is run on failure |
             | Register Run On Failure Keyword | Custom Keyword | # Custom Keyword is run on failure |
         """
