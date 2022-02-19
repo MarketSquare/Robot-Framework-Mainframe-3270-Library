@@ -30,13 +30,8 @@ class x3270(object):
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
             self.output_folder = BuiltIn().get_variable_value("${OUTPUT DIR}")
-        except RobotNotRunningError as rnrex:
-            if "Cannot access execution context" in str(rnrex):
-                self.output_folder = os.getcwd()
-            else:
-                raise RobotNotRunningError()
-        except Exception as e:
-            raise AssertionError(e)
+        except RobotNotRunningError:
+            self.output_folder = os.getcwd()
 
     @keyword("Change Timeout")
     def change_timeout(self, seconds: int) -> None:
@@ -281,7 +276,7 @@ class x3270(object):
         """
         if ypos is not None and xpos is not None:
             self.mf.move_to(ypos, xpos)
-        self.mf.exec_command(b"DeleteField")
+        self.mf.delete_field()
 
     @keyword("Send Enter")
     def send_enter(self) -> None:
@@ -361,12 +356,11 @@ class x3270(object):
         txt = txt.encode("unicode_escape")
         if ypos is not None and xpos is not None:
             self._check_limits(ypos, xpos)
-            self.mf.move_to(ypos, xpos)
-        if not isinstance(txt, (list, tuple)):
-            txt = [txt]
-        [self.mf.send_string(el) for el in txt if el != ""]
+            self.mf.send_string(txt, ypos, xpos)
+        else:
+            self.mf.send_string(txt)
         time.sleep(self.wait_write)
-        for i in range(int(enter)):
+        for i in range(enter):
             self.mf.send_enter()
             time.sleep(self.wait)
 
@@ -470,7 +464,7 @@ class x3270(object):
             | Page Should Contain Any String | ${list_of_string} | ignore_case=True |
             | Page Should Contain Any String | ${list_of_string} | error_message=New error message |
         """
-        message = 'The strings "' + str(list_string) + '" was not found'
+        message = 'The strings "' + str(list_string) + '" were not found'
         if error_message:
             message = error_message
         if ignore_case:
@@ -692,10 +686,7 @@ class x3270(object):
         """Read all the mainframe screen and return in a single string."""
         full_text = ""
         for ypos in range(24):
-            line = self.mf.string_get(ypos + 1, 1, 80)
-            for char in line:
-                if char:
-                    full_text += char
+            full_text += self.mf.string_get(ypos + 1, 1, 80)
         return full_text
 
     def _compare_all_list_with_screen_text(
