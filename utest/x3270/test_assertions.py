@@ -208,7 +208,7 @@ def test_page_should_not_contain_all_strings_custom_message(
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(Exception, match="my error message"):
-        under_test.page_should_contain_all_strings(
+        under_test.page_should_not_contain_all_strings(
             ["abc", "def"], error_message="my error message"
         )
 
@@ -319,10 +319,7 @@ def test_page_should_contain_match_custom_message(
 def test_page_should_not_contain_match(mocker: MockerFixture, under_test: x3270):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
-    with pytest.raises(
-        Exception, match=re.escape('There are matches found for "*abc*" pattern')
-    ):
-        under_test.page_should_not_contain_match("*abc*")
+    under_test.page_should_not_contain_match("*def*")
 
 
 def test_page_should_not_contain_match_fails(mocker: MockerFixture, under_test: x3270):
