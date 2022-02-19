@@ -2,7 +2,7 @@
 [![Total downloads](https://static.pepy.tech/personalized-badge/robotframework-mainframe3270?period=total&units=international_system&left_color=lightgrey&right_color=yellow&left_text=total)](https://pypi.org/project/robotframework-mainframe3270/)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-mainframe3270.svg)](https://pypi.org/project/robotframework-mainframe3270/)
 [![tests](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml/badge.svg)](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml)
-[![codecov](https://codecov.io/gh/robinmatz/Robot-Framework-Mainframe-3270-Library/branch/coverage-report/graph/badge.svg?token=8UODDGQZJ5)](https://codecov.io/gh/robinmatz/Robot-Framework-Mainframe-3270-Library)
+[![codecov](https://codecov.io/gh/robinmatz/Robot-Framework-Mainframe-3270-Library/branch/57-coverage-reports/graph/badge.svg?token=8UODDGQZJ5)](https://codecov.io/gh/robinmatz/Robot-Framework-Mainframe-3270-Library)
 
 # Mainframe3270Library
 
