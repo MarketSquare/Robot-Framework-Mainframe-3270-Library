@@ -134,7 +134,7 @@ def test_terminate_socket_error(mock_windows, mocker):
     under_test.is_terminated = True
 
 
-def test_terminate_other_socket_error(mocker):
+def test_terminate_other_socket_error(mock_windows, mocker):
     mocker.patch("Mainframe3270.py3270.ExecutableAppWin.close")
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command", side_effect=OSError)
     under_test = Emulator()
@@ -173,7 +173,7 @@ def test_is_not_connected(mock_windows, mocker):
     assert not under_test.is_connected()
 
 
-def test_is_connected_NotConnectedException(mocker):
+def test_is_connected_NotConnectedException(mock_windows):
     under_test = Emulator()
 
     assert not under_test.is_connected()
