@@ -22,6 +22,7 @@ def test_open_connection(mocker: MockerFixture):
 
 
 def test_open_connection_existing_emulator(mocker):
+    mocker.patch("Mainframe3270.py3270.Emulator.create_app")
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
     mocker.patch("Mainframe3270.x3270.close_connection")
     under_test = x3270(**X3270_DEFAULT_ARGS)
