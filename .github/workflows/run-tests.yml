@@ -56,12 +56,14 @@ jobs:
         move_coverage_to_trash: true
 
     - name: Run atests with coverage linux
+      if: matrix.os == 'ubuntu-latest'
       run: |
         LANG=en_US.iso88591 xvfb-run coverage run --branch --source Mainframe3270/ -m robot --exclude no-ci --loglevel DEBUG atest/
         coverage report
         coverage xml
 
     - name: Run atests with coverage windows
+      if: matrix.os == 'windows-latest'
       run: |
         coverage run --branch --source Mainframe3270/ -m robot --exclude no-ci --loglevel DEBUG atest/
         coverage report
