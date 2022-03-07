@@ -11,14 +11,6 @@ import six
 log = logging.getLogger(__name__)
 
 
-try:
-    BrokenPipeError
-except NameError:
-
-    class BrokenPipeError(Exception):
-        pass
-
-
 """
     Python 3+ note: unicode strings should be used when communicating with the Emulator methods.
     utf-8 is used internally when reading from or writing to the 3270 emulator (this includes
@@ -333,7 +325,7 @@ class Emulator(object):
         `cmdstr` gets sent directly to the x3270 subprocess on it's stdin.
         """
         if self.is_terminated:
-            raise TerminatedError("this TerminalClient instance has been terminated")
+            raise TerminatedError("This Emulator instance has been terminated")
 
         # log.debug('sending command: %s', cmdstr)             # commented line to reduce log size
         c = Command(self.app, cmdstr)
@@ -354,7 +346,7 @@ class Emulator(object):
             log.debug("terminal client terminated")
             try:
                 self.exec_command(b"Quit")
-            except BrokenPipeError:  # noqa
+            except BrokenPipeError:
                 # x3270 was terminated, since we are just quitting anyway, ignore it.
                 pass
             except socket.error as e:

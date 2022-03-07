@@ -22,3 +22,11 @@ atest/screenshots/
 .env
 venv
 env
+
+# Caches
+.mypy_cache
+.pytest_cache
+
+# Coverage reports
+.coverage
+htmlcov

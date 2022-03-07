@@ -292,7 +292,7 @@ Verify String Not Found In List
 
 Verify List Not Found
     [Arguments]    ${keyword}    ${list}    ${ignore_case}=${False}
-    ${expected_error}    Set Variable    The strings "${list}" was not found
+    ${expected_error}    Set Variable    The strings "${list}" were not found
     Run Keyword And Expect Error    EQUALS: ${expected_error}    ${keyword}    ${list}    ignore_case=${ignore_case}
 
 Verify Pattern Not Found
