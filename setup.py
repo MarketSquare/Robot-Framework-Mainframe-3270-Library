@@ -23,7 +23,7 @@ package_kwargs = {
     "long_description": long_description,
     "long_description_content_type": "text/markdown",
     "author": "Altran Portugal",
-    "author_email": "samuel.cabral@altran.com",
+    "author_email": "samuca@gmail.com",
     "license": "MIT License",
     "license_files": ["LICENSE.md", "THIRD-PARTY-NOTICES.txt"],
     "url": "https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library",

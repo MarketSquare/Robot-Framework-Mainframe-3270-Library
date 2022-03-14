@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2021-12-03T11:53:54Z" specversion="3" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="11">
-<version>2.12</version>
-<doc>Mainframe3270 is a library for Robot Framework based on [https://pypi.org/project/py3270/|py3270 project],
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2022-03-14T15:49:13Z" specversion="3" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="12">
+<version>3.0</version>
+<doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
 = Installation  =
@@ -10,16 +10,10 @@ For use this library you need to install the [http://x3270.bgp.nu/download.html|
 and put the directory on your PATH. On Windows, you need to download wc3270 and put
 the "C:\Program Files\wc3270" in PATH of the Environment Variables.
 
-= Notes  =
-
-By default the import set the visible argument to true, on this option the py3270 is running the wc3270.exe,
-but is you set the visible to false, the py3270 will run the ws3270.exe.
-
 = Example =
 
 | *** Settings ***
 | Library           Mainframe3270
-| Library           BuiltIn
 |
 | *** Test Cases ***
 | Example
@@ -37,340 +31,423 @@ but is you set the visible to false, the py3270 will run the ws3270.exe.
 <tags>
 </tags>
 <inits>
-<init name="Init" lineno="51">
-<arguments repr="visible=True, timeout=30, wait_time=0.5, wait_time_after_write=0, img_folder=., run_on_failure_keyword=Take Screenshot">
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="visible=True">
+<init name="Init" lineno="46">
+<arguments repr="visible: bool = True, timeout: int = 30, wait_time: float = 0.5, wait_time_after_write: float = 0.0, img_folder: str = ., run_on_failure_keyword: str = Take Screenshot">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="visible: bool = True">
 <name>visible</name>
+<type>bool</type>
 <default>True</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout=30">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout: int = 30">
 <name>timeout</name>
+<type>int</type>
 <default>30</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time=0.5">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time: float = 0.5">
 <name>wait_time</name>
+<type>float</type>
 <default>0.5</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time_after_write=0">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time_after_write: float = 0.0">
 <name>wait_time_after_write</name>
-<default>0</default>
+<type>float</type>
+<default>0.0</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="img_folder=.">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="img_folder: str = .">
 <name>img_folder</name>
+<type>str</type>
 <default>.</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="run_on_failure_keyword=Take Screenshot">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="run_on_failure_keyword: str = Take Screenshot">
 <name>run_on_failure_keyword</name>
+<type>str</type>
 <default>Take Screenshot</default>
 </arg>
 </arguments>
-<doc>You can change to hide the emulator screen set the argument visible=${False}
+<doc>By default the emulator visibility is set to visible=True.
+In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
+You can change this by setting visible=False.
+Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
+This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.
 
-For change the wait_time see `Change Wait Time`, to change the img_folder
-see the `Set Screenshot Folder` and to change the timeout see the `Change Timeout` keyword.
+Timeout, waits and screenshot folder are set on library import as shown above.
+However, they can be changed during runtime. To modify the ``wait_time``, see `Change Wait Time`,
+to modify the ``img_folder``, see `Set Screenshot Folder`,
+and to modify the ``timeout``, see the `Change Timeout` keyword.
 
-By default, Mainframe3270 will take a screenshot on failure. You can overwrite this to run any other
-keyword by setting the ``run_on_failure_keyword`` option. If you pass ``None`` to this argument, no keyword will be run.</doc>
-<shortdoc>You can change to hide the emulator screen set the argument visible=${False}</shortdoc>
+By default, Mainframe3270 will take a screenshot on failure.
+You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option.
+If you pass ``None`` to this argument, no keyword will be run.
+To change the ``run_on_failure_keyword`` during runtime, see `Register Run On Failure Keyword`.</doc>
+<shortdoc>By default the emulator visibility is set to visible=True. In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX). You can change this by setting visible=False. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS). This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.</shortdoc>
 </init>
 </inits>
 <keywords>
-<kw name="Change Timeout" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="39">
-<arguments repr="seconds">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="seconds">
+<kw name="Change Timeout" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="37">
+<arguments repr="seconds: int">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="seconds: int">
 <name>seconds</name>
+<type>int</type>
 </arg>
 </arguments>
-<doc>Change the timeout for connection in seconds.</doc>
+<doc>Change the timeout for connection in seconds.
+
+Example:
+    | Change Timeout | 3 |</doc>
 <shortdoc>Change the timeout for connection in seconds.</shortdoc>
 </kw>
-<kw name="Change Wait Time" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="77">
-<arguments repr="wait_time">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time">
+<kw name="Change Wait Time" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="100">
+<arguments repr="wait_time: float">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time: float">
 <name>wait_time</name>
+<type>float</type>
 </arg>
 </arguments>
 <doc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
-created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:
+created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:
 
-`Execute Command`
-`Send Enter`
-`Send PF`
-`Write`
-`Write in position`
+- `Execute Command`
+- `Send Enter`
+- `Send PF`
+- `Write`
+- `Write in position`
 
-If you want to change this value just use this keyword passing the time in seconds.
+If you want to change this value, just use this keyword passing the time in seconds.
 
-Examples:
+Example:
     | Change Wait Time | 0.1 |
     | Change Wait Time | 2 |</doc>
-<shortdoc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the follow keywords:</shortdoc>
+<shortdoc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:</shortdoc>
 </kw>
-<kw name="Change Wait Time After Write" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="96">
-<arguments repr="wait_time_after_write">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time_after_write">
+<kw name="Change Wait Time After Write" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="119">
+<arguments repr="wait_time_after_write: float">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time_after_write: float">
 <name>wait_time_after_write</name>
+<type>float</type>
 </arg>
 </arguments>
-<doc>To give the user time to see what is happening inside the mainframe, a "change wait time after write" has
-been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this
+<doc>To give the user time to see what is happening inside the mainframe, a "wait time after write" has
+been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these
 keywords:
 
-`Write`
-`Write Bare`
-`Write in position`
-`Write Bare in position`
+- `Write`
+- `Write Bare`
+- `Write in position`
+- `Write Bare in position`
 
-If you want to change this value just use this keyword passing the time in seconds.
+If you want to change this value, just use this keyword passing the time in seconds.
 
 Note: This keyword is useful for debug purpose
 
-Examples:
+Example:
     | Change Wait Time After Write | 0.5 |
     | Change Wait Time After Write | 2 |</doc>
-<shortdoc>To give the user time to see what is happening inside the mainframe, a "change wait time after write" has been created, which by default is set to 0 seconds. This is a sleep applied AFTER the string sent in this keywords:</shortdoc>
+<shortdoc>To give the user time to see what is happening inside the mainframe, a "wait time after write" has been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these keywords:</shortdoc>
 </kw>
-<kw name="Close Connection" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="67">
+<kw name="Close Connection" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="91">
 <arguments repr="">
 </arguments>
 <doc>Disconnect from the host.</doc>
 <shortdoc>Disconnect from the host.</shortdoc>
 </kw>
-<kw name="Delete Char" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="203">
-<arguments repr="ypos=None, xpos=None">
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos=None">
+<kw name="Delete Char" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="245">
+<arguments repr="ypos: int | None = None, xpos: int | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
+<type>int</type>
+<type>None</type>
 <default>None</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos: int | None = None">
 <name>xpos</name>
+<type>int</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Delete character under cursor. If you want to delete a character that is in
-another position, simply pass the coordinates "ypos"/"xpos".
+<doc>Delete the character under the cursor. If you want to delete a character that is in
+another position, simply pass the coordinates ``ypos`` / ``xpos``.
 
 Co-ordinates are 1 based, as listed in the status area of the
 terminal.
 
-Examples:
+Example:
     | Delete Char |
     | Delete Char | ypos=9 | xpos=25 |</doc>
-<shortdoc>Delete character under cursor. If you want to delete a character that is in another position, simply pass the coordinates "ypos"/"xpos".</shortdoc>
+<shortdoc>Delete the character under the cursor. If you want to delete a character that is in another position, simply pass the coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Delete Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="219">
-<arguments repr="ypos=None, xpos=None">
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos=None">
+<kw name="Delete Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="263">
+<arguments repr="ypos: int | None = None, xpos: int | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
+<type>int</type>
+<type>None</type>
 <default>None</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos: int | None = None">
 <name>xpos</name>
+<type>int</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Delete a entire contents in field at current cursor location and positions
-cursor at beginning of field. If you want to delete a field that is in
-another position, simply pass the coordinates "ypos"/"xpos" of any part of the field.
+<doc>Delete the entire content of a field at the current cursor location and positions
+the cursor at beginning of field. If you want to delete a field that is in
+another position, simply pass the coordinates ``ypos`` / ``xpos`` of any part in the field.
 
 Co-ordinates are 1 based, as listed in the status area of the
 terminal.
 
-Examples:
+Example:
     | Delete Field |
     | Delete Field | ypos=12 | xpos=6 |</doc>
-<shortdoc>Delete a entire contents in field at current cursor location and positions cursor at beginning of field. If you want to delete a field that is in another position, simply pass the coordinates "ypos"/"xpos" of any part of the field.</shortdoc>
+<shortdoc>Delete the entire content of a field at the current cursor location and positions the cursor at beginning of field. If you want to delete a field that is in another position, simply pass the coordinates ``ypos`` / ``xpos`` of any part in the field.</shortdoc>
 </kw>
-<kw name="Execute Command" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="142">
-<arguments repr="cmd">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="cmd">
+<kw name="Execute Command" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="175">
+<arguments repr="cmd: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="cmd: str">
 <name>cmd</name>
+<type>str</type>
 </arg>
 </arguments>
-<doc>Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
+<doc>Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
 
-Examples:
+Example:
     | Execute Command | Enter |
     | Execute Command | Home |
     | Execute Command | Tab |
     | Execute Command | PF(1) |</doc>
-<shortdoc>Execute an [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].</shortdoc>
+<shortdoc>Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].</shortdoc>
 </kw>
-<kw name="Move Next Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="243">
+<kw name="Move Next Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="288">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</doc>
 <shortdoc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</shortdoc>
 </kw>
-<kw name="Move Previous Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="249">
+<kw name="Move Previous Field" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="293">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</doc>
 <shortdoc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</shortdoc>
 </kw>
-<kw name="Open Connection" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="45">
-<arguments repr="host, LU=None, port=23">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="host">
+<kw name="Open Connection" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="47">
+<arguments repr="host: str, LU: str | None = None, port: int = 23, extra_args: List[str] | PathLike | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="host: str">
 <name>host</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="LU=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="LU: str | None = None">
 <name>LU</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="port=23">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="port: int = 23">
 <name>port</name>
+<type>int</type>
 <default>23</default>
 </arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="extra_args: List[str] | PathLike | None = None">
+<name>extra_args</name>
+<type>List[str]</type>
+<type>PathLike</type>
+<type>None</type>
+<default>None</default>
+</arg>
 </arguments>
-<doc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe
+<doc>Create a connection to IBM3270 mainframe with the default port 23. To make a connection with the mainframe
 you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
+
+If you wish, you can provide further configuration data to ``extra_args``. ``extra_args`` takes in a list,
+or a path to a file, containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
+Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
+| # example_argfile_oneline.txt
+| --accepthostname myhost.com
+
+| # example_argfile_multiline.txt
+| --accepthostname myhost.com
+| # this is a comment
+| --charset french
+
+Please make sure the arguments you are providing are available for your specific x3270 application and version.
 
 Example:
     | Open Connection | Hostname |
     | Open Connection | Hostname | LU=LUname |
-    | Open Connection | Hostname | port=992 |</doc>
-<shortdoc>Create a connection with IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.</shortdoc>
+    | Open Connection | Hostname | port=992 |
+    | ${extra_args}   | Create List | --accepthostname | myhost.com | --cafile | ${CURDIR}/cafile.crt |
+    | Open Connection | Hostname | extra_args=${extra_args} |
+    | Open Connection | Hostname | extra_args=${CURDIR}/argfile.txt |</doc>
+<shortdoc>Create a connection to IBM3270 mainframe with the default port 23. To make a connection with the mainframe you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.</shortdoc>
 </kw>
-<kw name="Page Should Contain All Strings" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="420">
-<arguments repr="list_string, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<kw name="Page Should Contain All Strings" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="503">
+<arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
+<type>List[str]</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Search if all of the strings in a given list exists on the mainframe screen.
+<doc>Assert that all of the strings in a given list exist on the mainframe screen.
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-and you can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Contain All Strings | ${list_of_string} |
-    | Page Should Contain All Strings | ${list_of_string} | ignore_case=${True} |
+    | Page Should Contain All Strings | ${list_of_string} | ignore_case=True |
     | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
-<shortdoc>Search if all of the strings in a given list exists on the mainframe screen.</shortdoc>
+<shortdoc>Assert that all of the strings in a given list exist on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Any String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="385">
-<arguments repr="list_string, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<kw name="Page Should Contain Any String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="450">
+<arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
+<type>List[str]</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Search if one of the strings in a given list exists on the mainframe screen.
+<doc>Assert that one of the strings in a given list exists on the mainframe screen.
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-and you can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Contain Any String | ${list_of_string} |
-    | Page Should Contain Any String | ${list_of_string} | ignore_case=${True} |
+    | Page Should Contain Any String | ${list_of_string} | ignore_case=True |
     | Page Should Contain Any String | ${list_of_string} | error_message=New error message |</doc>
-<shortdoc>Search if one of the strings in a given list exists on the mainframe screen.</shortdoc>
+<shortdoc>Assert that one of the strings in a given list exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Match" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="510">
-<arguments repr="txt, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Page Should Contain Match" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="616">
+<arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Fails unless the given string matches the given pattern.
+<doc>Assert that the text displayed on the mainframe screen matches the given pattern.
 
-Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
-In the pattern, * matches to anything and ? matches to any single character.
+Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+In the pattern, * matches anything and ? matches any single character.
 
-Note that the entire screen is only considered a string for this keyword, so if you want to search
-for the string "something" and it is somewhere other than at the beginning or end of the screen it
+Note that for this keyword the entire screen is considered a string. So if you want to search
+for the string "something" and it is somewhere other than at the beginning or end of the screen, it
 should be reported as follows: **something**
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
-can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Contain Match | **something** |
     | Page Should Contain Match | **so???hing** |
-    | Page Should Contain Match | **someTHING** | ignore_case=${True} |
+    | Page Should Contain Match | **someTHING** | ignore_case=True |
     | Page Should Contain Match | **something** | error_message=New error message |</doc>
-<shortdoc>Fails unless the given string matches the given pattern.</shortdoc>
+<shortdoc>Assert that the text displayed on the mainframe screen matches the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Contain String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="348">
-<arguments repr="txt, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Page Should Contain String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="401">
+<arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Search if a given string exists on the mainframe screen.
+<doc>Assert that a given string exists on the mainframe screen.
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-and you can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Contain String | something |
-    | Page Should Contain String | someTHING | ignore_case=${True} |
+    | Page Should Contain String | someTHING | ignore_case=True |
     | Page Should Contain String | something | error_message=New error message |</doc>
-<shortdoc>Search if a given string exists on the mainframe screen.</shortdoc>
+<shortdoc>Assert that a given string exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain String X Times" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="456">
-<arguments repr="txt, number, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Page Should Contain String X Times" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="554">
+<arguments repr="txt: str, number: int, ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="number">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="number: int">
 <name>number</name>
+<type>int</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Search if the entered string appears the desired number of times on the mainframe screen.
+<doc>Asserts that the entered string appears the desired number of times on the mainframe screen.
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
-can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
        | Page Should Contain String X Times | something | 3 |
-       | Page Should Contain String X Times | someTHING | 3 | ignore_case=${True} |
+       | Page Should Contain String X Times | someTHING | 3 | ignore_case=True |
        | Page Should Contain String X Times | something | 3 | error_message=New error message |</doc>
-<shortdoc>Search if the entered string appears the desired number of times on the mainframe screen.</shortdoc>
+<shortdoc>Asserts that the entered string appears the desired number of times on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Match Regex" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="482">
-<arguments repr="regex_pattern">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern">
+<kw name="Page Should Match Regex" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="586">
+<arguments repr="regex_pattern: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern: str">
 <name>regex_pattern</name>
+<type>str</type>
 </arg>
 </arguments>
 <doc>Fails if string does not match pattern as a regular expression. Regular expression check is
@@ -382,120 +459,141 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does not match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain All Strings" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="434">
-<arguments repr="list_string, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<kw name="Page Should Not Contain All Strings" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="525">
+<arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
+<type>List[str]</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Fails if one of the strings in a given list exists on the mainframe screen. if one of the string
+<doc>Fails if one of the strings in a given list exists on the mainframe screen. If one of the string
 are found, the keyword will raise a exception.
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-and you can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Not Contain All Strings | ${list_of_string} |
-    | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=${True} |
+    | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=True |
     | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
-<shortdoc>Fails if one of the strings in a given list exists on the mainframe screen. if one of the string are found, the keyword will raise a exception.</shortdoc>
+<shortdoc>Fails if one of the strings in a given list exists on the mainframe screen. If one of the string are found, the keyword will raise a exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Any String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="405">
-<arguments repr="list_string, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string">
+<kw name="Page Should Not Contain Any String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="480">
+<arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
+<type>List[str]</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the
+<doc>Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the
 string are found, the keyword will raise a exception.
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-and you can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Not Contain Any Strings | ${list_of_string} |
-    | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=${True} |
+    | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=True |
     | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |</doc>
-<shortdoc>Fails if one or more of the strings in a given list exists on the mainframe screen. if one or more of the string are found, the keyword will raise a exception.</shortdoc>
+<shortdoc>Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the string are found, the keyword will raise a exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Match" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="542">
-<arguments repr="txt, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Page Should Not Contain Match" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="651">
+<arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Fails if the given string matches the given pattern.
+<doc>Assert that the text displayed on the mainframe screen does NOT match the given pattern.
 
-Pattern matching is similar as matching files in a shell, and it is always case-sensitive.
-In the pattern, * matches to anything and ? matches to any single character.
+Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+In the pattern, * matches anything and ? matches any single character.
 
-Note that the entire screen is only considered a string for this keyword, so if you want to search
-for the string "something" and it is somewhere other than at the beginning or end of the screen it
+Note that for this keyword the entire screen is considered a string. So if you want to search
+for the string "something" and it is somewhere other than at the beginning or end of the screen, it
 should be reported as follows: **something**
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True} and you
-can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Not Contain Match | **something** |
     | Page Should Not Contain Match | **so???hing** |
-    | Page Should Not Contain Match | **someTHING** | ignore_case=${True} |
+    | Page Should Not Contain Match | **someTHING** | ignore_case=True |
     | Page Should Not Contain Match | **something** | error_message=New error message |</doc>
-<shortdoc>Fails if the given string matches the given pattern.</shortdoc>
+<shortdoc>Assert that the text displayed on the mainframe screen does NOT match the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="367">
-<arguments repr="txt, ignore_case=False, error_message=None">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Page Should Not Contain String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="426">
+<arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case=False">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
+<type>bool</type>
 <default>False</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message=None">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
+<type>str</type>
+<type>None</type>
 <default>None</default>
 </arg>
 </arguments>
-<doc>Search if a given string NOT exists on the mainframe screen.
+<doc>Assert that a given string does NOT exists on the mainframe screen.
 
-The search is case sensitive, if you want ignore this you can pass the argument: ignore_case=${True}
-and you can edit the raise exception message with error_message.
+The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+You can change the exception message by setting a custom string to error_message.
 
 Example:
     | Page Should Not Contain String | something |
-    | Page Should Not Contain String | someTHING | ignore_case=${True} |
+    | Page Should Not Contain String | someTHING | ignore_case=True |
     | Page Should Not Contain String | something | error_message=New error message |</doc>
-<shortdoc>Search if a given string NOT exists on the mainframe screen.</shortdoc>
+<shortdoc>Assert that a given string does NOT exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Not Match Regex" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="496">
-<arguments repr="regex_pattern">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern">
+<kw name="Page Should Not Match Regex" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="600">
+<arguments repr="regex_pattern: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern: str">
 <name>regex_pattern</name>
+<type>str</type>
 </arg>
 </arguments>
 <doc>Fails if string does match pattern as a regular expression. Regular expression check is
@@ -507,57 +605,74 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Read" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="117">
-<arguments repr="ypos, xpos, length">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos">
+<kw name="Read" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="140">
+<arguments repr="ypos: int, xpos: int, length: int">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
+<type>int</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
 <name>xpos</name>
+<type>int</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="length">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="length: int">
 <name>length</name>
+<type>int</type>
 </arg>
 </arguments>
-<doc>Get a string of "length" at screen co-ordinates "ypos"/"xpos".
+<doc>Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.
 
 Co-ordinates are 1 based, as listed in the status area of the terminal.
 
 Example for read a string in the position y=8 / x=10 of a length 15:
     | ${value} | Read | 8 | 10 | 15 |</doc>
-<shortdoc>Get a string of "length" at screen co-ordinates "ypos"/"xpos".</shortdoc>
+<shortdoc>Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Read All Screen" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="133">
+<kw name="Read All Screen" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="158">
 <arguments repr="">
 </arguments>
-<doc>Reads the current screen and returns all content in one string.
+<doc>Read the current screen and returns all content in one string.
+
+This is useful if your automation scripts should take different routes depending
+on a message shown on the screen.
 
 Example:
-    | ${content} | Read All Screen |</doc>
-<shortdoc>Reads the current screen and returns all content in one string.</shortdoc>
+    | ${screen} | Read All Screen              |
+    | IF   | 'certain text' in '''${screen}''' |
+    |      | Do Something                      |
+    | ELSE |                                   |
+    |      | Do Something Else                 |
+    | END  |                                   |</doc>
+<shortdoc>Read the current screen and returns all content in one string.</shortdoc>
 </kw>
-<kw name="Register Run On Failure Keyword" lineno="83">
-<arguments repr="keyword">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="keyword">
+<kw name="Register Run On Failure Keyword" lineno="80">
+<arguments repr="keyword: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="keyword: str">
 <name>keyword</name>
+<type>str</type>
 </arg>
 </arguments>
 <doc>This keyword lets you change the keyword that runs on failure during test execution.
 The default is `Take Screenshot`, which is set on library import.
 
-You can set ``None`` to this keyword, if you do not want to run any keyword on failure.</doc>
+You can set ``None`` to this keyword, if you do not want to run any keyword on failure.
+
+Example:
+    | Register Run On Failure Keyword | None | # no keyword is run on failure |
+    | Register Run On Failure Keyword | Custom Keyword | # Custom Keyword is run on failure |</doc>
 <shortdoc>This keyword lets you change the keyword that runs on failure during test execution. The default is `Take Screenshot`, which is set on library import.</shortdoc>
 </kw>
-<kw name="Send Enter" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="236">
+<kw name="Send Enter" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="282">
 <arguments repr="">
 </arguments>
-<doc>Send a Enter to the screen.</doc>
-<shortdoc>Send a Enter to the screen.</shortdoc>
+<doc>Send an Enter to the screen.</doc>
+<shortdoc>Send an Enter to the screen.</shortdoc>
 </kw>
-<kw name="Send PF" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="255">
-<arguments repr="PF">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="PF">
+<kw name="Send PF" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="298">
+<arguments repr="PF: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="PF: str">
 <name>PF</name>
+<type>str</type>
 </arg>
 </arguments>
 <doc>Send a Program Function to the screen.
@@ -566,26 +681,32 @@ Example:
        | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="155">
-<arguments repr="path">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path">
+<kw name="Set Screenshot Folder" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="188">
+<arguments repr="path: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="path: str">
 <name>path</name>
+<type>str</type>
 </arg>
 </arguments>
 <doc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.
+
+Note that the folder needs to exist before running your automation scripts. Else the images
+will be stored in the ``${OUTPUT DIR}`` set by robotframework.
 
 Example:
     | Set Screenshot Folder | C:\\Temp\\Images |</doc>
 <shortdoc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.</shortdoc>
 </kw>
-<kw name="Take Screenshot" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="168">
-<arguments repr="height=410, width=670">
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="height=410">
+<kw name="Take Screenshot" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="204">
+<arguments repr="height: int = 410, width: int = 670">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="height: int = 410">
 <name>height</name>
+<type>int</type>
 <default>410</default>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="width=670">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="width: int = 670">
 <name>width</name>
+<type>int</type>
 <default>670</default>
 </arg>
 </arguments>
@@ -593,14 +714,14 @@ Example:
 default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
 
 The Screenshot is printed in a iframe log, with the values of height=410 and width=670, you
-can change this values passing them from the keyword.
+can change this values passing them to the keyword.
 
-Examples:
+Example:
     | Take Screenshot |
     | Take Screenshot | height=500 | width=700 |</doc>
 <shortdoc>Generate a screenshot of the IBM 3270 Mainframe in a html format. The default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.</shortdoc>
 </kw>
-<kw name="Wait Field Detected" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="188">
+<kw name="Wait Field Detected" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="230">
 <arguments repr="">
 </arguments>
 <doc>Wait until the screen is ready, the cursor has been positioned
@@ -609,46 +730,50 @@ on a modifiable field, and the keyboard is unlocked.
 Sometimes the server will "unlock" the keyboard but the screen
 will not yet be ready.  In that case, an attempt to read or write to the
 screen will result in a 'E' keyboard status because we tried to read from
-a screen that is not yet ready.
+a screen that is not ready yet.
 
 Using this method tells the client to wait until a field is
 detected and the cursor has been positioned on it.</doc>
 <shortdoc>Wait until the screen is ready, the cursor has been positioned on a modifiable field, and the keyboard is unlocked.</shortdoc>
 </kw>
-<kw name="Wait Until String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="319">
-<arguments repr="txt, timeout=5">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Wait Until String" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="368">
+<arguments repr="txt: str, timeout: int = 5">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout=5">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout: int = 5">
 <name>timeout</name>
+<type>int</type>
 <default>5</default>
 </arg>
 </arguments>
-<doc>Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on
-5 seconds the keyword will raise a exception. You can define a different timeout.
+<doc>Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in
+5 seconds, the keyword will raise an exception. You can define a different timeout.
 
 Example:
     | Wait Until String | something |
     | Wait Until String | something | timeout=10 |</doc>
-<shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string not appear on 5 seconds the keyword will raise a exception. You can define a different timeout.</shortdoc>
+<shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in 5 seconds, the keyword will raise an exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="265">
-<arguments repr="txt">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Write" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="308">
+<arguments repr="txt: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
 </arguments>
-<doc>Send a string to the screen at the current cursor location *and a Enter.*
+<doc>Send a string *and Enter* to the screen at the current cursor location.
 
 Example:
     | Write | something |</doc>
-<shortdoc>Send a string to the screen at the current cursor location *and a Enter.*</shortdoc>
+<shortdoc>Send a string *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="274">
-<arguments repr="txt">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Write Bare" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="317">
+<arguments repr="txt: str">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
 </arguments>
 <doc>Send only the string to the screen at the current cursor location.
@@ -657,47 +782,53 @@ Example:
     | Write Bare | something |</doc>
 <shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="295">
-<arguments repr="txt, ypos, xpos">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Write Bare In Position" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="338">
+<arguments repr="txt: str, ypos: int, xpos: int">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
+<type>int</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
 <name>xpos</name>
+<type>int</type>
 </arg>
 </arguments>
-<doc>Send only the string to the screen at screen co-ordinates "ypos"/"xpos".
+<doc>Send only the string to the screen at screen co-ordinates ``ypos`` / ``xpos``.
 
 Co-ordinates are 1 based, as listed in the status area of the
 terminal.
 
 Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
-<shortdoc>Send only the string to the screen at screen co-ordinates "ypos"/"xpos".</shortdoc>
+<shortdoc>Send only the string to the screen at screen co-ordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write In Position" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="283">
-<arguments repr="txt, ypos, xpos">
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt">
+<kw name="Write In Position" source="C:\Altran\Robot-Framework-Mainframe-3270-Library\Mainframe3270\x3270.py" lineno="326">
+<arguments repr="txt: str, ypos: int, xpos: int">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
+<type>str</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
+<type>int</type>
 </arg>
-<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
 <name>xpos</name>
+<type>int</type>
 </arg>
 </arguments>
-<doc>Send a string to the screen at screen co-ordinates "ypos"/"xpos" and a Enter.
+<doc>Send a string *and Enter* to the screen at screen co-ordinates ``ypos`` / ``xpos``.
 
 Co-ordinates are 1 based, as listed in the status area of the
 terminal.
 
 Example:
     | Write in Position | something | 9 | 11 |</doc>
-<shortdoc>Send a string to the screen at screen co-ordinates "ypos"/"xpos" and a Enter.</shortdoc>
+<shortdoc>Send a string *and Enter* to the screen at screen co-ordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
 </keywords>
 <datatypes>
