@@ -1,6 +1,5 @@
 LICENSE.md
 README.md
-setup.cfg
 setup.py
 Mainframe3270/__init__.py
 Mainframe3270/py3270.py
