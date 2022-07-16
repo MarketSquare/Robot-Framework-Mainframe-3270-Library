@@ -5,16 +5,19 @@ Library             OperatingSystem
 Suite Setup         Open Mainframe
 Suite Teardown      Close Mainframe
 
+
 *** Variables ***
 ${custom_file}          ${CURDIR}${/}output.txt
 ${host}                 pub400.com
 ${not_found_string}     4%$3123
+
 
 *** Test Cases ***
 Should Run Custom Keyword
     Cause Error
     File Should Exist    ${custom_file}
     [Teardown]    Remove File    ${custom_file}
+
 
 *** Keywords ***
 Open Mainframe

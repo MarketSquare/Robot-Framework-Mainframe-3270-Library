@@ -5,10 +5,12 @@ Library             OperatingSystem
 Suite Setup         Open Mainframe
 Suite Teardown      Close Mainframe
 
+
 *** Variables ***
 ${custom_file}          ${CURDIR}${/}output.txt
 ${host}                 pub400.com
 ${not_found_string}     4%$3123
+
 
 *** Test Cases ***
 Takes Screenshot On Failure
@@ -26,6 +28,7 @@ Register None To Run On Failure
     Register Run On Failure Keyword    None
     Cause Error
     File Should Not Exist    ${CURDIR}/*.html
+
 
 *** Keywords ***
 Open Mainframe

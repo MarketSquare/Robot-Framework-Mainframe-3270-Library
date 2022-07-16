@@ -1,3 +1,4 @@
+from datetime import timedelta
 from typing import Any
 
 from robot.api import logger
@@ -28,8 +29,8 @@ class Mainframe3270(DynamicCore):
     | *** Test Cases ***
     | Example
     |     Open Connection    Hostname    LUname
-    |     Change Wait Time    0.4
-    |     Change Wait Time After Write    0.4
+    |     Change Wait Time    0.4 seconds
+    |     Change Wait Time After Write    0.4 seconds
     |     Set Screenshot Folder    C:\\Temp\\IMG
     |     ${value}    Read    3    10    17
     |     Page Should Contain String    ENTER APPLICATION
@@ -46,9 +47,9 @@ class Mainframe3270(DynamicCore):
     def __init__(
         self,
         visible: bool = True,
-        timeout: int = 30,
-        wait_time: float = 0.5,
-        wait_time_after_write: float = 0.0,
+        timeout: timedelta = timedelta(seconds=30),
+        wait_time: timedelta = timedelta(milliseconds=500),
+        wait_time_after_write: timedelta = timedelta(seconds=0),
         img_folder: str = ".",
         run_on_failure_keyword: str = "Take Screenshot",
     ) -> None:
@@ -62,7 +63,8 @@ class Mainframe3270(DynamicCore):
         Timeout, waits and screenshot folder are set on library import as shown above.
         However, they can be changed during runtime. To modify the ``wait_time``, see `Change Wait Time`,
         to modify the ``img_folder``, see `Set Screenshot Folder`,
-        and to modify the ``timeout``, see the `Change Timeout` keyword.
+        and to modify the ``timeout``, see the `Change Timeout` keyword. Timeouts support all available
+        Robot Framework [https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#time-format|time formats].
 
         By default, Mainframe3270 will take a screenshot on failure.
         You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option.

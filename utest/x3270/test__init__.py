@@ -17,6 +17,13 @@ def test_default_args():
     under_test.mf is None
 
 
+def test_import_with_time_string():
+    under_test = x3270(True, "30 s", "500 milliseconds", "1 minute", ".")
+    assert under_test.timeout == 30
+    assert under_test.wait == 0.5
+    assert under_test.wait_write == 60
+
+
 def test_output_folder_robotframework_running(mocker: MockerFixture):
     m_get_variable_value = mocker.patch(
         "robot.libraries.BuiltIn.BuiltIn.get_variable_value",

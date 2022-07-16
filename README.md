@@ -41,8 +41,8 @@ Library    Mainframe3270
 *** Test Cases ***
 Example
     Open Connection    Hostname    LUname
-    Change Wait Time    0.4
-    Change Wait Time After Write    0.4
+    Change Wait Time    0.4 seconds
+    Change Wait Time After Write    0.4 seconds
     Set Screenshot Folder    C:\\Temp\\IMG
     ${value}    Read    3    10    17
     Page Should Contain String    ENTER APPLICATION
@@ -71,6 +71,7 @@ This is useful when test cases are run in a CI/CD-pipeline and there is no need 
 Timeout, waits and screenshot folder are set on library import as shown above. However, they can be changed during runtime. To modify the ``wait_time``, see [Change Wait Time](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Wait%20Time),
 to modify the ``img_folder``, see [Set Screenshot Folder](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Set%20Screenshot%20Folder),
 and to modify the ``timeout``, see the [Change Timeout](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Change%20Timeout) keyword.
+Timeouts support all available Robot Framework [time formats](https://robotframework.org/robotframework/latest/RobotFrameworkUserGuide.html#time-format).
 
 By default, Mainframe3270 will take a screenshot on failure. You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option. If you pass ``None`` to this argument, no keyword will be run. To change the ``run_on_failure_keyword`` during runtime, see [Register Run On Failure Keyword](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html#Register%20Run%20On%20Failure%20Keyword).
 

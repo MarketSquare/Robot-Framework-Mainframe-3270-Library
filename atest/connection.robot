@@ -5,9 +5,11 @@ Resource            pub400_variables.robot
 
 Test Teardown       Test Teardown
 
+
 *** Variables ***
 ${ARGFILE}          ${CURDIR}/resources/argfile.txt
 ${TRACE_FILE}       ${CURDIR}/x3270.trace
+
 
 *** Test Cases ***
 Test Connection With Extra Args List
@@ -20,6 +22,7 @@ Test Connection With Argfile
     Open Connection    ${host}    extra_args=${ARGFILE}
     Sleep    0.5 s
     File Should Exist    ${TRACE_FILE}
+
 
 *** Keywords ***
 Test Teardown

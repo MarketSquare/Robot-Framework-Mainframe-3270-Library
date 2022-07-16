@@ -13,6 +13,7 @@ Suite Setup         Open Mainframe
 Suite Teardown      Close Mainframe
 Test Teardown       Run Keyword If Test Failed    Fatal Error
 
+
 *** Test Cases ***
 Exception Test
     [Setup]    Initial Setting
@@ -59,6 +60,7 @@ Test With Login
     [Tags]    no-ci
     Test Send Enter
     Test Send PF
+
 
 *** Keywords ***
 Open Mainframe
@@ -232,7 +234,10 @@ Exception Test Page Should Contain String
 
 Exception Test Page Should Contain All Strings
     Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_case_in_the_first}    1
-    Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_case_in_the_second}    2
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${list_strings_wrong_case_in_the_second}
+    ...    2
     Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_case_in_the_third}    3
     Verify String Not Found In List    Page Should Contain All Strings    ${list_strings_wrong_in_the_first}    1
     ...    ignore_case=${True}
