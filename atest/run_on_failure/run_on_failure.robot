@@ -1,15 +1,14 @@
 *** Settings ***
 Library             ../../Mainframe3270/    img_folder=${CURDIR}
 Library             OperatingSystem
+Resource            ../pub400_variables.robot
 
 Suite Setup         Open Mainframe
 Suite Teardown      Close Mainframe
 
 
 *** Variables ***
-${custom_file}          ${CURDIR}${/}output.txt
-${host}                 pub400.com
-${not_found_string}     4%$3123
+${CUSTOM_FILE}      ${CURDIR}${/}output.txt
 
 
 *** Test Cases ***
@@ -21,8 +20,8 @@ Takes Screenshot On Failure
 Register Custom Keyword To Run On Failure
     Register Run On Failure Keyword    Custom Run On Failure Keyword
     Cause Error
-    File Should Exist    ${custom_file}
-    [Teardown]    Remove File    ${custom_file}
+    File Should Exist    ${CUSTOM_FILE}
+    [Teardown]    Remove File    ${CUSTOM_FILE}
 
 Register None To Run On Failure
     Register Run On Failure Keyword    None
@@ -32,16 +31,16 @@ Register None To Run On Failure
 
 *** Keywords ***
 Open Mainframe
-    Open Connection    ${host}
+    Open Connection    ${HOST}
     Sleep    3 seconds
 
 Cause Error
     Run Keyword And Expect Error
-    ...    The string "${not_found_string}" was not found
-    ...    Page Should Contain String    ${not_found_string}
+    ...    The string "${STRING_NON_EXISTENT}" was not found
+    ...    Page Should Contain String    ${STRING_NON_EXISTENT}
 
 Custom Run On Failure Keyword
-    Create File    ${custom_file}    An error ocurred
+    Create File    ${CUSTOM_FILE}    An error ocurred
 
 Close Mainframe
     Close Connection
