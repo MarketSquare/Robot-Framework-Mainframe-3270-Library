@@ -9,74 +9,94 @@ Library             OperatingSystem
 Library             String
 Resource            pub400_variables.robot
 
-Suite Setup         Open Mainframe
-Suite Teardown      Close Mainframe
+Suite Setup         Suite Setup
+Suite Teardown      Suite Teardown
 
 
 *** Test Cases ***
-Exception Test
-    [Setup]    Initial Setting
-    Exception Test Read
-    Exception Test Write In Position
-    Exception Test Write Bare In Position
-    Exception Test Page Should Contain String
-    Exception Test Page Should Contain All Strings
-    Exception Test Page Should Contain Any String
-    Exception Test Page Should Contain Match
-    Exception Test Page Should Contain String X Times
-    Exception Test Page Should Match Regex
-    Exception Test Page Should Not Contain String
-    Exception Test Page Should Not Contain All Strings
-    Exception Test Page Should Not Contain Any String
-    Exception Test Wait Until String
-    Exception Test Wait Until String With Timeout
-
-Test Without Login
-    [Setup]    Initial Setting
+Exception Test Read
     Wait Field Detected
-    Test Wait Until String
-    take screenshot
-    Test Page Should Contain All Strings
-    Test Page Should Contain Any String
-    Test Page Should Contain Match
-    Test Page Should Contain String X Times
-    Test Page Should Match Regex
-    Test Page Should Not Match Regex
-    Test Page Should Not Contain All Strings
-    Test Page Should Not Contain Any String
-    Test Page Should Not Contain Match
-    Test Page Should Not Contain String
-    Test Read
-    Test Read All Screen
-    Test Write Bare
-    Test Write Bare In Position
-    Test Delete Char
-    Test Delete Field
-    Test Move Next Field
-    Test Move Previous Field
+    ${read_text}    Read    1    10    21
+    Run Keyword And Expect Error    ${WELCOME_TEXT_EXPECTED_ERROR}    Should Be Equal As Strings    ${WELCOME_TITLE}
+    ...    ${read_text}
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    48    34
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    81    1
+    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    25    48    34
 
-Test With Login
-    [Tags]    no-ci
-    Test Send Enter
-    Test Send PF
+Exception Test Write In Position
+    Run Keyword And Expect Error
+    ...    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}
+    ...    Write In Position
+    ...    ${WRITE_TEXT}
+    ...    10
+    ...    81
+    Run Keyword And Expect Error
+    ...    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}
+    ...    Write In Position
+    ...    ${WRITE_TEXT}
+    ...    25
+    ...    10
 
+Exception Test Write Bare In Position
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    10
+    ...    81
+    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    25
+    ...    10
 
-*** Keywords ***
-Open Mainframe
-    Open Connection    ${HOST}
-    Sleep    3s
+Exception Test Page Should Contain String
+    Verify String Not Found    Page Should Contain String    ${WELCOME_WRONG_CASE}
+    Verify String Not Found    Page Should Contain String    ${STRING_NON_EXISTENT}    ignore_case=${True}
 
-Close Mainframe
-    Close Connection
-    Sleep    1s
+Exception Test Page Should Contain All Strings
+    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_FIRST}    1
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_CASE_IN_THE_SECONDS}
+    ...    2
+    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_THIRD}    3
+    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_FIRST}    1
+    ...    ignore_case=${True}
+    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_SECOND}    2
+    ...    ignore_case=${True}
+    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_THIRD}    3
+    ...    ignore_case=${True}
 
-Initial Setting
-    Create Directory    ${FOLDER}
-    Empty Directory    ${FOLDER}
-    set screenshot folder    ${FOLDER}
-    Change Wait Time    0.4
-    Change Wait Time After Write    0.4
-    Sleep    1s
+Exception Test Page Should Contain Any String
+    Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_ALL_WRONG_CASE}
+    Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}
+    ...    ignore_case=${True}
+
+Exception Test Page Should Contain Match
+    Verify Pattern Not Found    Page Should Contain Match    ${TEXT_NOT_MATCH_WRONG_CASE}
+    Verify Pattern Not Found    Page Should Contain Match    ${STRING_NON_EXISTENT}    ignore_case=${True}
+
+Exception Test Page Should Contain String X Times
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    2
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    1
+    ...    4    ignore_case=${True}
+
+Exception Test Page Should Match Regex
+    Verify Pattern Not Found    Page Should Match Regex    ${INVALID_REGEX}
+
+Exception Test Page Should Not Contain String
+    Verify String Found    Page Should Not Contain String    ${WELCOME}
+    Verify String Found    Page Should Not Contain String    ${WELCOME_WRONG_CASE}    ignore_case=${True}
+
+Exception Test Page Should Not Contain All Strings
+    Verify List Found    Page Should Not Contain All Strings    ${LIST_STRINGS_RIGHT_IN_THE_FIRST}    1
+    Verify List Found    Page Should Not Contain All Strings    ${LIST_STRINGS_RIGHT_IN_THE_SECOND}    2
+    Verify List Found    Page Should Not Contain All Strings    ${LIST_STRINGS_RIGHT_IN_THE_THIRD}    3
+
+Exception Test Page Should Not Contain Any String
+    Verify List Found    Page Should Not Contain Any String    ${LIST_STRINGS_RIGHT_IN_THE_FIRST}    1
+    Verify List Found    Page Should Not Contain Any String    ${LIST_STRINGS_RIGHT_IN_THE_SECOND}    2
+    Verify List Found    Page Should Not Contain Any String    ${LIST_STRINGS_RIGHT_IN_THE_THIRD}    3
+
+Exception Test Wait Until String
+    Verify Wait Until String    Wait Until String    ${STRING_NON_EXISTENT}
+
+Exception Test Wait Until String With Timeout
+    Verify Wait Until String With Timeout    Wait Until String    ${STRING_NON_EXISTENT}    timeout=2
 
 Test Wait Until String
     Wait Until String    ${WELCOME_TITLE}    timeout=4
@@ -99,7 +119,7 @@ Test Page Should Contain Match
 
 Test Page Should Contain String X Times
     Page Should Contain String X Times    ${TEXT_TO_COUNT}    2
-    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    3    ignore_case=${True}
+    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    4    ignore_case=${True}
 
 Test Page Should Match Regex
     Page Should Match Regex    ${VALID_REGEX}
@@ -180,117 +200,49 @@ Test Move Previous Field
     Sleep    1s
 
 Test Send Enter
+    [Tags]    no-ci
     Wait Field Detected
     Page Should Contain String    ${WELCOME}
     Page Should Contain String    ${WELCOME_WRONG_CASE}    ignore_case=${TRUE}
     Delete Field
     ${user}    Get Value From User    Write user
     ${password}    Get Value From User    Write user password
-    write bare in position    ${user}    5    25
+    Write Bare In Position    ${user}    5    25
     Move Next Field
-    write bare    ${password}
-    send enter
-    ${value}    read    1    33    15
-    should be equal as strings    ${MAIN_MENU}    ${value}
-    take screenshot
+    Write Bare    ${password}
+    Send Enter
+    ${value}    Read    1    33    15
+    Should Be Equal As Strings    ${MAIN_MENU}    ${value}
+    Take Screenshot
 
 Test Send PF
-    write    1
+    [Tags]    no-ci
+    Write    1
     Wait Field Detected
-    take screenshot
+    Take Screenshot
     Page Should Contain String    ${USER_TASK}
-    send PF    12
+    Send PF    12
     Wait Field Detected
-    take screenshot
+    Take Screenshot
     Page Should Contain String    ${MAIN_MENU}
-    write    90
+    Write    90
     Wait Field Detected
-    take screenshot
-    # -------
+    Take Screenshot
 
-Exception Test Read
-    Wait Field Detected
-    ${read_text}    Read    1    10    21
-    Run Keyword And Expect Error    ${WELCOME_TEXT_EXPECTED_ERROR}    Should Be Equal As Strings    ${WELCOME_TITLE}
-    ...    ${read_text}
-    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    48    34
-    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    81    1
-    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    25    48    34
 
-Exception Test Write In Position
-    Run Keyword And Expect Error
-    ...    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}
-    ...    Write In Position
-    ...    ${WRITE_TEXT}
-    ...    10
-    ...    81
-    Run Keyword And Expect Error
-    ...    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}
-    ...    Write In Position
-    ...    ${WRITE_TEXT}
-    ...    25
-    ...    10
+*** Keywords ***
+Suite Setup
+    Open Connection    ${HOST}
+    Create Directory    ${FOLDER}
+    Empty Directory    ${FOLDER}
+    Set Screenshot Folder    ${FOLDER}
+    Change Wait Time    0.4
+    Change Wait Time After Write    0.4
+    Sleep    3s
 
-Exception Test Write Bare In Position
-    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    10
-    ...    81
-    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    25
-    ...    10
-
-Exception Test Page Should Contain String
-    Verify String Not Found    Page Should Contain String    ${WELCOME_WRONG_CASE}
-    Verify String Not Found    Page Should Contain String    ${STRING_NON_EXISTENT}    ignore_case=${True}
-
-Exception Test Page Should Contain All Strings
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_FIRST}    1
-    Verify String Not Found In List
-    ...    Page Should Contain All Strings
-    ...    ${LIST_STRINGS_WRONG_CASE_IN_THE_SECONDS}
-    ...    2
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_THIRD}    3
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_FIRST}    1
-    ...    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_SECOND}    2
-    ...    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_THIRD}    3
-    ...    ignore_case=${True}
-
-Exception Test Page Should Contain Any String
-    Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_ALL_WRONG_CASE}
-    Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}
-    ...    ignore_case=${True}
-
-Exception Test Page Should Contain Match
-    Verify Pattern Not Found    Page Should Contain Match    ${TEXT_NOT_MATCH_WRONG_CASE}
-    Verify Pattern Not Found    Page Should Contain Match    ${STRING_NON_EXISTENT}    ignore_case=${True}
-
-Exception Test Page Should Contain String X Times
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    2
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    1
-    ...    3    ignore_case=${True}
-
-Exception Test Page Should Match Regex
-    Verify Pattern Not Found    Page Should Match Regex    ${INVALID_REGEX}
-
-Exception Test Page Should Not Contain String
-    Verify String Found    Page Should Not Contain String    ${WELCOME}
-    Verify String Found    Page Should Not Contain String    ${WELCOME_WRONG_CASE}    ignore_case=${True}
-
-Exception Test Page Should Not Contain All Strings
-    Verify List Found    Page Should Not Contain All Strings    ${LIST_STRINGS_RIGHT_IN_THE_FIRST}    1
-    Verify List Found    Page Should Not Contain All Strings    ${LIST_STRINGS_RIGHT_IN_THE_SECOND}    2
-    Verify List Found    Page Should Not Contain All Strings    ${LIST_STRINGS_RIGHT_IN_THE_THIRD}    3
-
-Exception Test Page Should Not Contain Any String
-    Verify List Found    Page Should Not Contain Any String    ${LIST_STRINGS_RIGHT_IN_THE_FIRST}    1
-    Verify List Found    Page Should Not Contain Any String    ${LIST_STRINGS_RIGHT_IN_THE_SECOND}    2
-    Verify List Found    Page Should Not Contain Any String    ${LIST_STRINGS_RIGHT_IN_THE_THIRD}    3
-
-Exception Test Wait Until String
-    Verify Wait Until String    Wait Until String    ${STRING_NON_EXISTENT}
-
-Exception Test Wait Until String With Timeout
-    Verify Wait Until String With Timeout    Wait Until String    ${STRING_NON_EXISTENT}    timeout=2
+Suite Teardown
+    Close Connection
+    Sleep    1s
 
 Verify String Not Found
     [Arguments]    ${keyword}    ${string}    ${ignore_case}=${False}
