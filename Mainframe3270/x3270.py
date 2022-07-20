@@ -309,7 +309,7 @@ class x3270(object):
         Example:
                | Send PF | 3 |
         """
-        self.mf.exec_command(("PF(" + PF + ")").encode("utf-8"))
+        self.mf.exec_command(("PF({0})").format(PF).encode("utf-8"))
         time.sleep(self.wait)
 
     @keyword("Write")
@@ -423,7 +423,7 @@ class x3270(object):
             | Page Should Contain String | someTHING | ignore_case=True                |
             | Page Should Contain String | something | error_message=New error message |
         """
-        message = 'The string "' + txt + '" was not found'
+        message = f'The string "{txt}" was not found'
         if error_message:
             message = error_message
         if ignore_case:
@@ -431,7 +431,7 @@ class x3270(object):
         result = self._search_string(txt, ignore_case)
         if not result:
             raise Exception(message)
-        logger.info('The string "' + txt + '" was found')
+        logger.info(f'The string "{txt}" was found')
 
     @keyword("Page Should Not Contain String")
     def page_should_not_contain_string(
@@ -448,7 +448,7 @@ class x3270(object):
             | Page Should Not Contain String | someTHING | ignore_case=True |
             | Page Should Not Contain String | something | error_message=New error message |
         """
-        message = 'The string "' + txt + '" was found'
+        message = f'The string "{txt}" was found'
         if error_message:
             message = error_message
         if ignore_case:
@@ -475,7 +475,7 @@ class x3270(object):
             | Page Should Contain Any String | ${list_of_string} | ignore_case=True |
             | Page Should Contain Any String | ${list_of_string} | error_message=New error message |
         """
-        message = 'The strings "' + str(list_string) + '" were not found'
+        message = f'The strings "{list_string}" were not found'
         if error_message:
             message = error_message
         if ignore_case:
@@ -558,7 +558,7 @@ class x3270(object):
             result = self._search_string(string, ignore_case)
             if result:
                 if message is None:
-                    message = 'The string "' + string + '" was found'
+                    message = f'The string "{string}" was found'
                 raise Exception(message)
 
     @keyword("Page Should Contain String X Times")
@@ -591,7 +591,7 @@ class x3270(object):
             if message is None:
                 message = f'The string "{txt}" was not found "{number}" times, it appears "{number_of_times}" times'
             raise Exception(message)
-        logger.info('The string "' + txt + '" was found "' + str(number) + '" times')
+        logger.info(f'The string "{txt}" was found "{number}" times')
 
     @keyword("Page Should Match Regex")
     def page_should_match_regex(self, regex_pattern: str) -> None:
@@ -605,7 +605,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if not re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception('No matches found for "' + regex_pattern + '" pattern')
+            raise Exception(f'No matches found for "{regex_pattern}" pattern')
 
     @keyword("Page Should Not Match Regex")
     def page_should_not_match_regex(self, regex_pattern: str) -> None:
@@ -619,9 +619,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception(
-                'There are matches found for "' + regex_pattern + '" pattern'
-            )
+            raise Exception(f'There are matches found for "{regex_pattern}" pattern')
 
     @keyword("Page Should Contain Match")
     def page_should_contain_match(
@@ -655,7 +653,7 @@ class x3270(object):
         result = matcher.match(all_screen)
         if not result:
             if message is None:
-                message = 'No matches found for "' + txt + '" pattern'
+                message = f'No matches found for "{txt}" pattern'
             raise Exception(message)
 
     @keyword("Page Should Not Contain Match")
@@ -690,7 +688,7 @@ class x3270(object):
         result = matcher.match(all_screen)
         if result:
             if message is None:
-                message = 'There are matches found for "' + txt + '" pattern'
+                message = f'There are matches found for "{txt}" pattern'
             raise Exception(message)
 
     def _read_all_screen(self) -> str:
@@ -713,11 +711,11 @@ class x3270(object):
             result = self._search_string(string, ignore_case)
             if not should_match and result:
                 if message is None:
-                    message = 'The string "' + string + '" was found'
+                    message = f'The string "{string}" was found'
                 raise Exception(message)
             elif should_match and not result:
                 if message is None:
-                    message = 'The string "' + string + '" was not found'
+                    message = f'The string "{string}" was not found'
                 raise Exception(message)
 
     @staticmethod
