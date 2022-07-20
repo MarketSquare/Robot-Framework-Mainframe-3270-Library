@@ -12,6 +12,7 @@ jobs:
       matrix:
         python-version: [3.7, 3.10.0]
         os: [ubuntu-latest, windows-latest]
+      fail-fast: false
 
     steps:
     - name: Checkout repository
