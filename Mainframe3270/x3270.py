@@ -2,12 +2,13 @@ import os
 import re
 import socket
 import time
+from datetime import timedelta
 from typing import Any, List, Optional, Union
 
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
-from robot.utils import Matcher
+from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
 
 from .py3270 import Emulator
 
@@ -16,15 +17,15 @@ class x3270(object):
     def __init__(
         self,
         visible: bool,
-        timeout: int,
-        wait_time: float,
-        wait_time_after_write: float,
+        timeout: timedelta,
+        wait_time: timedelta,
+        wait_time_after_write: timedelta,
         img_folder: str,
     ) -> None:
         self.visible = visible
-        self.timeout = timeout
-        self.wait = wait_time
-        self.wait_write = wait_time_after_write
+        self.timeout = self._convert_timeout(timeout)
+        self.wait = self._convert_timeout(wait_time)
+        self.wait_write = self._convert_timeout(wait_time_after_write)
         self.imgfolder = img_folder
         self.mf: Emulator = None  # type: ignore
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
@@ -33,15 +34,20 @@ class x3270(object):
         except RobotNotRunningError:
             self.output_folder = os.getcwd()
 
+    def _convert_timeout(self, time):
+        if isinstance(time, timedelta):
+            return time.total_seconds()
+        return timestr_to_secs(time, round_to=None)
+
     @keyword("Change Timeout")
-    def change_timeout(self, seconds: int) -> None:
+    def change_timeout(self, seconds: timedelta) -> None:
         """
         Change the timeout for connection in seconds.
 
         Example:
-            | Change Timeout | 3 |
+            | Change Timeout | 3 seconds |
         """
-        self.timeout = seconds
+        self.timeout = self._convert_timeout(seconds)
 
     @keyword("Open Connection")
     def open_connection(
@@ -97,7 +103,7 @@ class x3270(object):
         self.mf = None  # type: ignore
 
     @keyword("Change Wait Time")
-    def change_wait_time(self, wait_time: float) -> None:
+    def change_wait_time(self, wait_time: timedelta) -> None:
         """To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
         created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:
 
@@ -110,13 +116,14 @@ class x3270(object):
         If you want to change this value, just use this keyword passing the time in seconds.
 
         Example:
-            | Change Wait Time | 0.1 |
-            | Change Wait Time | 2 |
+            | Change Wait Time | 0.5              |
+            | Change Wait Time | 200 milliseconds |
+            | Change Wait Time | 0:00:01.500      |
         """
-        self.wait = wait_time
+        self.wait = self._convert_timeout(wait_time)
 
     @keyword("Change Wait Time After Write")
-    def change_wait_time_after_write(self, wait_time_after_write: float) -> None:
+    def change_wait_time_after_write(self, wait_time_after_write: timedelta) -> None:
         """To give the user time to see what is happening inside the mainframe, a "wait time after write" has
         been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these
         keywords:
@@ -131,10 +138,11 @@ class x3270(object):
         Note: This keyword is useful for debug purpose
 
         Example:
-            | Change Wait Time After Write | 0.5 |
-            | Change Wait Time After Write | 2 |
+            | Change Wait Time After Write | 1             |
+            | Change Wait Time After Write | 0.5 seconds   |
+            | Change Wait Time After Write | 0:00:02       |
         """
-        self.wait_write = wait_time_after_write
+        self.wait_write = self._convert_timeout(wait_time_after_write)
 
     @keyword("Read")
     def read(self, ypos: int, xpos: int, length: int) -> str:
@@ -301,7 +309,7 @@ class x3270(object):
         Example:
                | Send PF | 3 |
         """
-        self.mf.exec_command(("PF(" + PF + ")").encode("utf-8"))
+        self.mf.exec_command(("PF({0})").format(PF).encode("utf-8"))
         time.sleep(self.wait)
 
     @keyword("Write")
@@ -365,22 +373,25 @@ class x3270(object):
             time.sleep(self.wait)
 
     @keyword("Wait Until String")
-    def wait_until_string(self, txt: str, timeout: int = 5) -> str:
+    def wait_until_string(
+        self, txt: str, timeout: timedelta = timedelta(seconds=5)
+    ) -> str:
         """Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in
         5 seconds, the keyword will raise an exception. You can define a different timeout.
 
         Example:
             | Wait Until String | something |
-            | Wait Until String | something | timeout=10 |
+            | Wait Until String | something | 10 |
+            | Wait Until String | something | 15 s |
+            | Wait Until String | something | 0:00:15 |
         """
-        max_time = time.ctime(int(time.time()) + timeout)
-        while time.ctime(int(time.time())) < max_time:
+        timeout = self._convert_timeout(timeout)
+        max_time = time.time() + timeout  # type: ignore
+        while time.time() < max_time:
             result = self._search_string(str(txt))
             if result:
                 return txt
-        raise Exception(
-            'String "' + txt + '" not found in ' + str(timeout) + " seconds"
-        )
+        raise Exception(f'String "{txt}" not found in {secs_to_timestr(timeout)}')
 
     def _search_string(self, string: str, ignore_case: bool = False) -> bool:
         """Search if a string exists on the mainframe screen and return True or False."""
@@ -409,10 +420,10 @@ class x3270(object):
 
         Example:
             | Page Should Contain String | something |
-            | Page Should Contain String | someTHING | ignore_case=True |
+            | Page Should Contain String | someTHING | ignore_case=True                |
             | Page Should Contain String | something | error_message=New error message |
         """
-        message = 'The string "' + txt + '" was not found'
+        message = f'The string "{txt}" was not found'
         if error_message:
             message = error_message
         if ignore_case:
@@ -420,7 +431,7 @@ class x3270(object):
         result = self._search_string(txt, ignore_case)
         if not result:
             raise Exception(message)
-        logger.info('The string "' + txt + '" was found')
+        logger.info(f'The string "{txt}" was found')
 
     @keyword("Page Should Not Contain String")
     def page_should_not_contain_string(
@@ -437,7 +448,7 @@ class x3270(object):
             | Page Should Not Contain String | someTHING | ignore_case=True |
             | Page Should Not Contain String | something | error_message=New error message |
         """
-        message = 'The string "' + txt + '" was found'
+        message = f'The string "{txt}" was found'
         if error_message:
             message = error_message
         if ignore_case:
@@ -464,7 +475,7 @@ class x3270(object):
             | Page Should Contain Any String | ${list_of_string} | ignore_case=True |
             | Page Should Contain Any String | ${list_of_string} | error_message=New error message |
         """
-        message = 'The strings "' + str(list_string) + '" were not found'
+        message = f'The strings "{list_string}" were not found'
         if error_message:
             message = error_message
         if ignore_case:
@@ -547,7 +558,7 @@ class x3270(object):
             result = self._search_string(string, ignore_case)
             if result:
                 if message is None:
-                    message = 'The string "' + string + '" was found'
+                    message = f'The string "{string}" was found'
                 raise Exception(message)
 
     @keyword("Page Should Contain String X Times")
@@ -580,7 +591,7 @@ class x3270(object):
             if message is None:
                 message = f'The string "{txt}" was not found "{number}" times, it appears "{number_of_times}" times'
             raise Exception(message)
-        logger.info('The string "' + txt + '" was found "' + str(number) + '" times')
+        logger.info(f'The string "{txt}" was found "{number}" times')
 
     @keyword("Page Should Match Regex")
     def page_should_match_regex(self, regex_pattern: str) -> None:
@@ -594,7 +605,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if not re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception('No matches found for "' + regex_pattern + '" pattern')
+            raise Exception(f'No matches found for "{regex_pattern}" pattern')
 
     @keyword("Page Should Not Match Regex")
     def page_should_not_match_regex(self, regex_pattern: str) -> None:
@@ -608,9 +619,7 @@ class x3270(object):
         """
         page_text = self._read_all_screen()
         if re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception(
-                'There are matches found for "' + regex_pattern + '" pattern'
-            )
+            raise Exception(f'There are matches found for "{regex_pattern}" pattern')
 
     @keyword("Page Should Contain Match")
     def page_should_contain_match(
@@ -644,7 +653,7 @@ class x3270(object):
         result = matcher.match(all_screen)
         if not result:
             if message is None:
-                message = 'No matches found for "' + txt + '" pattern'
+                message = f'No matches found for "{txt}" pattern'
             raise Exception(message)
 
     @keyword("Page Should Not Contain Match")
@@ -679,7 +688,7 @@ class x3270(object):
         result = matcher.match(all_screen)
         if result:
             if message is None:
-                message = 'There are matches found for "' + txt + '" pattern'
+                message = f'There are matches found for "{txt}" pattern'
             raise Exception(message)
 
     def _read_all_screen(self) -> str:
@@ -702,11 +711,11 @@ class x3270(object):
             result = self._search_string(string, ignore_case)
             if not should_match and result:
                 if message is None:
-                    message = 'The string "' + string + '" was found'
+                    message = f'The string "{string}" was found'
                 raise Exception(message)
             elif should_match and not result:
                 if message is None:
-                    message = 'The string "' + string + '" was not found'
+                    message = f'The string "{string}" was not found'
                 raise Exception(message)
 
     @staticmethod
