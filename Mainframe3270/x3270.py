@@ -4,12 +4,10 @@ import socket
 import time
 from datetime import timedelta
 from typing import Any, List, Optional, Union
-
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
-
 from .py3270 import Emulator
 
 

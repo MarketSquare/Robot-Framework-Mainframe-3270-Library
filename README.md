@@ -1,7 +1,7 @@
 [![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-mainframe3270.svg)](https://pypi.org/project/robotframework-mainframe3270/)
 [![Total downloads](https://static.pepy.tech/personalized-badge/robotframework-mainframe3270?period=total&units=international_system&left_color=lightgrey&right_color=yellow&left_text=total)](https://pypi.org/project/robotframework-mainframe3270/)
 [![Latest Version](https://img.shields.io/pypi/v/robotframework-mainframe3270.svg)](https://pypi.org/project/robotframework-mainframe3270/)
-[![tests](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml/badge.svg)](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml)
+[![tests](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml/badge.svg?branch=master)](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/actions/workflows/run-tests.yml)
 [![codecov](https://codecov.io/gh/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/branch/master/graph/badge.svg?token=N41G62D883)](https://codecov.io/gh/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library)
 
 # Mainframe3270Library
@@ -16,8 +16,14 @@ Mainframe3270 requires Python 3. It is tested with Python 3.7 and 3.10.0, but sh
 ## Installation
 
 In order to use this library, first install the package from PyPI.
+```commandline
+pip install robotframework-mainframe3270
+```
 
-```pip install robotframework-mainframe3270```
+Or you can upgrade with:
+```commandline
+pip install --upgrade robotframework-mainframe3270
+```
 
 Then, depending on your OS, proceed with the corresponding chapters in this README.
 
@@ -29,12 +35,19 @@ The default folder is "C:\Program Files\wc3270". This needs to be in the `PATH` 
 
 ### Unix
 
-You can install the x3270 project from [the instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through `sudo apt-get install x3270` / `brew install x3270`.
+You can install the x3270 project from [the instructions page](http://x3270.bgp.nu/Build.html#Unix). Or if it is available in your distribution through:
+```commandline
+sudo apt-get install x3270
+```
+or
+```commandline
+brew install x3270
+```
 
 More information can be found on the [Wiki page](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
 
 ## Example
-```robot
+```RobotFramework
 *** Settings ***
 Library    Mainframe3270
 
@@ -52,6 +65,10 @@ Example
     Take Screenshot
     Close Connection
 ```
+
+## Keyword Documentation
+
+You can find the keyword documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html).
 
 ## Importing
 
@@ -136,10 +153,6 @@ Unit tests are invoked with `inv utest`, acceptance tests with `inv atest`. To i
 acceptance tests, simply run `inv test`.
 
 Run `inv -l` to get a list of all available tasks.
-
-## Keyword Documentation
-
-You can find the keyword documentation [here](https://raw.githack.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/doc/Mainframe3270.html).
 
 ## Keyword Tests
 

@@ -3,7 +3,7 @@ Documentation       These tests verify that all keywords are working correctly a
 ...                 To run all the tests, you will need to create a user in the https://www.pub400.com/ website,
 ...                 this will affect the last test "Test With Login"
 
-Library             ../Mainframe3270/
+Library             ../Mainframe3270/    run_on_failure_keyword=None
 Library             Dialogs
 Library             OperatingSystem
 Library             String

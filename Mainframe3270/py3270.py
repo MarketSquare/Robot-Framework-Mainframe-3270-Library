@@ -6,8 +6,6 @@ import time
 import warnings
 from os import name as os_name
 
-import six
-
 log = logging.getLogger(__name__)
 
 
@@ -44,7 +42,7 @@ class Command(object):
     """
 
     def __init__(self, app, cmdstr):
-        if isinstance(cmdstr, six.text_type):
+        if isinstance(cmdstr, str):
             warnings.warn("Commands should be byte strings", stacklevel=3)
             cmdstr = cmdstr.encode("utf-8")
         self.app = app
