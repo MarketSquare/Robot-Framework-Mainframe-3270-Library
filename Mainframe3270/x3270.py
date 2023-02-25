@@ -207,16 +207,18 @@ class x3270(object):
             logger.warn('Screenshots will be saved in "%s"' % self.imgfolder)
 
     @keyword("Take Screenshot")
-    def take_screenshot(self, height: int = 410, width: int = 670) -> None:
+    def take_screenshot(self, height: int = 410, width: int = 670) -> str:
         """Generate a screenshot of the IBM 3270 Mainframe in a html format. The
         default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
 
         The Screenshot is printed in a iframe log, with the values of height=410 and width=670, you
         can change this values passing them to the keyword.
+        
+        The full file path is returned.
 
         Example:
-            | Take Screenshot |
-            | Take Screenshot | height=500 | width=700 |
+            | ${filepath} | Take Screenshot |
+            | ${filepath} | Take Screenshot | height=500 | width=700 |
         """
         filename_prefix = "screenshot"
         extension = "html"
@@ -231,6 +233,7 @@ class x3270(object):
             level="INFO",
             html=True,
         )
+        return filepath
 
     @keyword("Wait Field Detected")
     def wait_field_detected(self) -> None:
