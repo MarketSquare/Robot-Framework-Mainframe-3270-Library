@@ -4,7 +4,6 @@ Documentation       These tests verify that all keywords are working correctly a
 ...                 this will affect the last test "Test With Login"
 
 Library             ../Mainframe3270/    run_on_failure_keyword=None
-Library             Dialogs
 Library             OperatingSystem
 Library             String
 Resource            pub400_variables.robot
@@ -15,6 +14,7 @@ Suite Teardown      Suite Teardown
 
 *** Test Cases ***
 Exception Test Read
+    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1
     Wait Field Detected
     ${read_text}    Read    1    10    21
     Run Keyword And Expect Error    ${WELCOME_TEXT_EXPECTED_ERROR}    Should Be Equal As Strings    ${WELCOME_TITLE}
@@ -71,9 +71,9 @@ Exception Test Page Should Contain Match
     Verify Pattern Not Found    Page Should Contain Match    ${STRING_NON_EXISTENT}    ignore_case=${True}
 
 Exception Test Page Should Contain String X Times
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    2
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    1
-    ...    4    ignore_case=${True}
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    2    1
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1
+    ...    2    ignore_case=${True}
 
 Exception Test Page Should Match Regex
     Verify Pattern Not Found    Page Should Match Regex    ${INVALID_REGEX}
@@ -118,8 +118,8 @@ Test Page Should Contain Match
     Page Should Contain Match    ${TEXT_MATCH_WRONG_CASE}    ignore_case=${True}
 
 Test Page Should Contain String X Times
-    Page Should Contain String X Times    ${TEXT_TO_COUNT}    2
-    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    4    ignore_case=${True}
+    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1
+    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    2    ignore_case=${True}
 
 Test Page Should Match Regex
     Page Should Match Regex    ${VALID_REGEX}
@@ -200,34 +200,19 @@ Test Move Previous Field
     Sleep    1s
 
 Test Send Enter
-    [Tags]    no-ci
     Wait Field Detected
     Page Should Contain String    ${WELCOME}
     Page Should Contain String    ${WELCOME_WRONG_CASE}    ignore_case=${TRUE}
     Delete Field
-    ${user}    Get Value From User    Write user
-    ${password}    Get Value From User    Write user password
-    Write Bare In Position    ${user}    5    25
     Move Next Field
-    Write Bare    ${password}
+    Delete Field
     Send Enter
-    ${value}    Read    1    33    15
-    Should Be Equal As Strings    ${MAIN_MENU}    ${value}
-    Take Screenshot
+    Page Should Contain String    Sign-on information required.
 
 Test Send PF
     [Tags]    no-ci
-    Write    1
-    Wait Field Detected
-    Take Screenshot
-    Page Should Contain String    ${USER_TASK}
-    Send PF    12
-    Wait Field Detected
-    Take Screenshot
-    Page Should Contain String    ${MAIN_MENU}
-    Write    90
-    Wait Field Detected
-    Take Screenshot
+    Send PF    1
+    Page Should Contain String    Function key not allowed.
 
 
 *** Keywords ***
@@ -272,10 +257,15 @@ Verify Pattern Not Found
     END
 
 Verify String Does Not Appear X Times
-    [Arguments]    ${keyword}    ${string}    ${wrong_number_of_times}    ${right_number_of_times}    ${ignore_case}=${False}
+    [Arguments]
+    ...    ${keyword}
+    ...    ${string}
+    ...    ${wrong_number_of_times}
+    ...    ${right_number_of_times}
+    ...    ${ignore_case}=${False}
     ${expected_error}    Set Variable
     ...    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
-    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${TEXT_TO_COUNT}    1
+    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ${wrong_number_of_times}
     ...    ignore_case=${ignore_case}
 
 Verify String Found

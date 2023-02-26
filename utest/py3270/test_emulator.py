@@ -2,6 +2,7 @@ import errno
 import os
 
 import pytest
+from pytest_mock import MockerFixture
 
 from Mainframe3270.py3270 import Emulator, TerminatedError
 
@@ -9,12 +10,12 @@ CURDIR = os.path.dirname(os.path.realpath(__file__))
 
 
 @pytest.fixture
-def mock_windows(mocker):
+def mock_windows(mocker: MockerFixture):
     mocker.patch("Mainframe3270.py3270.os_name", "nt")
 
 
 @pytest.fixture
-def mock_posix(mocker):
+def mock_posix(mocker: MockerFixture):
     mocker.patch("Mainframe3270.py3270.os_name", "posix")
     mocker.patch("subprocess.Popen")
 

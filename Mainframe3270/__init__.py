@@ -47,7 +47,7 @@ class Mainframe3270(DynamicCore):
     def __init__(
         self,
         visible: bool = True,
-        timeout: timedelta = timedelta(seconds=30),
+        timeout: int = 30,
         wait_time: timedelta = timedelta(milliseconds=500),
         wait_time_after_write: timedelta = timedelta(seconds=0),
         img_folder: str = ".",

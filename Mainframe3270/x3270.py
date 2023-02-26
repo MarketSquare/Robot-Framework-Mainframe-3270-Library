@@ -4,10 +4,12 @@ import socket
 import time
 from datetime import timedelta
 from typing import Any, List, Optional, Union
+
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
+
 from .py3270 import Emulator
 
 
@@ -15,13 +17,13 @@ class x3270(object):
     def __init__(
         self,
         visible: bool,
-        timeout: timedelta,
+        timeout: int,
         wait_time: timedelta,
         wait_time_after_write: timedelta,
         img_folder: str,
     ) -> None:
         self.visible = visible
-        self.timeout = self._convert_timeout(timeout)
+        self.timeout = timeout
         self.wait = self._convert_timeout(wait_time)
         self.wait_write = self._convert_timeout(wait_time_after_write)
         self.imgfolder = img_folder
@@ -38,7 +40,7 @@ class x3270(object):
         return timestr_to_secs(time, round_to=None)
 
     @keyword("Change Timeout")
-    def change_timeout(self, seconds: timedelta) -> None:
+    def change_timeout(self, seconds: int) -> None:
         """
         Change the timeout for connection in seconds.
 
@@ -53,7 +55,7 @@ class x3270(object):
         host: str,
         LU: Optional[str] = None,
         port: int = 23,
-        extra_args: Optional[Union[List[str], os.PathLike]] = None,
+        extra_args: Optional[Union[List[str], os.PathLike, str]] = None,
     ):
         """Create a connection to IBM3270 mainframe with the default port 23. To make a connection with the mainframe
         you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.

@@ -7,20 +7,17 @@ ${WRITE_TEXT_UTF8}                                  _ëçá
 # Texts in the Mainframe
 ${WELCOME}                                          Welcome to PUB400.COM
 ${WELCOME_TITLE}                                    Welcome to PUB400.COM * your public IBM i server
-${MAIN_MENU}                                        IBM i Main Menu
-${USER_TASK}                                        User Tasks
 ${TEXT_MATCH}                                       *PUB???.COM*
-${TEXT_TO_COUNT}                                    PUB400
+${TEXT_TO_COUNT}                                    server
 ${TEXT_NOT_MATCH}                                   *PUB???400.COM*
 # Texts after write
 ${TEXT_AFTER_DELETE_CHAR}                           EST _ëçá
 ${TEXT_AFTER_DELETE_FIELD}                          ${SPACE * 8}
 ${TEXT_AFTER_MOVE_NEXT_FIELD}                       ${SPACE * 4}
 # Texts in the Mainframe with wrong case
-${WELCOME_TITLE_WRONG_CASE}                         WELCOME TO PUB400.COM * YOUR PUBLIC IBM I SERVER
 ${WELCOME_WRONG_CASE}                               WELCOME TO PUB400.COM
 ${TEXT_MATCH_WRONG_CASE}                            *pub???.com*
-${TEXT_TO_COUNT_WRONG_CASE}                         pub400
+${TEXT_TO_COUNT_WRONG_CASE}                         SERVER
 ${TEXT_NOT_MATCH_WRONG_CASE}                        *pub???400.com*
 # Regex
 ${VALID_REGEX}                                      PUB\\d{3}
