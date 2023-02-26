@@ -55,7 +55,7 @@ class x3270(object):
         host: str,
         LU: Optional[str] = None,
         port: int = 23,
-        extra_args: Optional[Union[List[str], os.PathLike, str]] = None,
+        extra_args: Optional[Union[List[str], os.PathLike]] = None,
     ):
         """Create a connection to IBM3270 mainframe with the default port 23. To make a connection with the mainframe
         you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.

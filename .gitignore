@@ -16,6 +16,7 @@ atest/report.html
 atest/screenshot/
 atest/logs/
 atest/screenshots/
+*-x3270-trace.txt
 
 # Python virtual environment
 .venv

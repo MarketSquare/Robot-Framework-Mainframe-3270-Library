@@ -217,7 +217,7 @@ Test Send PF
 
 *** Keywords ***
 Suite Setup
-    Open Connection    ${HOST}
+    Open Connection    ${HOST}    extra_args=["-trace", "-tracefile", r"${OUTPUT_DIR}/${SUITE_NAME}-x3270-trace.txt"]
     Create Directory    ${FOLDER}
     Empty Directory    ${FOLDER}
     Set Screenshot Folder    ${FOLDER}
