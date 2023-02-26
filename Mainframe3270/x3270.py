@@ -221,6 +221,7 @@ class x3270(object):
         Example:
             | ${filepath} | Take Screenshot |
             | ${filepath} | Take Screenshot | height=500 | width=700 |
+            | Take Screenshot | height=500 | width=700 |
         """
         filename_prefix = "screenshot"
         extension = "html"

@@ -39,5 +39,7 @@ def test_take_screenshot(mocker: MockerFixture, under_test: x3270):
         level="INFO",
         html=True,
     )
-    
-    assert filepath == ".\\screenshot_1000.html"
+    if os.name == "nt":
+        assert filepath == r".\screenshot_1000.html"
+    else:
+        assert filepath == "./screenshot_1000.html"
