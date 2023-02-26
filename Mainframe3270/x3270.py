@@ -4,10 +4,12 @@ import socket
 import time
 from datetime import timedelta
 from typing import Any, List, Optional, Union
+
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
+
 from .py3270 import Emulator
 
 
@@ -213,7 +215,7 @@ class x3270(object):
 
         The Screenshot is printed in a iframe log, with the values of height=410 and width=670, you
         can change this values passing them to the keyword.
-        
+
         The full file path is returned.
 
         Example:
