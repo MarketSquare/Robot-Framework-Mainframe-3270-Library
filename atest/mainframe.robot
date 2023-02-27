@@ -71,9 +71,9 @@ Exception Test Page Should Contain Match
     Verify Pattern Not Found    Page Should Contain Match    ${STRING_NON_EXISTENT}    ignore_case=${True}
 
 Exception Test Page Should Contain String X Times
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    2
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    3
     Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    1
-    ...    4    ignore_case=${True}
+    ...    5    ignore_case=${True}
 
 Exception Test Page Should Match Regex
     Verify Pattern Not Found    Page Should Match Regex    ${INVALID_REGEX}
@@ -118,8 +118,8 @@ Test Page Should Contain Match
     Page Should Contain Match    ${TEXT_MATCH_WRONG_CASE}    ignore_case=${True}
 
 Test Page Should Contain String X Times
-    Page Should Contain String X Times    ${TEXT_TO_COUNT}    2
-    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    4    ignore_case=${True}
+    Page Should Contain String X Times    ${TEXT_TO_COUNT}    3
+    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    5    ignore_case=${True}
 
 Test Page Should Match Regex
     Page Should Match Regex    ${VALID_REGEX}
@@ -272,7 +272,12 @@ Verify Pattern Not Found
     END
 
 Verify String Does Not Appear X Times
-    [Arguments]    ${keyword}    ${string}    ${wrong_number_of_times}    ${right_number_of_times}    ${ignore_case}=${False}
+    [Arguments]
+    ...    ${keyword}
+    ...    ${string}
+    ...    ${wrong_number_of_times}
+    ...    ${right_number_of_times}
+    ...    ${ignore_case}=${False}
     ${expected_error}    Set Variable
     ...    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${TEXT_TO_COUNT}    1

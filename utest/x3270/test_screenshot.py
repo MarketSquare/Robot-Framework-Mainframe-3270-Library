@@ -32,10 +32,14 @@ def test_take_screenshot(mocker: MockerFixture, under_test: x3270):
     mocker.patch("robot.api.logger.write")
     mocker.patch("time.time", return_value=1.0)
 
-    under_test.take_screenshot(500, 500)
+    filepath = under_test.take_screenshot(500, 500)
 
     logger.write.assert_called_with(
         '<iframe src="./screenshot_1000.html" height="500" width="500"></iframe>',
         level="INFO",
         html=True,
     )
+    if os.name == "nt":
+        assert filepath == r".\screenshot_1000.html"
+    else:
+        assert filepath == "./screenshot_1000.html"
