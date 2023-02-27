@@ -43,3 +43,15 @@ def test_take_screenshot(mocker: MockerFixture, under_test: x3270):
         assert filepath == r".\screenshot_1000.html"
     else:
         assert filepath == "./screenshot_1000.html"
+        
+    filepath = under_test.take_screenshot(250, 250, "MyScreenshot")
+
+    logger.write.assert_called_with(
+        '<iframe src="./MyScreenshot_1000.html" height="250" width="250"></iframe>',
+        level="INFO",
+        html=True,
+    )
+    if os.name == "nt":
+        assert filepath == r".\MyScreenshot_1000.html"
+    else:
+        assert filepath == "./MyScreenshot_1000.html"
