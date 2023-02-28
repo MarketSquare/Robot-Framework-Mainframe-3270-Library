@@ -1,5 +1,6 @@
 import errno
 import logging
+import os
 import socket
 import subprocess
 import time
@@ -121,7 +122,7 @@ class ExecutableApp(object):
             for arg in extra_args:
                 self.args.append(arg)
 
-        if isinstance(extra_args, str):
+        if isinstance(extra_args, os.PathLike) or isinstance(extra_args, str):
             with open(extra_args) as file:
                 for line in file:
                     if line.lstrip().startswith(r"#"):
