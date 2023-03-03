@@ -43,7 +43,7 @@ def test_take_screenshot(mocker: MockerFixture, under_test: x3270):
         assert filepath == r".\screenshot_1000.html"
     else:
         assert filepath == "./screenshot_1000.html"
-        
+
     filepath = under_test.take_screenshot(250, 250, "MyScreenshot")
 
     logger.write.assert_called_with(
