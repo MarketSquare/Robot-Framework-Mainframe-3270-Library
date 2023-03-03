@@ -70,7 +70,7 @@ jobs:
     - name: Run atests with coverage windows
       if: matrix.os == 'windows-latest'
       run: |
-        coverage run --branch --source Mainframe3270/ -m robot $ROBOT_OPTIONS DEBUG atest/
+        coverage run --branch --source Mainframe3270/ -m robot $ROBOT_OPTIONS atest/
         coverage report
         coverage xml
 
