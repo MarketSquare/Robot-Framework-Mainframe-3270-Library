@@ -1,2 +1,2 @@
---charset bracket
---accepthostname myhost.com
+-charset bracket
+-accepthostname myhost.com

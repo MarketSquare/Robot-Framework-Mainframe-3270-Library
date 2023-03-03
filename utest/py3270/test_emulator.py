@@ -54,7 +54,7 @@ def test_emulator_with_extra_args_oneline(mock_windows):
     extra_args = os.path.join(CURDIR, "resources/argfile_oneline.txt")
     under_test = Emulator(extra_args=extra_args)
 
-    args_from_file = ["--charset", "german"]
+    args_from_file = ["-charset", "german"]
 
     assert all(arg in under_test.app.args for arg in args_from_file)
     assert under_test.app.args > args_from_file
@@ -64,7 +64,7 @@ def test_emulator_none_windows_extra_args_oneline(mock_posix):
     extra_args = os.path.join(CURDIR, "resources/argfile_oneline.txt")
     under_test = Emulator(extra_args=extra_args)
 
-    args_from_file = ["--charset", "german"]
+    args_from_file = ["-charset", "german"]
 
     assert all(arg in under_test.app.args for arg in args_from_file)
     assert under_test.app.args > args_from_file
@@ -74,7 +74,7 @@ def test_emulator_with_extra_args_multiline(mock_windows):
     extra_args = os.path.join(CURDIR, "resources/argfile_multiline.txt")
     under_test = Emulator(extra_args=extra_args)
 
-    args_from_file = ["--charset", "bracket", "--accepthostname", "myhost.com"]
+    args_from_file = ["-charset", "bracket", "-accepthostname", "myhost.com"]
 
     assert all(arg in under_test.app.args for arg in args_from_file)
     assert under_test.app.args > args_from_file
@@ -84,14 +84,14 @@ def test_emulator_with_extra_args_multiline_comments(mock_windows):
     extra_args = os.path.join(CURDIR, "resources/argfile_multiline_comments.txt")
     under_test = Emulator(extra_args=extra_args)
 
-    args_from_file = ["--charset", "bracket", "--accepthostname", "myhost.com"]
+    args_from_file = ["-charset", "bracket", "-accepthostname", "myhost.com"]
 
     assert all(arg in under_test.app.args for arg in args_from_file)
     assert "comment" not in under_test.app.args
 
 
 def test_emulator_with_extra_args(mock_windows):
-    extra_args = ["--cadir", "/path/to/ca_dir"]
+    extra_args = ["-cadir", "/path/to/ca_dir"]
     under_test = Emulator(extra_args=extra_args)
 
     assert all(arg in under_test.app.args for arg in extra_args)

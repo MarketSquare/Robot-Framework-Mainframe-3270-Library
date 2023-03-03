@@ -57,12 +57,13 @@ class x3270(object):
         port: int = 23,
         extra_args: Optional[Union[List[str], os.PathLike]] = None,
     ):
-        """Create a connection to IBM3270 mainframe with the default port 23. To make a connection with the mainframe
-        you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
+        """Create a connection to a IBM3270 mainframe with the default port 23.
+        To make a connection with the mainframe you only need to specify the Hostname.
+        You can pass the Logical Unit Name and the Port as optional.
 
-        If you wish, you can provide further configuration data to ``extra_args``. ``extra_args`` takes in a list,
+        If you wish, you can provide further configuration data via ``extra_args``. ``extra_args`` takes in a list,
         or a path to a file, containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
-        
+
         Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
         | # example_argfile_oneline.txt
         | -accepthostname myhost.com
@@ -74,6 +75,7 @@ class x3270(object):
         | -port 992
 
         Please make sure the arguments you are providing are available for your specific x3270 application and version.
+        For example the subset of [https://x3270.miraheze.org/wiki/Wc3270/Command-line_options|wc3270 line options].
 
         Example:
             | Open Connection | Hostname |
@@ -87,22 +89,19 @@ class x3270(object):
         self.host = host
         self.lu = LU
         self.port = port
-        print("MF3270-OC:" + str(host) + "/" + str(LU) + "/" + str(port) + "/" + str(extra_args))
         if extra_args:
             extra_args = self._process_args(extra_args)
-            print("processed_args:" + str(extra_args))
             argport = ""
             for i in range(len(extra_args)):
-                if extra_args[i] == '-port':
-                    argport = extra_args[i+1]
-                if extra_args[i] == '-xrm':
-                    resval = extra_args[i+1]
+                if extra_args[i] == "-port":
+                    argport = extra_args[i + 1]
+                if extra_args[i] == "-xrm":
+                    resval = extra_args[i + 1]
                     posport = resval.find(".port:")
                     if posport != -1:
-                        argport = resval[posport+6:].strip()
-            print("argport def:" + str(argport))
+                        argport = resval[posport+6::].strip()
             if argport != "":
-                self.port = argport               
+                self.port = argport
         if self.lu:
             self.credential = "%s@%s:%s" % (self.lu, self.host, self.port)
         else:
@@ -111,7 +110,7 @@ class x3270(object):
             self.close_connection()
         self.mf = Emulator(self.visible, self.timeout, extra_args)
         self.mf.connect(self.credential)
-        
+
     def _process_args(self, extra_args) -> List:
         # this function should be the logically the same as append_args in ExecutableApp in py3270.py
         processed_args = []
