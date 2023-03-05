@@ -115,22 +115,7 @@ class Status(object):
         return "STATUS: {0}".format(self.as_string)
 
 
-class ExecutableApp(object):
-    def append_args(self, extra_args):
-        if isinstance(extra_args, list):
-            for arg in extra_args:
-                self.args.append(arg)
-
-        if isinstance(extra_args, str):
-            with open(extra_args) as file:
-                for line in file:
-                    if line.lstrip().startswith(r"#"):
-                        continue
-                    for arg in line.replace("\n", "").rstrip().split(" "):
-                        self.args.append(arg)
-
-
-class ExecutableAppLinux(ExecutableApp):
+class ExecutableAppLinux:
     executable = None
     args = ["-xrm", "s3270.unlockDelay: False"]
 
@@ -162,7 +147,7 @@ class ExecutableAppLinux(ExecutableApp):
         return self.sp.stdout.readline()
 
 
-class ExecutableAppWin(ExecutableApp):
+class ExecutableAppWin:
     executable = None
     args = ["-xrm", "wc3270.unlockDelay: False"]
     script_port = 17938
@@ -235,7 +220,7 @@ class x3270App(ExecutableAppLinux):
             "-script",
         ]
         if extra_args:
-            self.append_args(extra_args)
+            self.args += extra_args
         super().__init__()
 
 
@@ -245,7 +230,7 @@ class s3270App(ExecutableAppLinux):
         # see notes for args in x3270App
         self.args = ["-xrm", "s3270.unlockDelay: False"]
         if extra_args:
-            self.append_args(extra_args)
+            self.args += extra_args
         super().__init__()
 
 
@@ -260,7 +245,7 @@ class wc3270App(ExecutableAppWin):
         # see notes for args in x3270App
         self.args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
         if extra_args:
-            self.append_args(extra_args)
+            self.args += extra_args
 
 
 class ws3270App(ExecutableAppWin):
@@ -273,7 +258,7 @@ class ws3270App(ExecutableAppWin):
             "ws3270.unlockDelay: False",
         ]
         if extra_args:
-            self.append_args(extra_args)
+            self.args += extra_args
 
 
 class Emulator(object):
