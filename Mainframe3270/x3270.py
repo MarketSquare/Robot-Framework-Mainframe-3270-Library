@@ -101,8 +101,7 @@ class x3270(object):
         if not args:
             return []
         elif isinstance(args, list):
-            for arg in args:
-                processed_args.append(arg)
+            processed_args = args
         elif isinstance(args, os.PathLike) or isinstance(args, str):
             with open(args) as file:
                 for line in file:
