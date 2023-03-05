@@ -14,11 +14,7 @@ def test_open_connection(mocker: MockerFixture):
     under_test = x3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost")
 
-    assert under_test.host == "myhost"
-    assert under_test.port == 23
-    assert under_test.lu is None
-    assert under_test.credential == "myhost:23"
-    m_connect.assert_called_with(under_test.credential)
+    m_connect.assert_called_with("myhost:23")
 
 
 def test_open_connection_existing_emulator(mocker):
@@ -34,24 +30,19 @@ def test_open_connection_existing_emulator(mocker):
 
 
 def test_open_connection_with_lu(mocker):
-    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    m_connect = mocker.patch("Mainframe3270.py3270.Emulator.connect")
     under_test = x3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost", "lu")
 
-    assert under_test.host == "myhost"
-    assert under_test.port == 23
-    assert under_test.lu == "lu"
-    assert under_test.credential == "lu@myhost:23"
+    m_connect.assert_called_with("lu@myhost:23")
 
 
 def test_open_connection_with_port(mocker: MockerFixture):
-    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    m_connect = mocker.patch("Mainframe3270.py3270.Emulator.connect")
     under_test = x3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost", port=2222)
 
-    assert under_test.host == "myhost"
-    assert under_test.port == 2222
-    assert under_test.credential == "myhost:2222"
+    m_connect.assert_called_with("myhost:2222")
 
 
 def test_close_connection(mocker: MockerFixture, under_test: x3270):

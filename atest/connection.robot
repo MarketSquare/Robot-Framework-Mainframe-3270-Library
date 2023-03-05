@@ -13,8 +13,8 @@ ${TRACE_FILE}       ${CURDIR}/x3270.trace
 
 *** Test Cases ***
 Test Connection With Extra Args List
-    ${extra_args}    Create List    -trace    -tracefile    ${TRACE_FILE}
-    Open Connection    ${HOST}    extra_args=${extra_args}
+    ${extra_args}    Create List    -port    992    -trace    -tracefile    ${TRACE_FILE}
+    Open Connection    L:${HOST}    extra_args=${extra_args}
     Sleep    0.5 s
     File Should Exist    ${TRACE_FILE}
 
