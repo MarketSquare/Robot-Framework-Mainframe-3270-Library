@@ -115,11 +115,13 @@ class Status(object):
         return "STATUS: {0}".format(self.as_string)
 
 
-class ExecutableAppLinux:
+class ExecutableApp(object):
     executable = None
     args = ["-xrm", "s3270.unlockDelay: False"]
 
-    def __init__(self):
+    def __init__(self, extra_args):
+        if extra_args:
+            self.args = self.__class__.args + extra_args
         self.sp = None
         self.spawn_app()
 
@@ -147,12 +149,35 @@ class ExecutableAppLinux:
         return self.sp.stdout.readline()
 
 
-class ExecutableAppWin:
-    executable = None
+class x3270App(ExecutableApp):
+    executable = "x3270"
+    # Per Paul Mattes, in the first days of x3270, there were servers that
+    # would unlock the keyboard before they had processed the command. To
+    # work around that, when AID commands are sent, there is a 350ms delay
+    # before the command returns. This arg turns that feature off for
+    # performance reasons.
+    args = ["-xrm", "x3270.unlockDelay: False", "-xrm", "x3270.model: 2", "-script"]
+
+
+class s3270App(ExecutableApp):
+    executable = "s3270"
+    # see notes for args in x3270App
+    args = ["-xrm", "s3270.unlockDelay: False"]
+
+
+class NotConnectedException(Exception):
+    pass
+
+
+class wc3270App(ExecutableApp):
+    executable = "wc3270"
+    # see notes for args in x3270App
     args = ["-xrm", "wc3270.unlockDelay: False"]
     script_port = 17938
 
-    def __init__(self):
+    def __init__(self, extra_args):
+        if extra_args:
+            self.args = wc3270App.args + extra_args
         self.sp = None
         self.socket_fh = None
 
@@ -204,61 +229,10 @@ class ExecutableAppWin:
         return self.socket_fh.readline()
 
 
-class x3270App(ExecutableAppLinux):
-    def __init__(self, extra_args):
-        self.executable = "x3270"
-        # Per Paul Mattes, in the first days of x3270, there were servers that
-        # would unlock the keyboard before they had processed the command. To
-        # work around that, when AID commands are sent, there is a 350ms delay
-        # before the command returns. This arg turns that feature off for
-        # performance reasons.
-        self.args = [
-            "-xrm",
-            "x3270.unlockDelay: False",
-            "-xrm",
-            "x3270.model: 2",
-            "-script",
-        ]
-        if extra_args:
-            self.args += extra_args
-        super().__init__()
-
-
-class s3270App(ExecutableAppLinux):
-    def __init__(self, extra_args):
-        self.executable = "s3270"
-        # see notes for args in x3270App
-        self.args = ["-xrm", "s3270.unlockDelay: False"]
-        if extra_args:
-            self.args += extra_args
-        super().__init__()
-
-
-class NotConnectedException(Exception):
-    pass
-
-
-class wc3270App(ExecutableAppWin):
-    def __init__(self, extra_args):
-        super().__init__()
-        self.executable = "wc3270"
-        # see notes for args in x3270App
-        self.args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
-        if extra_args:
-            self.args += extra_args
-
-
-class ws3270App(ExecutableAppWin):
-    def __init__(self, extra_args):
-        super().__init__()
-        self.executable = "ws3270"
-        # see notes for args in x3270App
-        self.args = [
-            "-xrm",
-            "ws3270.unlockDelay: False",
-        ]
-        if extra_args:
-            self.args += extra_args
+class ws3270App(ExecutableApp):
+    executable = "ws3270"
+    # see notes for args in x3270App
+    args = ["-xrm", "ws3270.unlockDelay: False"]
 
 
 class Emulator(object):
