@@ -4,6 +4,7 @@ import socket
 import subprocess
 import time
 import warnings
+from abc import ABC, abstractmethod
 from os import name as os_name
 
 log = logging.getLogger(__name__)
@@ -115,9 +116,16 @@ class Status(object):
         return "STATUS: {0}".format(self.as_string)
 
 
-class ExecutableApp(object):
-    executable = None
-    args = ["-xrm", "s3270.unlockDelay: False"]
+class ExecutableApp(ABC):
+    @property
+    @abstractmethod
+    def executable(self):
+        pass
+
+    @property
+    @abstractmethod
+    def args(self):
+        pass
 
     def __init__(self, extra_args):
         if extra_args:
@@ -172,7 +180,7 @@ class NotConnectedException(Exception):
 class wc3270App(ExecutableApp):
     executable = "wc3270"
     # see notes for args in x3270App
-    args = ["-xrm", "wc3270.unlockDelay: False"]
+    args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
     script_port = 17938
 
     def __init__(self, extra_args):
@@ -241,15 +249,14 @@ class Emulator(object):
     with it.
     """
 
-    def __init__(self, visible=False, timeout=30, extra_args=None, app=None, _sp=None):
+    def __init__(self, visible=False, timeout=30, extra_args=None, app=None):
         """
         Create an emulator instance
 
         `visible` controls which executable will be used.
         `timeout` controls the timeout paramater to any Wait() command sent
             to x3270.
-        `_sp` is normally not used but can be set to a mock object
-            during testing.
+        `extra_args` allows sending parameters to the emulator executable
         """
         self.app = app or self.create_app(visible, extra_args)
         self.is_terminated = False
