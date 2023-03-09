@@ -43,7 +43,7 @@ def test_execute(mocker: MockerFixture):
             b"ok",
         ],
     )
-    app = x3270App(x3270App.args)
+    app = x3270App()
     under_test = Command(app, b"abc")
 
     under_test.execute()
@@ -54,7 +54,7 @@ def test_execute(mocker: MockerFixture):
 def test_handle_result_quit(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
     mocker.patch("Mainframe3270.py3270.ExecutableApp.readline", return_value=b"")
-    app = x3270App(x3270App.args)
+    app = x3270App()
     under_test = Command(app, b"Quit")
 
     under_test.execute()
@@ -63,7 +63,7 @@ def test_handle_result_quit(mocker: MockerFixture):
 def test_handle_result_error(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
     mocker.patch("Mainframe3270.py3270.ExecutableApp.readline", return_value=b"error")
-    app = s3270App(s3270App.args)
+    app = s3270App()
     under_test = Command(app, b"abc")
 
     with pytest.raises(CommandError, match="[no data message]"):
@@ -80,7 +80,7 @@ def test_handle_result_with_data(mocker: MockerFixture):
             b"error",
         ],
     )
-    app = ws3270App(ws3270App.args)
+    app = ws3270App()
     under_test = Command(app, b"abc")
 
     with pytest.raises(CommandError, match="abc"):
@@ -90,7 +90,7 @@ def test_handle_result_with_data(mocker: MockerFixture):
 def test_handle_result_not_ok_or_error(mocker: MockerFixture):
     mocker.patch("Mainframe3270.py3270.wc3270App.readline", return_value=b"abc")
     mocker.patch("Mainframe3270.py3270.wc3270App.write")
-    app = wc3270App(wc3270App.args)
+    app = wc3270App()
     under_test = Command(app, b"abc")
 
     with pytest.raises(

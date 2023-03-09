@@ -127,7 +127,7 @@ class ExecutableApp(ABC):
     def args(self):
         pass
 
-    def __init__(self, extra_args):
+    def __init__(self, extra_args=None):
         if extra_args:
             self.args = self.__class__.args + extra_args
         self.sp = None
@@ -183,7 +183,7 @@ class wc3270App(ExecutableApp):
     args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
     script_port = 17938
 
-    def __init__(self, extra_args):
+    def __init__(self, extra_args=None):
         if extra_args:
             self.args = wc3270App.args + extra_args
         self.sp = None
