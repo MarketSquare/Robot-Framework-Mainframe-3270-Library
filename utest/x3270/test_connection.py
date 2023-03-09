@@ -49,6 +49,22 @@ def test_open_connection_with_port(mocker: MockerFixture):
     m_connect.assert_called_with("myhost:2222")
 
 
+def test_open_connection_with_port_from_argument_and_from_extra_args(
+    mocker: MockerFixture,
+):
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    m_logger = mocker.patch("robot.api.logger.warn")
+    under_test = x3270(**X3270_DEFAULT_ARGS)
+    under_test.open_connection("myhost", port=12345, extra_args=["-port", "12345"])
+
+    m_logger.assert_called_with(
+        "The connection port has been specified both in the `port` argument and in `extra_args`. "
+        "The port specified in `extra_args` will take precedence over the `port` argument. "
+        "To avoid this warning, you can either remove the port command-line option from `extra_args`, "
+        "or leave the `port` argument at its default value of 23."
+    )
+
+
 def test_open_connection_with_extra_args_oneline(mocker: MockerFixture):
     m_emulator = mocker.patch(
         "Mainframe3270.py3270.Emulator.__init__", return_value=None

@@ -34,7 +34,8 @@ def test_emulator_none_windows():
     assert under_test.app.executable == "s3270"
 
 
-def test_emulator_none_windows_visible(mock_posix):
+@pytest.mark.usefixtures("mock_posix")
+def test_emulator_none_windows_visible():
     under_test = Emulator(visible=True)
 
     assert under_test.app.executable == "x3270"

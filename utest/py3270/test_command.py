@@ -3,8 +3,11 @@ import warnings
 import pytest
 from pytest_mock import MockerFixture
 
+# fmt: off
 from Mainframe3270.py3270 import (Command, CommandError, Emulator, s3270App,
                                   wc3270App, ws3270App, x3270App)
+
+# fmt: on
 
 
 def test_command_default(mocker: MockerFixture):
