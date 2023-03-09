@@ -57,14 +57,14 @@ class x3270(object):
         port: int = 23,
         extra_args: Optional[Union[List[str], os.PathLike]] = None,
     ):
-        """Create a connection to a IBM3270 mainframe with the default port 23.
-        To make a connection with the mainframe you only need to specify the Hostname.
-        You can pass the Logical Unit Name and the Port as optional.
+        """Create a connection to an IBM3270 mainframe with the default port 23.
+        To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
 
-        If you wish, you can provide further configuration data via ``extra_args``. ``extra_args`` takes in a list,
-        or a path to a file, containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
+        Additional configuration data can be provided through the `extra_args` parameter.
+        `extra_args` accepts either a list or a path to a file containing [x3270 command-line options](https://x3270.miraheze.org/wiki/Category:Command-line_options).
 
         Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
+
         | # example_argfile_oneline.txt
         | -accepthostname myhost.com
 
@@ -74,8 +74,11 @@ class x3270(object):
         | -charset french
         | -port 992
 
-        Please make sure the arguments you are providing are available for your specific x3270 application and version.
-        For example the subset of [https://x3270.miraheze.org/wiki/Wc3270/Command-line_options|wc3270 line options].
+        Please ensure that the arguments provided are available for your specific x3270 application and version.
+        Refer to the [wc3270 command-line options](https://x3270.miraheze.org/wiki/Wc3270/Command-line_options) for a subset of available options.
+
+        Note: If you specify the port with the `-port` command-line option in `extra_args`,
+        it will take precedence over the `port` argument provided in the `Open Connection` keyword.
 
         Example:
             | Open Connection | Hostname |
@@ -92,6 +95,13 @@ class x3270(object):
         self.mf = Emulator(self.visible, self.timeout, extra_args)
         host_string = f"{LU}@{host}" if LU else host
         if self._port_in_extra_args(extra_args):
+            if port != 23:
+                logger.warn(
+                    "The connection port has been specified both in the `port` argument and in `extra_args`. "
+                    "The port specified in `extra_args` will take precedence over the `port` argument. "
+                    "To avoid this warning, you can either remove the port command-line option from `extra_args`, "
+                    "or leave the `port` argument at its default value of 23."
+                )
             self.mf.connect(host_string)
         else:
             self.mf.connect(f"{host_string}:{port}")
@@ -101,12 +111,11 @@ class x3270(object):
         if not args:
             return []
         elif isinstance(args, list):
-            for arg in args:
-                processed_args.append(arg)
+            processed_args = args
         elif isinstance(args, os.PathLike) or isinstance(args, str):
             with open(args) as file:
                 for line in file:
-                    if line.lstrip().startswith(r"#"):
+                    if line.lstrip().startswith("#"):
                         continue
                     for arg in line.replace("\n", "").rstrip().split(" "):
                         processed_args.append(arg)
