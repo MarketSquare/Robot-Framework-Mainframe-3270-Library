@@ -77,7 +77,7 @@ class x3270(object):
         Please ensure that the arguments provided are available for your specific x3270 application and version.
         Refer to the [wc3270 command-line options](https://x3270.miraheze.org/wiki/Wc3270/Command-line_options) for a subset of available options.
 
-        Note: If you specify the port with the `-port` command-line option in `extra_args`,
+        Note: If you specify the port with the `-port` command-line option in `extra_args` (or use the -xrm resource command for it),
         it will take precedence over the `port` argument provided in the `Open Connection` keyword.
 
         Example:
