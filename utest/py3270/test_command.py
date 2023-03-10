@@ -3,12 +3,16 @@ import warnings
 import pytest
 from pytest_mock import MockerFixture
 
-from Mainframe3270.py3270 import Command, CommandError, ExecutableAppLinux
+# fmt: off
+from Mainframe3270.py3270 import (Command, CommandError, Emulator, s3270App,
+                                  wc3270App, ws3270App, x3270App)
+
+# fmt: on
 
 
 def test_command_default(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
-    app = ExecutableAppLinux()
+    app = Emulator()
 
     under_test = Command(app, b"abc")
 
@@ -21,7 +25,7 @@ def test_command_default(mocker: MockerFixture):
 def test_command_with_text_type(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
     mocker.patch("warnings.warn")
-    app = ExecutableAppLinux()
+    app = Emulator()
 
     under_test = Command(app, "abc")
 
@@ -32,14 +36,14 @@ def test_command_with_text_type(mocker: MockerFixture):
 def test_execute(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
     mocker.patch(
-        "Mainframe3270.py3270.ExecutableAppLinux.readline",
+        "Mainframe3270.py3270.ExecutableApp.readline",
         side_effect=[
             b"data: abc",
             b"U U U C(pub400.com) C 4 43 80 4 24 0x0 0.000",
             b"ok",
         ],
     )
-    app = ExecutableAppLinux()
+    app = x3270App()
     under_test = Command(app, b"abc")
 
     under_test.execute()
@@ -49,8 +53,8 @@ def test_execute(mocker: MockerFixture):
 
 def test_handle_result_quit(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
-    mocker.patch("Mainframe3270.py3270.ExecutableAppLinux.readline", return_value=b"")
-    app = ExecutableAppLinux()
+    mocker.patch("Mainframe3270.py3270.ExecutableApp.readline", return_value=b"")
+    app = x3270App()
     under_test = Command(app, b"Quit")
 
     under_test.execute()
@@ -58,10 +62,8 @@ def test_handle_result_quit(mocker: MockerFixture):
 
 def test_handle_result_error(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
-    mocker.patch(
-        "Mainframe3270.py3270.ExecutableAppLinux.readline", return_value=b"error"
-    )
-    app = ExecutableAppLinux()
+    mocker.patch("Mainframe3270.py3270.ExecutableApp.readline", return_value=b"error")
+    app = s3270App()
     under_test = Command(app, b"abc")
 
     with pytest.raises(CommandError, match="[no data message]"):
@@ -71,14 +73,14 @@ def test_handle_result_error(mocker: MockerFixture):
 def test_handle_result_with_data(mocker: MockerFixture):
     mocker.patch("subprocess.Popen")
     mocker.patch(
-        "Mainframe3270.py3270.ExecutableAppLinux.readline",
+        "Mainframe3270.py3270.ExecutableApp.readline",
         side_effect=[
             b"data: abc",
             b"U U U C(pub400.com) C 4 43 80 4 24 0x0 0.000",
             b"error",
         ],
     )
-    app = ExecutableAppLinux()
+    app = ws3270App()
     under_test = Command(app, b"abc")
 
     with pytest.raises(CommandError, match="abc"):
@@ -86,11 +88,9 @@ def test_handle_result_with_data(mocker: MockerFixture):
 
 
 def test_handle_result_not_ok_or_error(mocker: MockerFixture):
-    mocker.patch("subprocess.Popen")
-    mocker.patch(
-        "Mainframe3270.py3270.ExecutableAppLinux.readline", return_value=b"abc"
-    )
-    app = ExecutableAppLinux()
+    mocker.patch("Mainframe3270.py3270.wc3270App.readline", return_value=b"abc")
+    mocker.patch("Mainframe3270.py3270.wc3270App.write")
+    app = wc3270App()
     under_test = Command(app, b"abc")
 
     with pytest.raises(

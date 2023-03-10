@@ -57,41 +57,77 @@ class x3270(object):
         port: int = 23,
         extra_args: Optional[Union[List[str], os.PathLike]] = None,
     ):
-        """Create a connection to IBM3270 mainframe with the default port 23. To make a connection with the mainframe
-        you only must inform the Host. You can pass the Logical Unit Name and the Port as optional.
+        """Create a connection to an IBM3270 mainframe with the default port 23.
+        To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
 
-        If you wish, you can provide further configuration data to ``extra_args``. ``extra_args`` takes in a list,
-        or a path to a file, containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
+        Additional configuration data can be provided through the `extra_args` parameter.
+        `extra_args` accepts either a list or a path to a file containing [x3270 command-line options](https://x3270.miraheze.org/wiki/Category:Command-line_options).
+
         Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
+
         | # example_argfile_oneline.txt
-        | --accepthostname myhost.com
+        | -accepthostname myhost.com
 
         | # example_argfile_multiline.txt
-        | --accepthostname myhost.com
+        | -accepthostname myhost.com
         | # this is a comment
-        | --charset french
+        | -charset french
+        | -port 992
 
-        Please make sure the arguments you are providing are available for your specific x3270 application and version.
+        Please ensure that the arguments provided are available for your specific x3270 application and version.
+        Refer to the [wc3270 command-line options](https://x3270.miraheze.org/wiki/Wc3270/Command-line_options) for a subset of available options.
+
+        Note: If you specify the port with the `-port` command-line option in `extra_args` (or use the -xrm resource command for it),
+        it will take precedence over the `port` argument provided in the `Open Connection` keyword.
 
         Example:
             | Open Connection | Hostname |
             | Open Connection | Hostname | LU=LUname |
             | Open Connection | Hostname | port=992 |
-            | ${extra_args}   | Create List | --accepthostname | myhost.com | --cafile | ${CURDIR}/cafile.crt |
+            | @{extra_args}   | Create List | -accepthostname | myhost.com | -cafile | ${CURDIR}/cafile.crt |
+            | Append To List  | ${extra_args} | -port | 992 |
             | Open Connection | Hostname | extra_args=${extra_args} |
             | Open Connection | Hostname | extra_args=${CURDIR}/argfile.txt |
         """
-        self.host = host
-        self.lu = LU
-        self.port = port
-        if self.lu:
-            self.credential = "%s@%s:%s" % (self.lu, self.host, self.port)
-        else:
-            self.credential = "%s:%s" % (self.host, self.port)
         if self.mf:
             self.close_connection()
+        extra_args = self._process_args(extra_args)
         self.mf = Emulator(self.visible, self.timeout, extra_args)
-        self.mf.connect(self.credential)
+        host_string = f"{LU}@{host}" if LU else host
+        if self._port_in_extra_args(extra_args):
+            if port != 23:
+                logger.warn(
+                    "The connection port has been specified both in the `port` argument and in `extra_args`. "
+                    "The port specified in `extra_args` will take precedence over the `port` argument. "
+                    "To avoid this warning, you can either remove the port command-line option from `extra_args`, "
+                    "or leave the `port` argument at its default value of 23."
+                )
+            self.mf.connect(host_string)
+        else:
+            self.mf.connect(f"{host_string}:{port}")
+
+    def _process_args(self, args) -> list:
+        processed_args = []
+        if not args:
+            return []
+        elif isinstance(args, list):
+            processed_args = args
+        elif isinstance(args, os.PathLike) or isinstance(args, str):
+            with open(args) as file:
+                for line in file:
+                    if line.lstrip().startswith("#"):
+                        continue
+                    for arg in line.replace("\n", "").rstrip().split(" "):
+                        processed_args.append(arg)
+        return processed_args
+
+    def _port_in_extra_args(self, args) -> bool:
+        if not args:
+            return False
+        for arg in args:
+            if arg == "-port" or ".port" in arg:
+                return True
+        return False
 
     @keyword("Close Connection")
     def close_connection(self) -> None:
