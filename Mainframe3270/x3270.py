@@ -61,7 +61,7 @@ class x3270(object):
         To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
 
         Additional configuration data can be provided through the `extra_args` parameter.
-        `extra_args` accepts either a list or a path to a file containing [x3270 command-line options](https://x3270.miraheze.org/wiki/Category:Command-line_options).
+        `extra_args` accepts either a list or a path to a file containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
 
         Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
 
@@ -75,7 +75,7 @@ class x3270(object):
         | -port 992
 
         Please ensure that the arguments provided are available for your specific x3270 application and version.
-        Refer to the [wc3270 command-line options](https://x3270.miraheze.org/wiki/Wc3270/Command-line_options) for a subset of available options.
+        Refer to the [https://x3270.miraheze.org/wiki/Wc3270/Command-line_options|wc3270 command line options] for a subset of available options.
 
         Note: If you specify the port with the `-port` command-line option in `extra_args` (or use the -xrm resource command for it),
         it will take precedence over the `port` argument provided in the `Open Connection` keyword.
