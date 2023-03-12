@@ -3,6 +3,7 @@ import re
 import socket
 import time
 from datetime import timedelta
+from os import name as os_name
 from typing import Any, List, Optional, Union
 
 from robot.api import logger
@@ -128,6 +129,39 @@ class x3270(object):
             if arg == "-port" or ".port" in arg:
                 return True
         return False
+
+    @keyword("Open Connection From Session File")
+    def open_connection_from_session_file(self, session_file: os.PathLike):
+        if self.mf:
+            self.close_connection()
+        self._check_session_file_extension(session_file)
+        self._check_contains_hostname(session_file)
+        self.mf = Emulator(self.visible, self.timeout, [str(session_file)])
+
+    def _check_session_file_extension(self, session_file):
+        file_extension = str(session_file).rsplit(".")[-1]
+        expected_extensions = {
+            ("nt", True): "wc3270",
+            ("nt", False): "ws3270",
+            ("posix", True): "x3270",
+            ("posix", False): "s3270",
+        }
+        expected_extension = expected_extensions.get((os_name, self.visible))
+        if file_extension != expected_extension:
+            raise Exception(
+                f"Based on the emulator that you are using, "
+                f"the session file extension has to be .{expected_extension}."
+            )
+
+    def _check_contains_hostname(self, session_file):
+        with open(session_file) as file:
+            if ".hostname:" not in file.read():
+                raise Exception(
+                    "Your session file needs to specify the hostname resource "
+                    "to set up the connection. "
+                    "An example for wc3270 looks like this: \n"
+                    "wc3270.hostname: myhost.com\n"
+                )
 
     @keyword("Close Connection")
     def close_connection(self) -> None:
