@@ -132,11 +132,32 @@ class x3270(object):
 
     @keyword("Open Connection From Session File")
     def open_connection_from_session_file(self, session_file: os.PathLike):
+        """Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].
+
+        The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a particular host session,
+        including the mandatory [https://x3270.miraheze.org/wiki/Hostname_resource|hostname resource].
+        To set up the connection, all connection parameters such as hostname, port, etc., must be specified in the session file.
+
+        This keyword is an alternative to `Open Connection`.
+
+        For session file syntax and detailed examples, please consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
+
+        Example:
+        | Open Connection From Session File | ${CURDIR}/session.wc3270 |
+
+        where the content of `session.wc3270` is:
+        | *hostname: myhost.com
+        | *port: 992
+        """
         if self.mf:
             self.close_connection()
         self._check_session_file_extension(session_file)
         self._check_contains_hostname(session_file)
-        self.mf = Emulator(self.visible, self.timeout, [str(session_file)])
+        if os_name == "nt" and self.visible:
+            self.mf = Emulator(self.visible, self.timeout)
+            self.mf.connect(str(session_file))
+        else:
+            self.mf = Emulator(self.visible, self.timeout, [str(session_file)])
 
     def _check_session_file_extension(self, session_file):
         file_extension = str(session_file).rsplit(".")[-1]
@@ -155,7 +176,7 @@ class x3270(object):
 
     def _check_contains_hostname(self, session_file):
         with open(session_file) as file:
-            if ".hostname:" not in file.read():
+            if "hostname:" not in file.read():
                 raise Exception(
                     "Your session file needs to specify the hostname resource "
                     "to set up the connection. "

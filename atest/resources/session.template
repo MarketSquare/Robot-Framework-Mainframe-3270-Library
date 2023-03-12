@@ -1,1 +1,2 @@
-*.hostname: pub400.com
+*hostname: L:pub400.com
+*port: 992
