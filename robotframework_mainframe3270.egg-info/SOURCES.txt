@@ -1,5 +1,6 @@
 LICENSE.md
 README.md
+THIRD-PARTY-NOTICES.txt
 setup.py
 Mainframe3270/__init__.py
 Mainframe3270/py3270.py

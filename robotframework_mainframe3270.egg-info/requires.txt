@@ -1,3 +1,2 @@
 robotframework
 robotframework-pythonlibcore
-six
