@@ -7,5 +7,4 @@ mypy
 pytest
 pytest-mock
 robotframework-tidy >= 3.0
-types-six
 -r requirements.txt
