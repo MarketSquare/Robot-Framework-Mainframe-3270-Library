@@ -6,6 +6,7 @@ Home-page: https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Libra
 Author: Altran Portugal
 Author-email: samuca@gmail.com
 License: MIT License
+Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Framework :: Robot Framework
 Classifier: Framework :: Robot Framework :: Library
@@ -156,25 +157,9 @@ The _reports_ directory needs to be created beforehand.
 docker container run --rm -it -v ${pwd}/reports:/reports -v ${pwd}/atests:/tests -v ${pwd}/Mainframe3270:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270
 ```
 
-## Development setup
-Start off by forking this repository and pulling the source code from GitHub.
+## Contributing to Robot-Framework-Mainframe3270-Library
 
-Depending on your preferences, you can create a virtual environment to
-keep system and project dependencies separate.
-
-`python -m venv .venv`
-
-To activate the virtual environment,
-run `.venv\Scripts\activate` (Windows) or `source .venv/bin/activate` (MacOS & Linux).
-
-Install main and development dependencies by running `python -m pip install -r requirements-dev.txt`
-
-This project is using [invoke](https://www.pyinvoke.org/) as task runner. Before pushing your code, make sure python and robot code is formatted by running `inv lint`.
-
-Unit tests are invoked with `inv utest`, acceptance tests with `inv atest`. To invoke both unit and
-acceptance tests, simply run `inv test`.
-
-Run `inv -l` to get a list of all available tasks.
+Interested in contributing to the project? Great to hear! Whether you found a bug, or want to develop a new feature, please refer to our [Contributing Guidelines](COUNTRIBUTING.md) to help you get started.
 
 ## Keyword Tests
 
@@ -192,3 +177,5 @@ For more information visit the repository [Wiki](https://github.com/Altran-PT-GD
 
 ## License
 This project is licensed under the MIT License - see [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.
+
+
