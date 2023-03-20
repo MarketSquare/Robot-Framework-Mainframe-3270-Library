@@ -1,25 +1,30 @@
-ARG BASE_IMAGE=3.7-apline
-FROM alpine as intermediate
+FROM ubuntu:22.04
 
-RUN apk update && apk add wget gcc build-base libxt-dev libx11-dev xorg-server-dev libxmu-dev libxaw-dev bdftopcf ncurses-dev tcl tcl-dev mkfontdir && \
-	wget http://x3270.bgp.nu/download/03.06/suite3270-3.6ga5-src.tgz && \ 
-	tar xzvf suite3270-3.6ga5-src.tgz && \
-	cd suite3270-3.6 && \
-	./configure && \
-	make x3270
+ARG DEBIAN_FRONTEND=noninteractive
 
-FROM python:${BASE_IMAGE}
+ENV TERM=xterm
 
-COPY --from=intermediate /suite3270-3.6/obj/x86_64-unknown-linux-gnu/x3270 /usr/lib/x3270
+USER root
 
-RUN apk update && apk add xvfb libxaw && rm -rf /var/cache/apk/* && \
-    pip install robotframework six robotremoteserver && \
-	mkdir /reports
-RUN	ln -s /usr/lib/x3270/x3270 /usr/bin/x3270
-ARG PYTHON_MAJOR
-COPY source /usr/local/lib/python${PYTHON_MAJOR}.7/site-packages/Mainframe3270
-COPY entrypoint.sh .
-COPY tests /tests
-WORKDIR reports
+RUN apt-get update && apt-get upgrade -y && \
+	apt-get install -y --no-install-recommends \
+	python3 \
+	python3-pip \
+	s3270 \
+	xauth \
+	xvfb \
+	x3270 && \
+	rm -rf /var/lib/apt/lists/*
 
-ENTRYPOINT ["/entrypoint.sh"]
+COPY entrypoint.sh entrypoint.sh
+
+RUN chmod a+x entrypoint.sh && \
+	useradd --create-home --shell /bin/bash mfuser
+
+USER mfuser
+ENV PATH="/home/mfuser/.local/bin:$PATH"
+
+RUN pip3 install --user --no-cache-dir robotframework-mainframe3270
+WORKDIR /home/mfuser
+
+ENTRYPOINT [ "/entrypoint.sh" ]
