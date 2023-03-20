@@ -1,2 +1,0 @@
--charset bracket
--accepthostname myhost.com

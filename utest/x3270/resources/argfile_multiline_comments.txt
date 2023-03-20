@@ -1,3 +1,0 @@
--charset bracket
-# this is a comment
--accepthostname myhost.com
