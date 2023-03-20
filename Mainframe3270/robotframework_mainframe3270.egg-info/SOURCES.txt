@@ -1,0 +1,7 @@
+README.md
+setup.cfg
+setup.py
+Mainframe3270/robotframework_mainframe3270.egg-info/PKG-INFO
+Mainframe3270/robotframework_mainframe3270.egg-info/SOURCES.txt
+Mainframe3270/robotframework_mainframe3270.egg-info/dependency_links.txt
+Mainframe3270/robotframework_mainframe3270.egg-info/top_level.txt

@@ -1,0 +1,10 @@
+black
+coverage
+flake8
+invoke
+isort
+mypy
+pytest
+pytest-mock
+robotframework-tidy >= 3.0
+-r requirements.txt

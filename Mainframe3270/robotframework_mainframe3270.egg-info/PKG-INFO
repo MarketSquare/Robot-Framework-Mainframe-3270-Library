@@ -1,0 +1,13 @@
+Metadata-Version: 1.1
+Name: robotframework-mainframe3270
+Version: 2.7
+Summary: Mainframe Test library for Robot Framework
+Home-page: https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library
+Author: Altran Portugal
+Author-email: samuel.cabral@altran.com
+License: MIT License
+Description: Test library for Robot Framework to enable to create automated test scripts to test IBM Mainframe 3270
+Platform: UNKNOWN
+Requires: robotframework
+Requires: robotframework-pythonlibcore
+Requires: six

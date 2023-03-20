@@ -1,0 +1,7 @@
+changelog_type: 'pull_request'
+header_prefix: 'Version:'
+commit_changelog: true
+comment_changelog: true
+include_unlabeled_changes: true
+pull_request_title_regex: '(^.*[0-9]{1,2}[.]+[0-9]{1,2})'
+version_regex: '([0-9]{1,2}[.]+[0-9]{1,2})'
