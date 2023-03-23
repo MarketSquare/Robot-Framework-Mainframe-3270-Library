@@ -11,7 +11,7 @@ log.html
 output.xml
 report.html
 screenshot*.html
-session.*3270
+atest/**/session.*3270
 atest/log.html
 atest/output.xml
 atest/report.html

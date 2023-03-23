@@ -43,7 +43,7 @@ Create Session File
     ELSE IF    '${os_name}' == 'posix' and not ${VISIBLE}
         ${session_file}=    Set Variable    ${CURDIR}/resources/session.s3270
     END
-    Copy File    ${SESSION_TEMPLATE}    ${session_file}
+    Copy File    ${SESSION_TEMPLATE}    ${CURDIR}/resources/${session_file}
     RETURN    ${session_file}
 
 Test Teardown

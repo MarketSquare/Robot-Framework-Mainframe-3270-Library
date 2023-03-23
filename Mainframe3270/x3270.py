@@ -14,7 +14,7 @@ from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
 from .py3270 import Emulator
 
 
-class x3270(object):
+class X3270(object):
     def __init__(
         self,
         visible: bool,
@@ -169,15 +169,16 @@ class x3270(object):
         }
         expected_extension = expected_extensions.get((os_name, self.visible))
         if file_extension != expected_extension:
-            raise Exception(
+            raise ValueError(
                 f"Based on the emulator that you are using, "
-                f"the session file extension has to be .{expected_extension}."
+                f'the session file extension has to be ".{expected_extension}", '
+                f'but it was ".{file_extension}"'
             )
 
     def _check_contains_hostname(self, session_file):
         with open(session_file) as file:
             if "hostname:" not in file.read():
-                raise Exception(
+                raise ValueError(
                     "Your session file needs to specify the hostname resource "
                     "to set up the connection. "
                     "An example for wc3270 looks like this: \n"
