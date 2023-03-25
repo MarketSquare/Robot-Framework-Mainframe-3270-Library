@@ -1,5 +1,7 @@
 import os
+import re
 import socket
+from unittest.mock import mock_open, patch
 
 import pytest
 from pytest_mock import MockerFixture
@@ -150,13 +152,37 @@ def test_check_session_file_extension(
         under_test._check_session_file_extension("file_with_wrong_extension.txt")
 
 
-def test_contains_hostname_raises_value_error(under_test: X3270):
+def test_contains_hostname(under_test: X3270):
     session_file = os.path.join(CURDIR, "resources", "session.wc3270")
     with pytest.raises(
         ValueError,
         match="Your session file needs to specify the hostname resource to set up the connection",
     ):
         under_test._check_contains_hostname(session_file)
+
+
+@pytest.mark.parametrize(
+    ("model_string", "model"),
+    [
+        ("wc3270.model: 4", "4"),
+        ("ws3270.model:4", "4"),
+        ("x3270.model: 5", "5"),
+        ("s3270.model: 3279-4-E", "3279-4-E"),
+        ("*model: 3278-4", "3278-4"),
+    ],
+)
+def test_check_model(model_string: str, model: SystemError, under_test: X3270):
+    with patch("builtins.open", mock_open(read_data=model_string)) as session_file:
+        with pytest.raises(
+            ValueError,
+            match=re.escape(
+                f'Robot-Framework-Mainframe-3270-Library currently only supports model "2", '
+                f'the model you specified in your session file was "{model}". '
+                f'Please change it to "2", using either the session wizard if you are on Windows, '
+                f'or by editing the model resource like this "*model: 2"'
+            ),
+        ):
+            under_test._check_model(session_file)
 
 
 def test_close_connection(mocker: MockerFixture, under_test: X3270):

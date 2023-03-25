@@ -134,25 +134,26 @@ class X3270(object):
     def open_connection_from_session_file(self, session_file: os.PathLike):
         """Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].
 
-        The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a particular host session,
-        including the mandatory [https://x3270.miraheze.org/wiki/Hostname_resource|hostname resource].
-        To set up the connection, all connection parameters such as hostname, port, etc., must be specified in the session file.
+        The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a specific host session.
+        The only mandatory setting required to establish the connection is the [https://x3270.miraheze.org/wiki/Hostname_resource|hostname resource].
 
-        This keyword is an alternative to `Open Connection`.
+        This keyword is an alternative to `Open Connection`. Please note that the Robot-Framework-Mainframe-3270-Library
+        currently only supports model "2". Specifying any other model will result in a failure.
 
-        For session file syntax and detailed examples, please consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
+        For more information on session file syntax and detailed examples, please consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
 
         Example:
         | Open Connection From Session File | ${CURDIR}/session.wc3270 |
 
         where the content of `session.wc3270` is:
-        | *hostname: myhost.com
-        | *port: 992
+        | wc3270.hostname: myhost.com:23
+        | wc3270.model: 2
         """
         if self.mf:
             self.close_connection()
         self._check_session_file_extension(session_file)
         self._check_contains_hostname(session_file)
+        self._check_model(session_file)
         if os_name == "nt" and self.visible:
             self.mf = Emulator(self.visible, self.timeout)
             self.mf.connect(str(session_file))
@@ -183,6 +184,22 @@ class X3270(object):
                     "to set up the connection. "
                     "An example for wc3270 looks like this: \n"
                     "wc3270.hostname: myhost.com\n"
+                )
+
+    def _check_model(self, session_file):
+        with open(session_file) as file:
+            pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
+            match = pattern.findall(file.read())
+            if not match:
+                return
+            elif match[-1] == "2":
+                return
+            else:
+                raise ValueError(
+                    f'Robot-Framework-Mainframe-3270-Library currently only supports model "2", '
+                    f'the model you specified in your session file was "{match[-1]}". '
+                    f'Please change it to "2", using either the session wizard if you are on Windows, '
+                    f'or by editing the model resource like this "*model: 2"'
                 )
 
     @keyword("Close Connection")
