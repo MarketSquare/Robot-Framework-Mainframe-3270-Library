@@ -1,1 +1,1 @@
--charset german
+-charset german -xrm "*acceptHostname: myhost.com" -xrm '*blankFill: true'
