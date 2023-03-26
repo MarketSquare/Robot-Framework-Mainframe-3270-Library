@@ -162,6 +162,22 @@ def test_contains_hostname(under_test: X3270):
 
 
 @pytest.mark.parametrize(
+    "model",
+    [
+        "wc3270.model: 2",
+        "ws3270.model:2",
+        "x3270.model: 2",
+        "s3270.model: 2",
+        "*model:2",
+        "",
+    ],
+)
+def test_check_model(model: str, under_test: X3270):
+    with patch("builtins.open", mock_open(read_data=model)) as session_file:
+        under_test._check_model(session_file)
+
+
+@pytest.mark.parametrize(
     ("model_string", "model"),
     [
         ("wc3270.model: 4", "4"),
@@ -171,7 +187,9 @@ def test_contains_hostname(under_test: X3270):
         ("*model: 3278-4", "3278-4"),
     ],
 )
-def test_check_model(model_string: str, model: SystemError, under_test: X3270):
+def test_check_model_raises_ValueError(
+    model_string: str, model: SystemError, under_test: X3270
+):
     with patch("builtins.open", mock_open(read_data=model_string)) as session_file:
         with pytest.raises(
             ValueError,
