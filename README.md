@@ -133,3 +133,11 @@ For more information visit the repository [Wiki](https://github.com/Altran-PT-GD
 
 ## License
 This project is licensed under the MIT License - see [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.
+
+## Supported Size
+| Height  | Width | Model |
+| ----------- | ----------- | ----------- |
+| 24 | 80 | 2 |
+| 32 | 80 | 3 |
+| 43 | 80 | 4 |
+| 27 | 132 | 5 |
