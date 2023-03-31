@@ -10,6 +10,8 @@ __pychache__
 log.html
 output.xml
 report.html
+screenshot*.html
+atest/**/session.*3270
 atest/log.html
 atest/output.xml
 atest/report.html

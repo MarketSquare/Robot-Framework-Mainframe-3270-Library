@@ -1,4 +1,5 @@
 *** Variables ***
+${VISIBLE}                                          True
 ${HOST}                                             pub400.com
 ${FOLDER}                                           ${CURDIR}${/}screenshots
 # Text to write
