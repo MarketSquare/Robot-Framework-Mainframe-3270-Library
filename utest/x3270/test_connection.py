@@ -73,12 +73,19 @@ def test_open_connection_with_extra_args_oneline(mocker: MockerFixture):
         "Mainframe3270.py3270.Emulator.__init__", return_value=None
     )
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
-    extra_args = os.path.join(CURDIR, "resources/argfile_oneline.txt")
+    extra_args = os.path.join(CURDIR, "resources", "argfile_oneline.txt")
 
     under_test = X3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost", extra_args=extra_args)
 
-    args_from_file = ["-charset", "german"]
+    args_from_file = [
+        "-charset",
+        "german",
+        "-xrm",
+        "*acceptHostname: myhost.com",
+        "-xrm",
+        "*blankFill: true",
+    ]
     m_emulator.assert_called_with(True, 30.0, args_from_file)
 
 
@@ -88,12 +95,19 @@ def test_open_connection_none_windows_extra_args_oneline(mocker: MockerFixture):
         "Mainframe3270.py3270.Emulator.__init__", return_value=None
     )
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
-    extra_args = os.path.join(CURDIR, "resources/argfile_oneline.txt")
+    extra_args = os.path.join(CURDIR, "resources", "argfile_oneline.txt")
 
     under_test = X3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost", extra_args=extra_args)
 
-    args_from_file = ["-charset", "german"]
+    args_from_file = [
+        "-charset",
+        "german",
+        "-xrm",
+        "*acceptHostname: myhost.com",
+        "-xrm",
+        "*blankFill: true",
+    ]
     m_emulator.assert_called_with(True, 30.0, args_from_file)
 
 
@@ -103,7 +117,7 @@ def test_open_connection_with_extra_args_multiline(mocker: MockerFixture):
         "Mainframe3270.py3270.Emulator.__init__", return_value=None
     )
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
-    extra_args = os.path.join(CURDIR, "resources/argfile_multiline.txt")
+    extra_args = os.path.join(CURDIR, "resources", "argfile_multiline.txt")
 
     under_test = X3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost", extra_args=extra_args)
@@ -118,7 +132,7 @@ def test_open_connection_with_extra_args_multiline_comments(mocker: MockerFixtur
         "Mainframe3270.py3270.Emulator.__init__", return_value=None
     )
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
-    extra_args = os.path.join(CURDIR, "resources/argfile_multiline_comments.txt")
+    extra_args = os.path.join(CURDIR, "resources", "argfile_multiline_comments.txt")
 
     under_test = X3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost", extra_args=extra_args)

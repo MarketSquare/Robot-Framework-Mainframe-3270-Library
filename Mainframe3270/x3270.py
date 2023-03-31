@@ -1,5 +1,6 @@
 import os
 import re
+import shlex
 import socket
 import time
 from datetime import timedelta
@@ -65,12 +66,13 @@ class X3270(object):
         `extra_args` accepts either a list or a path to a file containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
 
         Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
+        Arguments containing whitespace must be enclosed in single or double quotes.
 
         | # example_argfile_oneline.txt
         | -accepthostname myhost.com
 
         | # example_argfile_multiline.txt
-        | -accepthostname myhost.com
+        | -xrm "wc3270.acceptHostname: myhost.com"
         | # this is a comment
         | -charset french
         | -port 992
@@ -118,7 +120,7 @@ class X3270(object):
                 for line in file:
                     if line.lstrip().startswith("#"):
                         continue
-                    for arg in line.replace("\n", "").rstrip().split(" "):
+                    for arg in shlex.split(line):
                         processed_args.append(arg)
         return processed_args
 
