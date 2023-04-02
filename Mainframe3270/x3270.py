@@ -66,7 +66,7 @@ class X3270(object):
         port: int = 23,
         extra_args: Optional[Union[List[str], os.PathLike]] = None,
         alias: Optional[str] = None,
-    ):
+    ) -> int:
         """Create a connection to an IBM3270 mainframe with the default port 23.
         To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
 
@@ -91,6 +91,12 @@ class X3270(object):
         Note: If you specify the port with the `-port` command-line option in `extra_args` (or use the -xrm resource command for it),
         it will take precedence over the `port` argument provided in the `Open Connection` keyword.
 
+        You can open multiple connections at the same time. The latest connection will always be the current connection.
+        In order to identify them in your test scripts, you can pass a name for the connection in the
+        `alias` parameter. This can be used in `Switch Connection`. If no alias is specified, connection will be indexed from 1.
+
+        This keyword returns the connection's index.
+
         Example:
             | Open Connection | Hostname |
             | Open Connection | Hostname | LU=LUname |
@@ -99,6 +105,7 @@ class X3270(object):
             | Append To List  | ${extra_args} | -port | 992 |
             | Open Connection | Hostname | extra_args=${extra_args} |
             | Open Connection | Hostname | extra_args=${CURDIR}/argfile.txt |
+            | Open Connection | Hostname | alias=my_first_connection |
         """
         extra_args = self._process_args(extra_args)
         connection = Emulator(self.visible, self.timeout, extra_args)
@@ -142,7 +149,7 @@ class X3270(object):
     @keyword("Open Connection From Session File")
     def open_connection_from_session_file(
         self, session_file: os.PathLike, alias: Optional[str] = None
-    ):
+    ) -> int:
         """Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].
 
         The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a specific host session.
@@ -152,6 +159,12 @@ class X3270(object):
         currently only supports model "2". Specifying any other model will result in a failure.
 
         For more information on session file syntax and detailed examples, please consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
+
+        You can open multiple connections at the same time. The latest connection will always be the current connection.
+        In order to identify them in your test scripts, you can pass a name for the connection in the
+        `alias` parameter. This can be used in `Switch Connection`. If no alias is specified, connection will be indexed from 1.
+
+        This keyword returns the connection's index.
 
         Example:
         | Open Connection From Session File | ${CURDIR}/session.wc3270 |
@@ -214,6 +227,14 @@ class X3270(object):
 
     @keyword("Switch Connection")
     def switch_connection(self, alias_or_index: Union[str, int]):
+        """Switch the current to the one identified by index or alias.
+
+        Examples:
+        | Open Connection | Hostname | alias=first |
+        | Open Connection | Hostname | alias=second | # second is now the current connection |
+        | Switch Connection | first | # first is now the current connection |
+
+        """
         self.cache.switch(alias_or_index)
 
     @keyword("Close Connection")
@@ -226,6 +247,7 @@ class X3270(object):
 
     @keyword("Close All Connections")
     def close_all_connections(self) -> None:
+        """Close all currently opened connections."""
         self.cache.close_all("terminate")
 
     @keyword("Change Wait Time")
