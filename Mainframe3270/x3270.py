@@ -7,11 +7,14 @@ from datetime import timedelta
 from os import name as os_name
 from typing import Any, List, Optional, Union
 
+# fmt: off
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
-from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
+from robot.utils import (ConnectionCache, Matcher, secs_to_timestr,
+                         timestr_to_secs)
 
+# fmt: on
 from .py3270 import Emulator
 
 
@@ -29,12 +32,16 @@ class X3270(object):
         self.wait = self._convert_timeout(wait_time)
         self.wait_write = self._convert_timeout(wait_time_after_write)
         self.imgfolder = img_folder
-        self.mf: Emulator = None  # type: ignore
+        self.cache = ConnectionCache()
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
             self.output_folder = BuiltIn().get_variable_value("${OUTPUT DIR}")
         except RobotNotRunningError:
             self.output_folder = os.getcwd()
+
+    @property
+    def mf(self):
+        return self.cache.current
 
     def _convert_timeout(self, time):
         if isinstance(time, timedelta):
@@ -58,6 +65,7 @@ class X3270(object):
         LU: Optional[str] = None,
         port: int = 23,
         extra_args: Optional[Union[List[str], os.PathLike]] = None,
+        alias: Optional[str] = None,
     ):
         """Create a connection to an IBM3270 mainframe with the default port 23.
         To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
@@ -92,10 +100,8 @@ class X3270(object):
             | Open Connection | Hostname | extra_args=${extra_args} |
             | Open Connection | Hostname | extra_args=${CURDIR}/argfile.txt |
         """
-        if self.mf:
-            self.close_connection()
         extra_args = self._process_args(extra_args)
-        self.mf = Emulator(self.visible, self.timeout, extra_args)
+        connection = Emulator(self.visible, self.timeout, extra_args)
         host_string = f"{LU}@{host}" if LU else host
         if self._port_in_extra_args(extra_args):
             if port != 23:
@@ -105,9 +111,10 @@ class X3270(object):
                     "To avoid this warning, you can either remove the port command-line option from `extra_args`, "
                     "or leave the `port` argument at its default value of 23."
                 )
-            self.mf.connect(host_string)
+            connection.connect(host_string)
         else:
-            self.mf.connect(f"{host_string}:{port}")
+            connection.connect(f"{host_string}:{port}")
+        return self.cache.register(connection, alias)
 
     def _process_args(self, args) -> list:
         processed_args = []
@@ -133,7 +140,9 @@ class X3270(object):
         return False
 
     @keyword("Open Connection From Session File")
-    def open_connection_from_session_file(self, session_file: os.PathLike):
+    def open_connection_from_session_file(
+        self, session_file: os.PathLike, alias: Optional[str] = None
+    ):
         """Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].
 
         The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a specific host session.
@@ -151,16 +160,15 @@ class X3270(object):
         | wc3270.hostname: myhost.com:23
         | wc3270.model: 2
         """
-        if self.mf:
-            self.close_connection()
         self._check_session_file_extension(session_file)
         self._check_contains_hostname(session_file)
         self._check_model(session_file)
         if os_name == "nt" and self.visible:
-            self.mf = Emulator(self.visible, self.timeout)
-            self.mf.connect(str(session_file))
+            connection = Emulator(self.visible, self.timeout)
+            connection.connect(str(session_file))
         else:
-            self.mf = Emulator(self.visible, self.timeout, [str(session_file)])
+            connection = Emulator(self.visible, self.timeout, [str(session_file)])
+        return self.cache.register(connection, alias)
 
     def _check_session_file_extension(self, session_file):
         file_extension = str(session_file).rsplit(".")[-1]
@@ -204,6 +212,10 @@ class X3270(object):
                     f'or by editing the model resource like this "*model: 2"'
                 )
 
+    @keyword("Switch Connection")
+    def switch_connection(self, alias_or_index: Union[str, int]):
+        self.cache.switch(alias_or_index)
+
     @keyword("Close Connection")
     def close_connection(self) -> None:
         """Disconnect from the host."""
@@ -211,7 +223,10 @@ class X3270(object):
             self.mf.terminate()
         except socket.error:
             pass
-        self.mf = None  # type: ignore
+
+    @keyword("Close All Connections")
+    def close_all_connections(self) -> None:
+        self.cache.close_all("terminate")
 
     @keyword("Change Wait Time")
     def change_wait_time(self, wait_time: timedelta) -> None:
