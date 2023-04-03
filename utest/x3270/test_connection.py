@@ -5,6 +5,7 @@ from unittest.mock import mock_open, patch
 
 import pytest
 from pytest_mock import MockerFixture
+from robot.utils import ConnectionCache
 
 from Mainframe3270 import x3270
 from Mainframe3270.py3270 import Emulator
@@ -16,11 +17,25 @@ CURDIR = os.path.dirname(os.path.realpath(__file__))
 
 
 def test_open_connection(mocker: MockerFixture):
-    m_connect = mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    mocker.patch("robot.utils.ConnectionCache.register")
     under_test = X3270(**X3270_DEFAULT_ARGS)
     under_test.open_connection("myhost")
 
-    m_connect.assert_called_with("myhost:23")
+    Emulator.connect.assert_called_with("myhost:23")
+    assert isinstance(ConnectionCache.register.call_args[0][0], Emulator)
+    assert ConnectionCache.register.call_args[0][1] is None
+
+
+def test_open_connection_with_alias(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    mocker.patch("robot.utils.ConnectionCache.register")
+    under_test = X3270(**X3270_DEFAULT_ARGS)
+    under_test.open_connection("myhost", alias="myalias")
+
+    Emulator.connect.assert_called_with("myhost:23")
+    assert isinstance(ConnectionCache.register.call_args[0][0], Emulator)
+    assert ConnectionCache.register.call_args[0][1] == "myalias"
 
 
 def test_open_connection_with_lu(mocker: MockerFixture):
@@ -204,6 +219,16 @@ def test_check_model_raises_ValueError(
             under_test._check_model(session_file)
 
 
+def test_switch_connection(mocker: MockerFixture, under_test: X3270):
+    mocker.patch("robot.utils.ConnectionCache.switch")
+
+    under_test.switch_connection(1)
+    ConnectionCache.switch.assert_called_with(1)
+
+    under_test.switch_connection("myalias")
+    ConnectionCache.switch.assert_called_with("myalias")
+
+
 def test_close_connection(mocker: MockerFixture, under_test: X3270):
     mocker.patch("Mainframe3270.py3270.Emulator.terminate")
     under_test.close_connection()
@@ -214,3 +239,10 @@ def test_close_connection(mocker: MockerFixture, under_test: X3270):
 def test_close_connection_socket_error(mocker: MockerFixture, under_test: X3270):
     mocker.patch("Mainframe3270.py3270.Emulator.terminate", side_effect=socket.error)
     under_test.close_connection()
+
+
+def test_close_all_connections(mocker: MockerFixture, under_test: X3270):
+    mocker.patch("robot.utils.ConnectionCache.close_all")
+    under_test.close_all_connections()
+
+    ConnectionCache.close_all.assert_called_with("terminate")

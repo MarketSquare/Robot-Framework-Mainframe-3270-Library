@@ -40,7 +40,7 @@ class X3270(object):
             self.output_folder = os.getcwd()
 
     @property
-    def mf(self):
+    def mf(self) -> Emulator:
         return self.cache.current
 
     def _convert_timeout(self, time):
