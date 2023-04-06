@@ -10,7 +10,7 @@ from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
 
-from .py3270 import Emulator, x3270App
+from .py3270 import Emulator, ExecutableApp
 
 
 class x3270(object):
@@ -21,16 +21,18 @@ class x3270(object):
         wait_time: timedelta,
         wait_time_after_write: timedelta,
         img_folder: str,
-        height: int = 24,
-        width: int = 80,
+        #height: int = 24,
+        #width: int = 80,
+        model: str = "4"
     ) -> None:
         self.visible = visible
         self.timeout = self._convert_timeout(timeout)
         self.wait = self._convert_timeout(wait_time)
         self.wait_write = self._convert_timeout(wait_time_after_write)
         self.imgfolder = img_folder
-        self.height = height
-        self.width = width
+        #self.height = height
+        #self.width = width
+        self.model = ExecutableApp.get_model(model)
         self.mf: Emulator = None  # type: ignore
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
@@ -59,9 +61,9 @@ class x3270(object):
         host: str,
         LU: Optional[str] = None,
         port: int = 23,
-        height: Optional[int] = 24,
-        width: Optional[int] = 80,
-        extra_args: Optional[Union[List[str], os.PathLike]] = None,
+        #height: Optional[int] = 24,
+        #width: Optional[int] = 80,
+        extra_args: Optional[Union[List[str], os.PathLike, ExecutableApp.get_model("4")]] = None,
     ):
         """Create a connection to an IBM3270 mainframe with the default port 23.
         To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
@@ -112,14 +114,13 @@ class x3270(object):
         else:
             self.mf.connect(f"{host_string}:{port}")
 
-        self.height = height
-        self.width = width
+        #self.height = height
+        #self.width = width
 
-        # Explictly configuring model based on width and height
         size_args = ["-model",
-                     x3270App.get_model(self.height, self.width),
+                     ExecutableApp.get_model(self.model),
                      "-oversize",
-                     x3270App.get_screen_size(self.height, self.width)]
+                     ExecutableApp.get_screen_size(self.model)]
 
         if len(extra_args) == 0:
             extra_args = size_args
@@ -210,9 +211,9 @@ class x3270(object):
         Example for read a string in the position y=8 / x=10 of a length 15:
             | ${value} | Read | 8 | 10 | 15 |
         """
-        self._check_limits(self.height, self.width, ypos, xpos)
+        self._check_limits(ypos, xpos)
         # Checks if the user has passed a length that will be larger than the x limit of the screen.
-        if (xpos + length) > (self.width + 1):
+        if (xpos + length) > (80 + 1):
             raise Exception(
                 "You have exceeded the x-axis limit of the mainframe screen"
             )
@@ -428,7 +429,7 @@ class x3270(object):
     ) -> None:
         txt = txt.encode("unicode_escape")
         if ypos is not None and xpos is not None:
-            self._check_limits(self.height, self.width, ypos, xpos)
+            self._check_limits(ypos, xpos)
             self.mf.send_string(txt, ypos, xpos)
         else:
             self.mf.send_string(txt)
@@ -462,7 +463,7 @@ class x3270(object):
         """Search if a string exists on the mainframe screen and return True or False."""
 
         def __read_screen(string: str, ignore_case: bool) -> bool:
-            for ypos in range(self.height):
+            for ypos in range(24):
                 line = self.mf.string_get(ypos + 1, 1, 80)
                 if ignore_case:
                     line = line.lower()
@@ -759,7 +760,7 @@ class x3270(object):
     def _read_all_screen(self) -> str:
         """Read all the mainframe screen and return in a single string."""
         full_text = ""
-        for ypos in range(self.height):
+        for ypos in range(24):
             full_text += self.mf.string_get(ypos + 1, 1, 80)
         return full_text
 
@@ -784,13 +785,13 @@ class x3270(object):
                 raise Exception(message)
 
     @staticmethod
-    def _check_limits(height: int, width: int, ypos: int, xpos: int):
+    def _check_limits(ypos: int, xpos: int):
         """Checks if the user has passed some coordinate y / x greater than that existing in the mainframe"""
-        if ypos > height:
+        if ypos > 24:
             raise Exception(
                 "You have exceeded the y-axis limit of the mainframe screen"
             )
-        if xpos > width:
+        if xpos > 80:
             raise Exception(
                 "You have exceeded the x-axis limit of the mainframe screen"
             )

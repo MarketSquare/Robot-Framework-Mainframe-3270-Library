@@ -9,7 +9,6 @@ from os import name as os_name
 
 log = logging.getLogger(__name__)
 
-
 """
     Python 3+ note: unicode strings should be used when communicating with the Emulator methods.
     utf-8 is used internally when reading from or writing to the 3270 emulator (this includes
@@ -156,6 +155,21 @@ class ExecutableApp(ABC):
     def readline(self):
         return self.sp.stdout.readline()
 
+    @staticmethod
+    def get_model(model: str):
+        return model
+
+    @staticmethod
+    def get_screen_size(model):
+        model_map = {
+            "2": "80x24",
+            "3": "80x30",
+            "4": "80x43",
+            "5": "132x27"
+        }
+
+        return model_map[model]
+
 
 class x3270App(ExecutableApp):
     executable = "x3270"
@@ -166,23 +180,6 @@ class x3270App(ExecutableApp):
     # performance reasons.
     args = ["-xrm", "x3270.unlockDelay: False", "-xrm", "x3270.model: 2", "-script"]
 
-    @staticmethod
-    def get_model(height: int,
-                  width: int,
-                  color: str = None,
-                  is_extended_data_stream: bool = False):
-        model_map = {
-            (24, 80): "2",
-            (32, 80): "3",
-            (43, 80): "4",
-            (27, 132): "5"
-        }
-
-        return model_map[(height, width)]
-
-    @staticmethod
-    def get_screen_size(height, width):
-        return "%sx%s" % (width, height)
 
 class s3270App(ExecutableApp):
     executable = "s3270"
@@ -499,3 +496,5 @@ class Emulator(object):
 
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
+
+
