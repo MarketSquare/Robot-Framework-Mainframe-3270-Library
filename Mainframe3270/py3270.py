@@ -9,6 +9,7 @@ from os import name as os_name
 
 log = logging.getLogger(__name__)
 
+
 """
     Python 3+ note: unicode strings should be used when communicating with the Emulator methods.
     utf-8 is used internally when reading from or writing to the 3270 emulator (this includes
@@ -496,5 +497,3 @@ class Emulator(object):
 
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
-
-

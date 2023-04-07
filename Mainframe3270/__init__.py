@@ -7,7 +7,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from robotlibcore import DynamicCore
 
 from .version import VERSION
-from .x3270 import x3270
+from .x3270 import X3270
 
 
 class Mainframe3270(DynamicCore):
@@ -74,7 +74,7 @@ class Mainframe3270(DynamicCore):
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
         libraries = [
-            x3270(visible, timeout, wait_time, wait_time_after_write, img_folder)
+            X3270(visible, timeout, wait_time, wait_time_after_write, img_folder)
         ]
         DynamicCore.__init__(self, libraries)
 

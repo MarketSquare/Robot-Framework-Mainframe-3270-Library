@@ -1,8 +1,10 @@
 import os
 import re
+import shlex
 import socket
 import time
 from datetime import timedelta
+from os import name as os_name
 from typing import Any, List, Optional, Union
 
 from robot.api import logger
@@ -13,7 +15,7 @@ from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
 from .py3270 import Emulator, ExecutableApp
 
 
-class x3270(object):
+class X3270(object):
     def __init__(
         self,
         visible: bool,
@@ -21,8 +23,6 @@ class x3270(object):
         wait_time: timedelta,
         wait_time_after_write: timedelta,
         img_folder: str,
-        #height: int = 24,
-        #width: int = 80,
         model: str = "4"
     ) -> None:
         self.visible = visible
@@ -30,8 +30,6 @@ class x3270(object):
         self.wait = self._convert_timeout(wait_time)
         self.wait_write = self._convert_timeout(wait_time_after_write)
         self.imgfolder = img_folder
-        #self.height = height
-        #self.width = width
         self.model = ExecutableApp.get_model(model)
         self.mf: Emulator = None  # type: ignore
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
@@ -61,8 +59,6 @@ class x3270(object):
         host: str,
         LU: Optional[str] = None,
         port: int = 23,
-        #height: Optional[int] = 24,
-        #width: Optional[int] = 80,
         extra_args: Optional[Union[List[str], os.PathLike, ExecutableApp.get_model("4")]] = None,
     ):
         """Create a connection to an IBM3270 mainframe with the default port 23.
@@ -72,12 +68,13 @@ class x3270(object):
         `extra_args` accepts either a list or a path to a file containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
 
         Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
+        Arguments containing whitespace must be enclosed in single or double quotes.
 
         | # example_argfile_oneline.txt
         | -accepthostname myhost.com
 
         | # example_argfile_multiline.txt
-        | -accepthostname myhost.com
+        | -xrm "wc3270.acceptHostname: myhost.com"
         | # this is a comment
         | -charset french
         | -port 992
@@ -114,8 +111,6 @@ class x3270(object):
         else:
             self.mf.connect(f"{host_string}:{port}")
 
-        #self.height = height
-        #self.width = width
 
         size_args = ["-model",
                      ExecutableApp.get_model(self.model),
@@ -139,7 +134,7 @@ class x3270(object):
                 for line in file:
                     if line.lstrip().startswith("#"):
                         continue
-                    for arg in line.replace("\n", "").rstrip().split(" "):
+                    for arg in shlex.split(line):
                         processed_args.append(arg)
         return processed_args
 
@@ -150,6 +145,78 @@ class x3270(object):
             if arg == "-port" or ".port" in arg:
                 return True
         return False
+
+    @keyword("Open Connection From Session File")
+    def open_connection_from_session_file(self, session_file: os.PathLike):
+        """Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].
+
+        The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a specific host session.
+        The only mandatory setting required to establish the connection is the [https://x3270.miraheze.org/wiki/Hostname_resource|hostname resource].
+
+        This keyword is an alternative to `Open Connection`. Please note that the Robot-Framework-Mainframe-3270-Library
+        currently only supports model "2". Specifying any other model will result in a failure.
+
+        For more information on session file syntax and detailed examples, please consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
+
+        Example:
+        | Open Connection From Session File | ${CURDIR}/session.wc3270 |
+
+        where the content of `session.wc3270` is:
+        | wc3270.hostname: myhost.com:23
+        | wc3270.model: 2
+        """
+        if self.mf:
+            self.close_connection()
+        self._check_session_file_extension(session_file)
+        self._check_contains_hostname(session_file)
+        self._check_model(session_file)
+        if os_name == "nt" and self.visible:
+            self.mf = Emulator(self.visible, self.timeout)
+            self.mf.connect(str(session_file))
+        else:
+            self.mf = Emulator(self.visible, self.timeout, [str(session_file)])
+
+    def _check_session_file_extension(self, session_file):
+        file_extension = str(session_file).rsplit(".")[-1]
+        expected_extensions = {
+            ("nt", True): "wc3270",
+            ("nt", False): "ws3270",
+            ("posix", True): "x3270",
+            ("posix", False): "s3270",
+        }
+        expected_extension = expected_extensions.get((os_name, self.visible))
+        if file_extension != expected_extension:
+            raise ValueError(
+                f"Based on the emulator that you are using, "
+                f'the session file extension has to be ".{expected_extension}", '
+                f'but it was ".{file_extension}"'
+            )
+
+    def _check_contains_hostname(self, session_file):
+        with open(session_file) as file:
+            if "hostname:" not in file.read():
+                raise ValueError(
+                    "Your session file needs to specify the hostname resource "
+                    "to set up the connection. "
+                    "An example for wc3270 looks like this: \n"
+                    "wc3270.hostname: myhost.com\n"
+                )
+
+    def _check_model(self, session_file):
+        with open(session_file) as file:
+            pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
+            match = pattern.findall(file.read())
+            if not match:
+                return
+            elif match[-1] == "2":
+                return
+            else:
+                raise ValueError(
+                    f'Robot-Framework-Mainframe-3270-Library currently only supports model "2", '
+                    f'the model you specified in your session file was "{match[-1]}". '
+                    f'Please change it to "2", using either the session wizard if you are on Windows, '
+                    f'or by editing the model resource like this "*model: 2"'
+                )
 
     @keyword("Close Connection")
     def close_connection(self) -> None:
