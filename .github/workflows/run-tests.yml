@@ -1,0 +1,87 @@
+# This workflow runs the test suites with different versions of python
+name: tests
+
+on: [push, pull_request]
+
+jobs:
+  tests:
+    env:
+      ROBOT_OPTIONS: --exclude no-ci --loglevel DEBUG --outputdir logs
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      # pub400 closes the connection if there are too many requests coming from the same IP address
+      max-parallel: 1
+      matrix:
+        python-version: ["3.7", "3.10"]
+        os: [ubuntu-latest, windows-latest]
+      fail-fast: false
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up python
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Install dependencies linux
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        sudo apt-get install -y xvfb x3270 locales xterm
+        sudo locale-gen en_US
+
+    - name: Install dependencies windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        choco install wc3270
+        echo "C:\Program Files\wc3270" | Out-File -FilePath $env:GITHUB_PATH -Encoding utf8 -Append
+
+    - name: Install python dependencies
+      run: |
+        python -m pip install -r requirements-dev.txt
+
+    - name: Lint
+      run: |
+        inv lint
+
+    - name: Run utests with coverage
+      run: |
+        coverage run --branch --source Mainframe3270/ -m pytest --verbose utest/
+        coverage report
+        coverage xml
+
+    - name: Upload unit test coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: coverage.xml
+        flags: unit
+        move_coverage_to_trash: true
+
+    - name: Run atests with coverage linux
+      if: matrix.os == 'ubuntu-latest'
+      run: |
+        LANG=en_US.iso88591 xvfb-run coverage run --branch --source Mainframe3270/ -m robot $ROBOT_OPTIONS atest/
+        coverage report
+        coverage xml
+
+    - name: Run atests with coverage windows
+      if: matrix.os == 'windows-latest'
+      run: |
+        coverage run --branch --source Mainframe3270/ -m robot $ROBOT_OPTIONS atest/
+        coverage report
+        coverage xml
+
+    - name: Upload acceptance tests coverage to Codecov
+      uses: codecov/codecov-action@v3
+      with:
+        files: coverage.xml
+        flags: acceptance
+
+    - uses: actions/upload-artifact@v3
+      if: ${{ always() }}
+      with:
+        name: Tests results python${{ matrix.python-version }} - ${{ matrix.os }}
+        path: logs/
