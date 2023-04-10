@@ -3,7 +3,7 @@ from invoke import task
 
 @task
 def lint_python(c):
-    """Perform python code formatting with black, isort and flake8"""
+    """Perform python code formatting with black, isort and flake8."""
     c.run("black ./setup.py ./tasks.py Mainframe3270/ utest/")
     c.run("isort ./setup.py ./tasks.py Mainframe3270/ utest/")
     c.run("flake8 ./setup.py ./tasks.py Mainframe3270/ utest/")
@@ -12,7 +12,7 @@ def lint_python(c):
 
 @task
 def lint_robot(c):
-    """Perform robot code formatting with robotidy"""
+    """Perform robot code formatting with robotidy."""
     c.run("robotidy atest/")
 
 
@@ -28,13 +28,13 @@ def lint(c):
 
 @task
 def utest(c):
-    """Runs python unit tests"""
+    """Runs python unit tests."""
     c.run("pytest utest/")
 
 
 @task
 def atest(c):
-    """Runs robot acceptance tests"""
+    """Runs robot acceptance tests."""
     c.run("robot --loglevel DEBUG atest/")
 
 
@@ -45,6 +45,15 @@ def test(c):
     Short option for `inv utest && inv atest`.
     """
     pass
+
+
+@task
+def build_release(c):
+    """Build a source and binary distro for the project.
+    Manual steps to take before running this command is to change the version
+    in `Mainframe3270/version.py`.
+    """
+    c.run("python -m build")
 
 
 @task
