@@ -10,6 +10,7 @@ X3270_DEFAULT_ARGS = {
     "wait_time": 0.5,
     "wait_time_after_write": 0.0,
     "img_folder": ".",
+    "model": "2",
 }
 
 

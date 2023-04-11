@@ -160,18 +160,6 @@ class ExecutableApp(ABC):
     def get_model(model: str):
         return model
 
-    @staticmethod
-    def get_screen_size(model):
-        model_map = {
-            "2": "80x24",
-            "3": "80x30",
-            "4": "80x43",
-            "5": "132x27"
-        }
-
-        return model_map[model]
-
-
 class x3270App(ExecutableApp):
     executable = "x3270"
     # Per Paul Mattes, in the first days of x3270, there were servers that
