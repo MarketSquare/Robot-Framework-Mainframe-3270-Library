@@ -1,0 +1,34 @@
+# IDE
+.idea
+.vscode
+
+# byte compiled / optimized
+*.pyc
+__pychache__
+
+# Robot outputs
+log.html
+output.xml
+report.html
+screenshot*.html
+atest/**/session.*3270
+atest/log.html
+atest/output.xml
+atest/report.html
+atest/screenshot/
+atest/logs/
+atest/screenshots/
+
+# Python virtual environment
+.venv
+.env
+venv
+env
+
+# Caches
+.mypy_cache
+.pytest_cache
+
+# Coverage reports
+.coverage
+htmlcov

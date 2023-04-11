@@ -3,10 +3,10 @@ import os
 from pytest_mock import MockerFixture
 from robot.api import logger
 
-from Mainframe3270.x3270 import x3270
+from Mainframe3270.x3270 import X3270
 
 
-def test_set_screenshot_folder(under_test: x3270):
+def test_set_screenshot_folder(under_test: X3270):
     path = os.getcwd()
 
     under_test.set_screenshot_folder(path)
@@ -14,7 +14,7 @@ def test_set_screenshot_folder(under_test: x3270):
     assert under_test.imgfolder == os.getcwd()
 
 
-def test_set_screenshot_folder_nonexistent(mocker: MockerFixture, under_test: x3270):
+def test_set_screenshot_folder_nonexistent(mocker: MockerFixture, under_test: X3270):
     mocker.patch("robot.api.logger.error")
     mocker.patch("robot.api.logger.warn")
     path = os.path.join(os.getcwd(), "nonexistent")
@@ -27,7 +27,7 @@ def test_set_screenshot_folder_nonexistent(mocker: MockerFixture, under_test: x3
     )
 
 
-def test_take_screenshot(mocker: MockerFixture, under_test: x3270):
+def test_take_screenshot(mocker: MockerFixture, under_test: X3270):
     mocker.patch("Mainframe3270.py3270.Emulator.save_screen")
     mocker.patch("robot.api.logger.write")
     mocker.patch("time.time", return_value=1.0)
