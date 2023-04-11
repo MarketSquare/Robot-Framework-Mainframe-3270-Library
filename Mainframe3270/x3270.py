@@ -86,8 +86,6 @@ class X3270(object):
             return time.total_seconds()
         return timestr_to_secs(time, round_to=None)
 
-
-
     def _set_model_dimensions(self, model):
         try:
             model_type = X3270._MODEL_TYPES[model]
@@ -900,7 +898,6 @@ class X3270(object):
                 if message is None:
                     message = f'The string "{string}" was not found'
                 raise Exception(message)
-
 
     def _check_limits(self, ypos: int, xpos: int):
         """Checks if the user has passed some coordinate y / x greater than that existing in the mainframe"""
