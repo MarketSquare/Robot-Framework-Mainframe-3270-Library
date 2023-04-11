@@ -51,6 +51,7 @@ class Mainframe3270(DynamicCore):
         wait_time: timedelta = timedelta(milliseconds=500),
         wait_time_after_write: timedelta = timedelta(seconds=0),
         img_folder: str = ".",
+        model: str ="2",
         run_on_failure_keyword: str = "Take Screenshot",
     ) -> None:
         """
@@ -74,7 +75,7 @@ class Mainframe3270(DynamicCore):
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
         libraries = [
-            X3270(visible, timeout, wait_time, wait_time_after_write, img_folder)
+            X3270(visible, timeout, wait_time, wait_time_after_write, img_folder, model)
         ]
         DynamicCore.__init__(self, libraries)
 

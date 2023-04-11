@@ -156,6 +156,9 @@ class ExecutableApp(ABC):
     def readline(self):
         return self.sp.stdout.readline()
 
+    @staticmethod
+    def get_model(model: str):
+        return model
 
 class x3270App(ExecutableApp):
     executable = "x3270"

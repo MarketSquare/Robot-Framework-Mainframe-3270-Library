@@ -8,17 +8,18 @@ from .conftest import X3270_DEFAULT_ARGS
 
 
 def test_default_args():
-    under_test = X3270(True, 30, 0.5, 0.0, ".")
+    under_test = X3270(True, 30, 0.5, 0.0, ".", "2")
     assert under_test.visible is True
     assert under_test.timeout == 30
     assert under_test.wait == 0.5
     assert under_test.wait_write == 0.0
     assert under_test.imgfolder == "."
+    assert under_test.model == "2"
     under_test.mf is None
 
 
 def test_import_with_time_string():
-    under_test = X3270(True, "30 s", "500 milliseconds", "1 minute", ".")
+    under_test = X3270(True, "30 s", "500 milliseconds", "1 minute", ".", "2")
     assert under_test.timeout == 30
     assert under_test.wait == 0.5
     assert under_test.wait_write == 60
