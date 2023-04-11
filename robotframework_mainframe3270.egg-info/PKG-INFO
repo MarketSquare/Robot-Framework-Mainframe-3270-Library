@@ -1,12 +1,11 @@
 Metadata-Version: 2.1
 Name: robotframework-mainframe3270
-Version: 3.1
+Version: 3.2
 Summary: Mainframe Test library for Robot Framework
 Home-page: https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library
 Author: Altran Portugal
 Author-email: samuca@gmail.com
 License: MIT License
-Platform: UNKNOWN
 Classifier: Development Status :: 5 - Production/Stable
 Classifier: Framework :: Robot Framework
 Classifier: Framework :: Robot Framework :: Library
@@ -117,44 +116,23 @@ By default, Mainframe3270 will take a screenshot on failure. You can overwrite t
 
 ## Running with Docker
 
-The Docker image contains everything that is needed to run Mainframe tests. Currently the image is not published to Docker hub, so steps to use it
-- Build image:
-  ```
-  docker image build --build-arg BASE_IMAGE=3.7-alpine -t mainframe3270 .
-  ```
+The Docker image contains everything that is needed to run Mainframe tests. Currently the image is not published to Docker Hub. In order to use it, perform the following steps.
 
-  Here, `BASE_IMAGE` can be one of the available tags for the [python docker images](https://hub.docker.com/_/python). Please note that only alpine based images (e.g. 3.7-alpine) are supported.
+1. Download the Dockerfile sources
+```sh
+curl -O https://raw.githubusercontent.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/Dockerfile
 
-- Run all tests:
-  ```
-  docker container run --rm -it mainframe3270
-  ```
-
-Reports are saved to /reports. You can retrieve these by mapping the directory as volume. On Windows, run this command to mount your local _reports_ directory with the container:
-```
-docker container run --rm -it -v %cd%\reports:/reports mainframe3270
+curl -O https://raw.githubusercontent.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/master/entrypoint.sh
 ```
 
-On Linux/MacOSX, run:
-```
-docker container run --rm -it -v ${pwd}/reports:/reports
-```
-
-If you want to run single/specific tests, they can be mentioned at the end of command. Currently, only a single argument can be given, so multiple tests need to be given with wildcards like:
-```
-docker container run --rm -it -v %cd%\reports:/reports mainframe3270 *PF*
+2. Build the image:
+```sh
+docker build -t mainframe3270 .
 ```
 
-When developing tests, source code and tests can alsp be mounted with the container. The command to run tests using current sources is:
-* Windows:
-```
-docker container run --rm -it -v %cd%\reports:/reports -v %cd%\atests:/tests -v %cd%\Mainframe3270:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270
-```
-The _reports_ directory needs to be created beforehand.
-
-* Linux/MacOSX:
-```
-docker container run --rm -it -v ${pwd}/reports:/reports -v ${pwd}/atests:/tests -v ${pwd}/Mainframe3270:/usr/local/lib/python3.7/site-packages/Mainframe3270 mainframe3270
+3. Run the container
+```sh
+docker run --user mfuser -v /path/to/your/tests:/home/mfuser/tests mainframe3270 robot /home/mfuser/tests
 ```
 
 ## Contributing to Robot-Framework-Mainframe3270-Library
@@ -177,5 +155,3 @@ For more information visit the repository [Wiki](https://github.com/Altran-PT-GD
 
 ## License
 This project is licensed under the MIT License - see [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.
-
-

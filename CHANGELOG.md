@@ -1,3 +1,10 @@
+# Version: 3.2
+
+* [#89](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/89): (#88) Enable execution in Docker container
+* [#90](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/90): (#76) Open connection with pre configured session 
+* [#93](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/93): (#92) Enable shell-like syntax in `extra_args` from file
+
+
 # Version: 3.1
 
 * [#62](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/62): Adjust CHANGELOG

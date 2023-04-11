@@ -166,23 +166,6 @@ class x3270App(ExecutableApp):
     # performance reasons.
     args = ["-xrm", "x3270.unlockDelay: False", "-xrm", "x3270.model: 2", "-script"]
 
-    @staticmethod
-    def get_model(height: int,
-                  width: int,
-                  color: str = None,
-                  is_extended_data_stream: bool = False):
-        model_map = {
-            (24, 80): "2",
-            (32, 80): "3",
-            (43, 80): "4",
-            (27, 132): "5"
-        }
-
-        return model_map[(height, width)]
-
-    @staticmethod
-    def get_screen_size(height, width):
-        return "%sx%s" % (width, height)
 
 class s3270App(ExecutableApp):
     executable = "s3270"
