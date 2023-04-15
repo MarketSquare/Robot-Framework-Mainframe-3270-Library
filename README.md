@@ -115,7 +115,7 @@ docker run --user mfuser -v /path/to/your/tests:/home/mfuser/tests mainframe3270
 
 ## Contributing to Robot-Framework-Mainframe3270-Library
 
-Interested in contributing to the project? Great to hear! Whether you found a bug, or want to develop a new feature, please refer to our [Contributing Guidelines](COUNTRIBUTING.md) to help you get started.
+Interested in contributing to the project? Great to hear! Whether you found a bug, or want to develop a new feature, please refer to our [Contributing Guidelines](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/COUNTRIBUTING.md) to help you get started.
 
 ## Keyword Tests
 
