@@ -132,4 +132,4 @@ For more information visit the repository [Wiki](https://github.com/Altran-PT-GD
    - **Ricardo Morgado**
 
 ## License
-This project is licensed under the MIT License - see [LICENSE.md](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.
+This project is licensed under the MIT License - see [LICENSE](LICENSE.md) for details.
