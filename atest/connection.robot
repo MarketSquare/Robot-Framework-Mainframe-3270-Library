@@ -1,15 +1,14 @@
 *** Settings ***
-Resource            pub400_variables.robot
-Library             OperatingSystem
-Library             ../Mainframe3270/    ${VISIBLE}
-
-Test Teardown       Test Teardown
-
+Test Teardown     Test Teardown
+Resource          pub400_variables.robot
+Library           OperatingSystem
+Library           ../Mainframe3270/    ${VISIBLE}
 
 *** Variables ***
-${ARGFILE}              ${CURDIR}/resources/argfile.txt
-${SESSION_TEMPLATE}     ${CURDIR}/resources/session.template
-${TRACE_FILE}           ${CURDIR}/x3270.trace
+${ARGFILE}        ${CURDIR}/resources/argfile.txt
+${SESSION_TEMPLATE}    ${CURDIR}/resources/session.template
+${TRACE_FILE}     ${CURDIR}/x3270.trace
+
 
 
 *** Test Cases ***
@@ -30,7 +29,6 @@ Test Connection From Session File
     Wait Field Detected
     Page Should Contain String    ${WELCOME}
 
-
 *** Keywords ***
 Create Session File
     ${os_name}=    Evaluate    os.name
@@ -44,9 +42,10 @@ Create Session File
         ${session_file}=    Set Variable    ${CURDIR}/resources/session.s3270
     END
     Copy File    ${SESSION_TEMPLATE}    ${session_file}
-    RETURN    ${session_file}
+    Comment    RETURN    ${session_file}    #_Does not work on lower versions of RF
+    [Return]    ${session_file}
 
 Test Teardown
-    Close Connection
+    run keyword and ignore error    Close Connection    #_There could be no connection established
     Sleep    1 second
     Remove File    ${TRACE_FILE}

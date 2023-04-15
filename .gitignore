@@ -18,6 +18,7 @@ atest/report.html
 atest/screenshot/
 atest/logs/
 atest/screenshots/
+/Work
 
 # Python virtual environment
 .venv
