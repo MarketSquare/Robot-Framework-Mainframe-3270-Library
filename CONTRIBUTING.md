@@ -23,4 +23,4 @@ Here are some guidelines to help you get started:
 
 ## License
 
-By contributing to the Robot-Framework-Mainframe-3270-Library, you agree that your contributions will be licensed under the project's [MIT license](LICENSE).
+By contributing to the Robot-Framework-Mainframe-3270-Library, you agree that your contributions will be licensed under the project's [MIT license](LICENSE.md).
