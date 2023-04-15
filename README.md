@@ -125,7 +125,7 @@ To run all the library tests, you will need to create a user on the [pub400](htt
 For more information visit the repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
 
 ## Changelog
-For an overview of the (latest) changes - see [CHANGELOG](CHANGELOG.md) for details.
+For an overview of the (latest) changes see [CHANGELOG](CHANGELOG.md) for details.
 
 ## Authors
    - **Altran -** [Altran Web Site](https://www.altran.com/us/en/)
