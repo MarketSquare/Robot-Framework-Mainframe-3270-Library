@@ -1,14 +1,15 @@
 *** Settings ***
-Test Teardown     Test Teardown
-Resource          pub400_variables.robot
-Library           OperatingSystem
-Library           ../Mainframe3270/    ${VISIBLE}
+Resource            pub400_variables.robot
+Library             OperatingSystem
+Library             ../Mainframe3270/    ${VISIBLE}
+
+Test Teardown       Test Teardown
+
 
 *** Variables ***
-${ARGFILE}        ${CURDIR}/resources/argfile.txt
-${SESSION_TEMPLATE}    ${CURDIR}/resources/session.template
-${TRACE_FILE}     ${CURDIR}/x3270.trace
-
+${ARGFILE}              ${CURDIR}/resources/argfile.txt
+${SESSION_TEMPLATE}     ${CURDIR}/resources/session.template
+${TRACE_FILE}           ${CURDIR}/x3270.trace
 
 
 *** Test Cases ***
@@ -28,6 +29,7 @@ Test Connection From Session File
     Open Connection From Session File    ${SESSION_FILE}
     Wait Field Detected
     Page Should Contain String    ${WELCOME}
+
 
 *** Keywords ***
 Create Session File

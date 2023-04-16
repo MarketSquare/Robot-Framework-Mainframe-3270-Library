@@ -1,20 +1,27 @@
 *** Settings ***
-Documentation     These tests verify that all keywords are working correctly and displaying the expected exception message.
-...               To run all the tests, you will need to create a user in the https://www.pub400.com/ website,
-...               this will affect the last test "Test With Login"
-Suite Setup       Suite Setup
-Suite Teardown    Suite Teardown
-Library           ../Mainframe3270/    run_on_failure_keyword=None
-Library           Dialogs
-Library           OperatingSystem
-Library           String
-Resource          pub400_variables.robot
+Documentation       These tests verify that all keywords are working correctly and displaying the expected exception message.
+...                 To run all the tests, you will need to create a user in the https://www.pub400.com/ website,
+...                 this will affect the last test "Test With Login"
+
+Library             ../Mainframe3270/    run_on_failure_keyword=None
+Library             Dialogs
+Library             OperatingSystem
+Library             String
+Resource            pub400_variables.robot
+
+Suite Setup         Suite Setup
+Suite Teardown      Suite Teardown
+
 
 *** Test Cases ***
 Exception Test Read
     Wait Field Detected
     ${read_text}    Read    1    10    21
-    Run Keyword And Expect Error    ${WELCOME_TEXT_EXPECTED_ERROR}    Should Be Equal As Strings    ${WELCOME_TITLE}    ${read_text}
+    Run Keyword And Expect Error
+    ...    ${WELCOME_TEXT_EXPECTED_ERROR}
+    ...    Should Be Equal As Strings
+    ...    ${WELCOME_TITLE}
+    ...    ${read_text}
     Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    48    34
     Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    81    1
     Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    25    48    34
@@ -24,8 +31,18 @@ Exception Test Write In Position
     Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Write In Position    ${WRITE_TEXT}    25    10
 
 Exception Test Write Bare In Position
-    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    10    81
-    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    25    10
+    Run Keyword And Expect Error
+    ...    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}
+    ...    Write Bare In Position
+    ...    ${WRITE_TEXT}
+    ...    10
+    ...    81
+    Run Keyword And Expect Error
+    ...    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}
+    ...    Write Bare In Position
+    ...    ${WRITE_TEXT}
+    ...    25
+    ...    10
 
 Exception Test Page Should Contain String
     Verify String Not Found    Page Should Contain String    ${WELCOME_WRONG_CASE}
@@ -33,15 +50,33 @@ Exception Test Page Should Contain String
 
 Exception Test Page Should Contain All Strings
     Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_FIRST}    1
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_SECONDS}    2
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_CASE_IN_THE_SECONDS}
+    ...    2
     Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_THIRD}    3
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_FIRST}    1    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_SECOND}    2    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_THIRD}    3    ignore_case=${True}
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_IN_THE_FIRST}
+    ...    1
+    ...    ignore_case=${True}
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_IN_THE_SECOND}
+    ...    2
+    ...    ignore_case=${True}
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_IN_THE_THIRD}
+    ...    3
+    ...    ignore_case=${True}
 
 Exception Test Page Should Contain Any String
     Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_ALL_WRONG_CASE}
-    Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}    ignore_case=${True}
+    Verify List Not Found
+    ...    Page Should Contain Any String
+    ...    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}
+    ...    ignore_case=${True}
 
 Exception Test Page Should Contain Match
     Verify Pattern Not Found    Page Should Contain Match    ${TEXT_NOT_MATCH_WRONG_CASE}
@@ -49,7 +84,12 @@ Exception Test Page Should Contain Match
 
 Exception Test Page Should Contain String X Times
     Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    3
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    1    5    ignore_case=${True}
+    Verify String Does Not Appear X Times
+    ...    Page Should Contain String X Times
+    ...    ${TEXT_TO_COUNT_WRONG_CASE}
+    ...    1
+    ...    5
+    ...    ignore_case=${True}
 
 Exception Test Page Should Match Regex
     Verify Pattern Not Found    Page Should Match Regex    ${INVALID_REGEX}
@@ -206,6 +246,7 @@ Test Send PF
     Wait Field Detected
     Take Screenshot
 
+
 *** Keywords ***
 Suite Setup
     Open Connection    ${HOST}
@@ -227,7 +268,10 @@ Verify String Not Found
 
 Verify String Not Found In List
     [Arguments]    ${keyword}    ${string_list}    ${string_position}    ${ignore_case}=${False}
-    ${not_found_string}    Set Variable If    ${ignore_case}==${False}    ${string_list[${${string_position}-1}]}    ${string_list[${${string_position}-1}].lower()}
+    ${not_found_string}    Set Variable If
+    ...    ${ignore_case}==${False}
+    ...    ${string_list[${${string_position}-1}]}
+    ...    ${string_list[${${string_position}-1}].lower()}
     ${expected_error}    Set Variable    The string "${not_found_string}" was not found
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string_list}    ignore_case=${ignore_case}
 
@@ -247,9 +291,20 @@ Verify Pattern Not Found
     END
 
 Verify String Does Not Appear X Times
-    [Arguments]    ${keyword}    ${string}    ${wrong_number_of_times}    ${right_number_of_times}    ${ignore_case}=${False}
-    ${expected_error}    Set Variable    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
-    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${TEXT_TO_COUNT}    1    ignore_case=${ignore_case}
+    [Arguments]
+    ...    ${keyword}
+    ...    ${string}
+    ...    ${wrong_number_of_times}
+    ...    ${right_number_of_times}
+    ...    ${ignore_case}=${False}
+    ${expected_error}    Set Variable
+    ...    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
+    Run Keyword And Expect Error
+    ...    ${expected_error}
+    ...    ${keyword}
+    ...    ${TEXT_TO_COUNT}
+    ...    1
+    ...    ignore_case=${ignore_case}
 
 Verify String Found
     [Arguments]    ${keyword}    ${string}    ${ignore_case}=${False}
