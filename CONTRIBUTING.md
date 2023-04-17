@@ -17,7 +17,7 @@ Here are some guidelines to help you get started:
 - When creating new user keywords, please provide documentation.
 - Write tests for your changes. You may need to include unit tests, acceptance tests, or both, depending on the change you made.
 - Format your code by running `inv lint` from the cloned folder.
-- Ensure all tests pass by running `inv utest` for unit tests and `inv atest` for acceptance tests.
+- Ensure all tests pass by running `inv utest` for unit tests and `inv atest` for acceptance tests again from the cloned folder.
 - Push your changes to your fork on GitHub.
 - Create a pull request.
 

@@ -59,9 +59,10 @@ Create Session File
         ${session_file}=    Set Variable    ${CURDIR}/resources/session.s3270
     END
     Copy File    ${SESSION_TEMPLATE}    ${session_file}
-    RETURN    ${session_file}
+    # Using legacy [Return] for older RF versions
+    [Return]    ${session_file}
 
 Test Teardown
-    Close Connection
+    Run Keyword And Ignore Error    Close Connection
     Sleep    1 second
     Remove File    ${TRACE_FILE}

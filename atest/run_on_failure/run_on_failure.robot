@@ -43,5 +43,5 @@ Custom Run On Failure Keyword
     Create File    ${CUSTOM_FILE}    An error ocurred
 
 Close Mainframe
-    Close Connection
+    Run Keyword And Ignore Error    Close Connection
     Sleep    1 second
