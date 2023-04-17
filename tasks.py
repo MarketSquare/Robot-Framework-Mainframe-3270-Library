@@ -13,7 +13,7 @@ def lint_python(c):
 @task
 def lint_robot(c):
     """Perform robot code formatting with robotidy."""
-    c.run("robotidy atest/")
+    c.run("robotidy --configure ReplaceReturns:enabled=False atest/")
 
 
 @task(lint_python, lint_robot)

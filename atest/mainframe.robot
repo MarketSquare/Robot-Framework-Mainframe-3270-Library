@@ -1,10 +1,7 @@
 *** Settings ***
-Documentation       These tests verify that all keywords are working correctly and displaying the expected exception message.
-...                 To run all the tests, you will need to create a user in the https://www.pub400.com/ website,
-...                 this will affect the last test "Test With Login"
+Documentation       These tests verify that all keywords are working correctly and displaying the expected exception messages.
 
 Library             ../Mainframe3270/    run_on_failure_keyword=None
-Library             Dialogs
 Library             OperatingSystem
 Library             String
 Resource            pub400_variables.robot
@@ -207,7 +204,7 @@ Test Move Next Field
     Sleep    1s
 
 Test Move Previous Field
-    # Send two Move Previous Field because the first only put the cursor int he beginning of the password field
+    # Send two Move Previous Field because the first only puts the cursor at the beginning of the password field
     Move Previous Field
     Move Previous Field
     Write Bare    ${WRITE_TEXT}
@@ -216,35 +213,16 @@ Test Move Previous Field
     Sleep    1s
 
 Test Send Enter
-    [Tags]    no-ci
     Wait Field Detected
-    Page Should Contain String    ${WELCOME}
-    Page Should Contain String    ${WELCOME_WRONG_CASE}    ignore_case=${TRUE}
     Delete Field
-    ${user}    Get Value From User    Write user
-    ${password}    Get Value From User    Write user password
-    Write Bare In Position    ${user}    5    25
     Move Next Field
-    Write Bare    ${password}
+    Delete Field
     Send Enter
-    Send Enter    #_do an extra enter to cope with potential password about to expire information
-    ${value}    Read    1    33    15
-    Should Be Equal As Strings    ${MAIN_MENU}    ${value}
-    Take Screenshot
+    Page Should Contain String    Sign-on information required.
 
 Test Send PF
-    [Tags]    no-ci
-    Write    1
-    Wait Field Detected
-    Take Screenshot
-    Page Should Contain String    ${USER_TASK}
-    Send PF    12
-    Wait Field Detected
-    Take Screenshot
-    Page Should Contain String    ${MAIN_MENU}
-    Write    90
-    Wait Field Detected
-    Take Screenshot
+    Send PF    1
+    Page Should Contain String    Function key not allowed.
 
 
 *** Keywords ***
@@ -258,7 +236,7 @@ Suite Setup
     Sleep    3s
 
 Suite Teardown
-    run keyword and ignore error    Close Connection    #_There could be no connection established
+    Run Keyword And Ignore Error    Close Connection
     Sleep    1s
 
 Verify String Not Found
