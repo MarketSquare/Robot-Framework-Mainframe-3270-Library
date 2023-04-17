@@ -17,9 +17,8 @@ class Mainframe3270(DynamicCore):
 
     = Installation  =
 
-    For use this library you need to install the [http://x3270.bgp.nu/download.html|x3270 project]
-    and put the directory on your PATH. On Windows, you need to download wc3270 and put
-    the "C:\Program Files\wc3270" in PATH of the Environment Variables.
+    To use this library, you must have the [http://x3270.bgp.nu/download.html|x3270 project] installed and included in your PATH.
+    On Windows, you can install wc3270 and add "C:\Program Files\wc3270" to your PATH in the Environment Variables.
 
     = Example =
 
@@ -39,6 +38,29 @@ class Mainframe3270(DynamicCore):
     |     Send Enter
     |     Take Screenshot
     |     Close Connection
+
+    = Concurrent Connections =
+
+    The library allows you to have multiple sessions open at the same time. Each session opened by `Open Connection` or
+    `Open Connection From Session File` will return an index that can be used to reference it
+    when switching between connections using the `Switch Connection` keyword.
+
+    Additionally, you can provide aliases to your sessions when opening a connection, and switch the connection
+    using that alias instead of the index.
+
+    It is worth noting that the connection that was opened last is always the current connection.
+
+    | *** Test Cases ***
+    | Concurrent Sessions
+    |     ${index_1}    Open Connection    Hostname    # this is the current connection
+    |     Write Bare    First String
+    |     ${index_2}    Open Connection    Hostname    alias=second    # 'second' is now the current connection
+    |     Write Bare    Second String
+    |     Switch Connection    ${index_1}    # swtiching the connection using the index
+    |     Page Should Contain String    First String
+    |     Switch Connection    second    # switchting the ocnnection using the alias
+    |     Page Should Contain String    Second String
+    |     [Teardown]    Close All Connections
     """
 
     ROBOT_LIBRARY_SCOPE = "TEST SUITE"

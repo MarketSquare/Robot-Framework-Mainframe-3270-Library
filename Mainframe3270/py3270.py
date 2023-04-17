@@ -5,6 +5,7 @@ import subprocess
 import time
 import warnings
 from abc import ABC, abstractmethod
+from contextlib import closing
 from os import name as os_name
 
 log = logging.getLogger(__name__)
@@ -181,13 +182,19 @@ class wc3270App(ExecutableApp):
     executable = "wc3270"
     # see notes for args in x3270App
     args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
-    script_port = 17938
 
     def __init__(self, extra_args=None):
         if extra_args:
             self.args = wc3270App.args + extra_args
         self.sp = None
         self.socket_fh = None
+        self.script_port = self._get_free_port()
+
+    def _get_free_port(self):
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+            s.bind(("127.0.0.1", 0))
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            return s.getsockname()[1]
 
     def connect(self, host):
         self.spawn_app(host)
