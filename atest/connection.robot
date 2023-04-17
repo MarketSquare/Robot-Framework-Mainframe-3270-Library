@@ -44,10 +44,10 @@ Create Session File
         ${session_file}=    Set Variable    ${CURDIR}/resources/session.s3270
     END
     Copy File    ${SESSION_TEMPLATE}    ${session_file}
-    Comment    RETURN    ${session_file}    #_Does not work on lower versions of RF
+    # Using legacy [Return] for older RF versions
     [Return]    ${session_file}
 
 Test Teardown
-    run keyword and ignore error    Close Connection    #_There could be no connection established
+    Run Keyword And Ignore Error    Close Connection
     Sleep    1 second
     Remove File    ${TRACE_FILE}
