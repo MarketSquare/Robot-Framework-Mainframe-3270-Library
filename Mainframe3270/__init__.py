@@ -4,10 +4,13 @@ from typing import Any
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn
+from robot.utils import ConnectionCache
 from robotlibcore import DynamicCore
 
-from .version import VERSION
-from .x3270 import X3270
+from Mainframe3270.py3270 import Emulator
+from Mainframe3270.utils import convert_timeout
+from Mainframe3270.version import VERSION
+from Mainframe3270.x3270 import X3270
 
 
 class Mainframe3270(DynamicCore):
@@ -93,12 +96,22 @@ class Mainframe3270(DynamicCore):
         If you pass ``None`` to this argument, no keyword will be run.
         To change the ``run_on_failure_keyword`` during runtime, see `Register Run On Failure Keyword`.
         """
+        self.visible = visible
+        self.timeout = convert_timeout(timeout)
+        self.wait_time = wait_time
+        self.wait_time_after_write = wait_time_after_write
+        self.img_folder = img_folder
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
+        self.cache = ConnectionCache()
         libraries = [
             X3270(visible, timeout, wait_time, wait_time_after_write, img_folder)
         ]
         DynamicCore.__init__(self, libraries)
+
+    @property
+    def mf(self) -> Emulator:
+        return self.cache.current
 
     @keyword
     def register_run_on_failure_keyword(self, keyword: str) -> None:
