@@ -11,7 +11,7 @@ def test_set_screenshot_folder(under_test: X3270):
 
     under_test.set_screenshot_folder(path)
 
-    assert under_test.imgfolder == os.getcwd()
+    assert under_test.img_folder == os.getcwd()
 
 
 def test_set_screenshot_folder_nonexistent(mocker: MockerFixture, under_test: X3270):
@@ -23,7 +23,7 @@ def test_set_screenshot_folder_nonexistent(mocker: MockerFixture, under_test: X3
 
     logger.error.assert_called_with('Given screenshots path "%s" does not exist' % path)
     logger.warn.assert_called_with(
-        'Screenshots will be saved in "%s"' % under_test.imgfolder
+        'Screenshots will be saved in "%s"' % under_test.img_folder
     )
 
 

@@ -14,7 +14,7 @@ def test_execute_command(mocker: MockerFixture, under_test: X3270):
     under_test.execute_command("cmd")
 
     Emulator.exec_command.assert_called_with("cmd".encode("utf-8"))
-    time.sleep.assert_called_with(under_test.wait)
+    time.sleep.assert_called_with(under_test.wait_time)
 
 
 def test_delete_char(mocker: MockerFixture, under_test: X3270):

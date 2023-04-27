@@ -7,39 +7,13 @@ from typing import Any, List, Optional
 # fmt: off
 from robot.api import logger
 from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
-from robot.utils import (ConnectionCache, Matcher, secs_to_timestr,
-                         timestr_to_secs)
+from robot.utils import Matcher, secs_to_timestr, timestr_to_secs
 
 # fmt: on
-from .py3270 import Emulator
+from Mainframe3270.librarycomponent import LibraryComponent
 
 
-class X3270(object):
-    def __init__(
-        self,
-        visible: bool,
-        timeout: timedelta,
-        wait_time: timedelta,
-        wait_time_after_write: timedelta,
-        img_folder: str,
-    ) -> None:
-        self.visible = visible
-        self.timeout = self._convert_timeout(timeout)
-        self.wait = self._convert_timeout(wait_time)
-        self.wait_write = self._convert_timeout(wait_time_after_write)
-        self.imgfolder = img_folder
-        self.cache = ConnectionCache()
-        # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
-        try:
-            self.output_folder = BuiltIn().get_variable_value("${OUTPUT DIR}")
-        except RobotNotRunningError:
-            self.output_folder = os.getcwd()
-
-    @property
-    def mf(self) -> Emulator:
-        return self.cache.current
-
+class X3270(LibraryComponent):
     def _convert_timeout(self, time):
         if isinstance(time, timedelta):
             return time.total_seconds()
@@ -73,7 +47,7 @@ class X3270(object):
             | Change Wait Time | 200 milliseconds |
             | Change Wait Time | 0:00:01.500      |
         """
-        self.wait = self._convert_timeout(wait_time)
+        self.wait_time = self._convert_timeout(wait_time)
 
     @keyword("Change Wait Time After Write")
     def change_wait_time_after_write(self, wait_time_after_write: timedelta) -> None:
@@ -95,7 +69,7 @@ class X3270(object):
             | Change Wait Time After Write | 0.5 seconds   |
             | Change Wait Time After Write | 0:00:02       |
         """
-        self.wait_write = self._convert_timeout(wait_time_after_write)
+        self.wait_time_after_write = self._convert_timeout(wait_time_after_write)
 
     @keyword("Read")
     def read(self, ypos: int, xpos: int, length: int) -> str:
@@ -143,7 +117,7 @@ class X3270(object):
             | Execute Command | PF(1) |
         """
         self.mf.exec_command(cmd.encode("utf-8"))
-        time.sleep(self.wait)
+        time.sleep(self.wait_time)
 
     @keyword("Set Screenshot Folder")
     def set_screenshot_folder(self, path: str) -> None:
@@ -156,10 +130,10 @@ class X3270(object):
             | Set Screenshot Folder | C:\\Temp\\Images |
         """
         if os.path.exists(os.path.normpath(os.path.join(self.output_folder, path))):
-            self.imgfolder = path
+            self.img_folder = path
         else:
-            logger.error('Given screenshots path "%s" does not exist' % path)
-            logger.warn('Screenshots will be saved in "%s"' % self.imgfolder)
+            logger.error(f'Given screenshots path "{path}" does not exist')
+            logger.warn(f'Screenshots will be saved in "{self.img_folder}"')
 
     @keyword("Take Screenshot")
     def take_screenshot(
@@ -184,7 +158,7 @@ class X3270(object):
         extension = "html"
         filename_sufix = round(time.time() * 1000)
         filepath = os.path.join(
-            self.imgfolder, "%s_%s.%s" % (filename_prefix, filename_sufix, extension)
+            self.img_folder, "%s_%s.%s" % (filename_prefix, filename_sufix, extension)
         )
         self.mf.save_screen(os.path.join(self.output_folder, filepath))
         logger.write(
@@ -251,7 +225,7 @@ class X3270(object):
     def send_enter(self) -> None:
         """Send an Enter to the screen."""
         self.mf.send_enter()
-        time.sleep(self.wait)
+        time.sleep(self.wait_time)
 
     @keyword("Move Next Field")
     def move_next_field(self) -> None:
@@ -271,7 +245,7 @@ class X3270(object):
                | Send PF | 3 |
         """
         self.mf.exec_command(("PF({0})").format(PF).encode("utf-8"))
-        time.sleep(self.wait)
+        time.sleep(self.wait_time)
 
     @keyword("Write")
     def write(self, txt: str) -> None:
@@ -328,10 +302,10 @@ class X3270(object):
             self.mf.send_string(txt, ypos, xpos)
         else:
             self.mf.send_string(txt)
-        time.sleep(self.wait_write)
+        time.sleep(self.wait_time_after_write)
         for i in range(enter):
             self.mf.send_enter()
-            time.sleep(self.wait)
+            time.sleep(self.wait_time)
 
     @keyword("Wait Until String")
     def wait_until_string(

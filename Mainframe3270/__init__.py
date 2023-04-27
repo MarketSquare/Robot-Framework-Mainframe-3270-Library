@@ -1,12 +1,14 @@
+import os
 from datetime import timedelta
 from typing import Any
 
 from robot.api import logger
 from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn
+from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import ConnectionCache
 from robotlibcore import DynamicCore
 
+from Mainframe3270.keywords import ConnectionKeywords
 from Mainframe3270.py3270 import Emulator
 from Mainframe3270.utils import convert_timeout
 from Mainframe3270.version import VERSION
@@ -46,7 +48,8 @@ class Mainframe3270(DynamicCore):
 
     The library allows you to have multiple sessions open at the same time. Each session opened by `Open Connection` or
     `Open Connection From Session File` will return an index that can be used to reference it
-    when switching between connections using the `Switch Connection` keyword.
+    when switching between connections using the `Switch Connection` keyword. The indices start from 1 and are incremented
+    by each newly opened connection. Calling `Close All Connection` will reset the index counter to 1.
 
     Additionally, you can provide aliases to your sessions when opening a connection, and switch the connection
     using that alias instead of the index.
@@ -98,14 +101,21 @@ class Mainframe3270(DynamicCore):
         """
         self.visible = visible
         self.timeout = convert_timeout(timeout)
-        self.wait_time = wait_time
-        self.wait_time_after_write = wait_time_after_write
+        self.wait_time = convert_timeout(wait_time)
+        self.wait_time_after_write = convert_timeout(wait_time_after_write)
         self.img_folder = img_folder
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
         self.cache = ConnectionCache()
+        # When generating the library documentation with libdoc, BuiltIn.get_variable_value throws
+        # a RobotNotRunningError. Therefore, we catch it here to be able to generate the documentation.
+        try:
+            self.output_folder = BuiltIn().get_variable_value("${OUTPUT DIR}")
+        except RobotNotRunningError:
+            self.output_folder = os.getcwd()
         libraries = [
-            X3270(visible, timeout, wait_time, wait_time_after_write, img_folder)
+            ConnectionKeywords(self),
+            X3270(self),
         ]
         DynamicCore.__init__(self, libraries)
 

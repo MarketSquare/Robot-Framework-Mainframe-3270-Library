@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from robot.utils import ConnectionCache
 
 from Mainframe3270.py3270 import Emulator
@@ -27,20 +25,36 @@ class LibraryComponent:
         self.library.visible = value
 
     @property
-    def timeout(self) -> timedelta:
+    def timeout(self):
         return self.library.timeout
 
+    @timeout.setter
+    def timeout(self, value):
+        self.library.timeout = value
+
     @property
-    def wait_time(self) -> timedelta:
+    def wait_time(self):
         return self.library.wait_time
 
-    @property
-    def wait_time_after_write(self) -> timedelta:
-        return self.library.wait_time_after_write
+    @wait_time.setter
+    def wait_time(self, value):
+        self.library.wait_time = value
 
     @property
-    def img_folder(self) -> str:
+    def wait_time_after_write(self):
+        return self.library.wait_time_after_write
+
+    @wait_time_after_write.setter
+    def wait_time_after_write(self, value):
+        self.library.wait_time_after_write = value
+
+    @property
+    def img_folder(self):
         return self.library.img_folder
+
+    @img_folder.setter
+    def img_folder(self, value):
+        self.library.img_folder = value
 
     @property
     def cache(self) -> ConnectionCache:
@@ -49,3 +63,7 @@ class LibraryComponent:
     @property
     def mf(self) -> Emulator:
         return self.library.cache.current
+
+    @property
+    def output_folder(self):
+        return self.library.output_folder

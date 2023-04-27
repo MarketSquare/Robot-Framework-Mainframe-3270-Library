@@ -26,37 +26,37 @@ def test_change_timeout_with_timer_string(under_test: X3270):
 def test_change_wait_time(under_test: X3270):
     under_test.change_wait_time(2.5)
 
-    assert under_test.wait == 2.5
+    assert under_test.wait_time == 2.5
 
 
 def test_change_wait_time_with_time_string(under_test: X3270):
     under_test.change_wait_time("500 millis")
 
-    assert under_test.wait == 0.5
+    assert under_test.wait_time == 0.5
 
 
 def test_change_wait_time_with_timer_string(under_test: X3270):
     under_test.change_wait_time("00:00:00.500")
 
-    assert under_test.wait == 0.5
+    assert under_test.wait_time == 0.5
 
 
 def test_change_wait_time_after_write(under_test: X3270):
     under_test.change_wait_time_after_write(2.5)
 
-    assert under_test.wait_write == 2.5
+    assert under_test.wait_time_after_write == 2.5
 
 
 def test_change_wait_time_after_write_with_time_string(under_test: X3270):
     under_test.change_wait_time_after_write("1.5")
 
-    assert under_test.wait_write == 1.5
+    assert under_test.wait_time_after_write == 1.5
 
 
 def test_change_wait_time_after_write_with_timer_string(under_test: X3270):
     under_test.change_wait_time_after_write("0:00:01.500")
 
-    assert under_test.wait_write == 1.5
+    assert under_test.wait_time_after_write == 1.5
 
 
 def test_wait_field_detected(mocker: MockerFixture, under_test: X3270):
