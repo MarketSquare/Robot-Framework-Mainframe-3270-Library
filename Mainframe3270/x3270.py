@@ -1,75 +1,14 @@
 import os
 import time
-from datetime import timedelta
 from typing import Any, Optional
 
-# fmt: off
 from robot.api import logger
 from robot.api.deco import keyword
-from robot.utils import secs_to_timestr, timestr_to_secs
 
-# fmt: on
 from Mainframe3270.librarycomponent import LibraryComponent
 
 
 class X3270(LibraryComponent):
-    def _convert_timeout(self, time):
-        if isinstance(time, timedelta):
-            return time.total_seconds()
-        return timestr_to_secs(time, round_to=None)
-
-    @keyword("Change Timeout")
-    def change_timeout(self, seconds: timedelta) -> None:
-        """
-        Change the timeout for connection in seconds.
-
-        Example:
-            | Change Timeout | 3 seconds |
-        """
-        self.timeout = self._convert_timeout(seconds)
-
-    @keyword("Change Wait Time")
-    def change_wait_time(self, wait_time: timedelta) -> None:
-        """To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
-        created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:
-
-        - `Execute Command`
-        - `Send Enter`
-        - `Send PF`
-        - `Write`
-        - `Write in position`
-
-        If you want to change this value, just use this keyword passing the time in seconds.
-
-        Example:
-            | Change Wait Time | 0.5              |
-            | Change Wait Time | 200 milliseconds |
-            | Change Wait Time | 0:00:01.500      |
-        """
-        self.wait_time = self._convert_timeout(wait_time)
-
-    @keyword("Change Wait Time After Write")
-    def change_wait_time_after_write(self, wait_time_after_write: timedelta) -> None:
-        """To give the user time to see what is happening inside the mainframe, a "wait time after write" has
-        been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these
-        keywords:
-
-        - `Write`
-        - `Write Bare`
-        - `Write in position`
-        - `Write Bare in position`
-
-        If you want to change this value, just use this keyword passing the time in seconds.
-
-        Note: This keyword is useful for debug purpose
-
-        Example:
-            | Change Wait Time After Write | 1             |
-            | Change Wait Time After Write | 0.5 seconds   |
-            | Change Wait Time After Write | 0:00:02       |
-        """
-        self.wait_time_after_write = self._convert_timeout(wait_time_after_write)
-
     @keyword("Read")
     def read(self, ypos: int, xpos: int, length: int) -> str:
         """Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.
@@ -167,21 +106,6 @@ class X3270(LibraryComponent):
             html=True,
         )
         return filepath
-
-    @keyword("Wait Field Detected")
-    def wait_field_detected(self) -> None:
-        """Wait until the screen is ready, the cursor has been positioned
-        on a modifiable field, and the keyboard is unlocked.
-
-        Sometimes the server will "unlock" the keyboard but the screen
-        will not yet be ready.  In that case, an attempt to read or write to the
-        screen will result in a 'E' keyboard status because we tried to read from
-        a screen that is not ready yet.
-
-        Using this method tells the client to wait until a field is
-        detected and the cursor has been positioned on it.
-        """
-        self.mf.wait_for_field()
 
     @keyword("Delete Char")
     def delete_char(
@@ -305,42 +229,6 @@ class X3270(LibraryComponent):
         for i in range(enter):
             self.mf.send_enter()
             time.sleep(self.wait_time)
-
-    @keyword("Wait Until String")
-    def wait_until_string(
-        self, txt: str, timeout: timedelta = timedelta(seconds=5)
-    ) -> str:
-        """Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in
-        5 seconds, the keyword will raise an exception. You can define a different timeout.
-
-        Example:
-            | Wait Until String | something |
-            | Wait Until String | something | 10 |
-            | Wait Until String | something | 15 s |
-            | Wait Until String | something | 0:00:15 |
-        """
-        timeout = self._convert_timeout(timeout)
-        max_time = time.time() + timeout  # type: ignore
-        while time.time() < max_time:
-            result = self._search_string(str(txt))
-            if result:
-                return txt
-        raise Exception(f'String "{txt}" not found in {secs_to_timestr(timeout)}')
-
-    def _search_string(self, string: str, ignore_case: bool = False) -> bool:
-        """Search if a string exists on the mainframe screen and return True or False."""
-
-        def __read_screen(string: str, ignore_case: bool) -> bool:
-            for ypos in range(24):
-                line = self.mf.string_get(ypos + 1, 1, 80)
-                if ignore_case:
-                    line = line.lower()
-                if string in line:
-                    return True
-            return False
-
-        status = __read_screen(string, ignore_case)
-        return status
 
     def _read_all_screen(self) -> str:
         """Read all the mainframe screen and return in a single string."""

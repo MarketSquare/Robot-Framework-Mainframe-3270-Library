@@ -8,7 +8,8 @@ from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import ConnectionCache
 from robotlibcore import DynamicCore
 
-from Mainframe3270.keywords import AssertionKeywords, ConnectionKeywords
+from Mainframe3270.keywords import (AssertionKeywords, ConnectionKeywords,
+                                    WaitAndTimeoutKeywords)
 from Mainframe3270.py3270 import Emulator
 from Mainframe3270.utils import convert_timeout
 from Mainframe3270.version import VERSION
@@ -116,6 +117,7 @@ class Mainframe3270(DynamicCore):
         libraries = [
             AssertionKeywords(self),
             ConnectionKeywords(self),
+            WaitAndTimeoutKeywords(self),
             X3270(self),
         ]
         DynamicCore.__init__(self, libraries)
