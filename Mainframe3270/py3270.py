@@ -455,7 +455,7 @@ class Emulator(object):
                 line = line.lower()
             if string in line:
                 return True
-            return False
+        return False
 
     def read_all_screen(self):
         """Read all the mainframe screen and return it in a single string."""
