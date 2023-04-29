@@ -136,3 +136,37 @@ def test_is_connected_NotConnectedException():
     under_test = Emulator(True)
 
     assert not under_test.is_connected()
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_search_string(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
+    under_test = Emulator()
+
+    assert under_test.search_string("abc")
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_search_string_returns_False(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
+    under_test = Emulator()
+
+    assert not under_test.search_string("def")
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_search_string_ignoring_case(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="ABC")
+    under_test = Emulator()
+
+    assert under_test.search_string("abc", True)
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_read_all_screen(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="a")
+    under_test = Emulator()
+
+    content = under_test.read_all_screen()
+
+    assert content == "a" * 24

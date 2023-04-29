@@ -447,17 +447,22 @@ class Emulator(object):
         assert len(cmd.data) == 1, cmd.data
         return cmd.data[0].decode("unicode_escape")
 
-    def string_found(self, ypos, xpos, string):
-        """
-        Return True if `string` is found at screen co-ordinates
-        `ypos`/`xpos`, False otherwise.
+    def search_string(self, string, ignore_case=False):
+        """Check if a string exists on the mainframe screen and return True or False."""
+        for ypos in range(24):
+            line = self.string_get(ypos + 1, 1, 80)
+            if ignore_case:
+                line = line.lower()
+            if string in line:
+                return True
+            return False
 
-        Co-ordinates are 1 based, as listed in the status area of the
-        terminal.
-        """
-        found = self.string_get(ypos, xpos, len(string))
-        log.debug('string_found() saw "{0}"'.format(found))
-        return found == string
+    def read_all_screen(self):
+        """Read all the mainframe screen and return it in a single string."""
+        full_text = ""
+        for ypos in range(24):
+            full_text += self.string_get(ypos + 1, 1, 80)
+        return full_text
 
     def delete_field(self):
         """
