@@ -139,6 +139,53 @@ def test_is_connected_NotConnectedException():
 
 
 @pytest.mark.usefixtures("mock_windows")
+def test_string_get(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.wc3270App.write")
+    mocker.patch(
+        "Mainframe3270.py3270.wc3270App.readline",
+        side_effect=[
+            b"data: Welcome to PUB400.COM * your public IBM i server",
+            b"U U U C(pub400.com) C 4 43 80 0 56 0x1a00169 0.000",
+            b"ok",
+        ],
+    )
+    under_test = Emulator(True)
+
+    string = under_test.string_get(1, 10, 48)
+
+    assert string == "Welcome to PUB400.COM * your public IBM i server"
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_string_get_calls__check_limits(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator._check_limits")
+    mocker.patch("Mainframe3270.py3270.wc3270App.write")
+    mocker.patch(
+        "Mainframe3270.py3270.wc3270App.readline",
+        side_effect=[
+            b"data: Welcome to PUB400.COM * your public IBM i server",
+            b"U U U C(pub400.com) C 4 43 80 0 56 0x1a00169 0.000",
+            b"ok",
+        ],
+    )
+    under_test = Emulator(True)
+
+    under_test.string_get(1, 10, 48)
+
+    Emulator._check_limits.assert_called_with(1, 10)
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_string_get_exceeds_x_axis(mocker: MockerFixture):
+    under_test = Emulator(True)
+
+    with pytest.raises(
+        Exception, match="You have exceeded the x-axis limit of the mainframe screen"
+    ):
+        under_test.string_get(1, 10, 72)
+
+
+@pytest.mark.usefixtures("mock_windows")
 def test_search_string(mocker: MockerFixture):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
     under_test = Emulator()
@@ -170,3 +217,25 @@ def test_read_all_screen(mocker: MockerFixture):
     content = under_test.read_all_screen()
 
     assert content == "a" * 24
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_check_limits():
+    under_test = Emulator()
+
+    under_test._check_limits(24, 80)
+
+
+@pytest.mark.usefixtures("mock_windows")
+@pytest.mark.parametrize(
+    ("ypos", "xpos", "expected_error"),
+    [
+        (25, 80, "You have exceeded the y-axis limit of the mainframe screen"),
+        (24, 81, "You have exceeded the x-axis limit of the mainframe screen"),
+    ],
+)
+def test_check_limits_raises_Exception(ypos, xpos, expected_error):
+    under_test = Emulator()
+
+    with pytest.raises(Exception, match=expected_error):
+        under_test._check_limits(ypos, xpos)

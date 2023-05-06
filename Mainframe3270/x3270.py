@@ -1,6 +1,6 @@
 import os
 import time
-from typing import Any, Optional
+from typing import Optional
 
 from robot.api import logger
 from robot.api.deco import keyword
@@ -9,41 +9,6 @@ from Mainframe3270.librarycomponent import LibraryComponent
 
 
 class X3270(LibraryComponent):
-    @keyword("Read")
-    def read(self, ypos: int, xpos: int, length: int) -> str:
-        """Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.
-
-        Co-ordinates are 1 based, as listed in the status area of the terminal.
-
-        Example for read a string in the position y=8 / x=10 of a length 15:
-            | ${value} | Read | 8 | 10 | 15 |
-        """
-        self._check_limits(ypos, xpos)
-        # Checks if the user has passed a length that will be larger than the x limit of the screen.
-        if (xpos + length) > (80 + 1):
-            raise Exception(
-                "You have exceeded the x-axis limit of the mainframe screen"
-            )
-        string = self.mf.string_get(ypos, xpos, length)
-        return string
-
-    @keyword("Read All Screen")
-    def read_all_screen(self) -> str:
-        """Read the current screen and returns all content in one string.
-
-        This is useful if your automation scripts should take different routes depending
-        on a message shown on the screen.
-
-        Example:
-            | ${screen} | Read All Screen              |
-            | IF   | 'certain text' in '''${screen}''' |
-            |      | Do Something                      |
-            | ELSE |                                   |
-            |      | Do Something Else                 |
-            | END  |                                   |
-        """
-        return self._read_all_screen()
-
     @keyword("Execute Command")
     def execute_command(self, cmd: str) -> None:
         """Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
@@ -169,82 +134,3 @@ class X3270(LibraryComponent):
         """
         self.mf.exec_command(("PF({0})").format(PF).encode("utf-8"))
         time.sleep(self.wait_time)
-
-    @keyword("Write")
-    def write(self, txt: str) -> None:
-        """Send a string *and Enter* to the screen at the current cursor location.
-
-        Example:
-            | Write | something |
-        """
-        self._write(txt, enter=1)
-
-    @keyword("Write Bare")
-    def write_bare(self, txt: str) -> None:
-        """Send only the string to the screen at the current cursor location.
-
-        Example:
-            | Write Bare | something |
-        """
-        self._write(txt)
-
-    @keyword("Write In Position")
-    def write_in_position(self, txt: str, ypos: int, xpos: int) -> None:
-        """Send a string *and Enter* to the screen at screen co-ordinates ``ypos`` / ``xpos``.
-
-        Co-ordinates are 1 based, as listed in the status area of the
-        terminal.
-
-        Example:
-            | Write in Position | something | 9 | 11 |
-        """
-        self._write(txt, ypos, xpos, enter=1)
-
-    @keyword("Write Bare In Position")
-    def write_bare_in_position(self, txt: str, ypos: int, xpos: int):
-        """Send only the string to the screen at screen co-ordinates ``ypos`` / ``xpos``.
-
-        Co-ordinates are 1 based, as listed in the status area of the
-        terminal.
-
-        Example:
-            | Write Bare in Position | something | 9 | 11 |
-        """
-        self._write(txt, ypos, xpos)
-
-    def _write(
-        self,
-        txt: Any,
-        ypos: Optional[int] = None,
-        xpos: Optional[int] = None,
-        enter: int = 0,
-    ) -> None:
-        txt = txt.encode("unicode_escape")
-        if ypos is not None and xpos is not None:
-            self._check_limits(ypos, xpos)
-            self.mf.send_string(txt, ypos, xpos)
-        else:
-            self.mf.send_string(txt)
-        time.sleep(self.wait_time_after_write)
-        for i in range(enter):
-            self.mf.send_enter()
-            time.sleep(self.wait_time)
-
-    def _read_all_screen(self) -> str:
-        """Read all the mainframe screen and return in a single string."""
-        full_text = ""
-        for ypos in range(24):
-            full_text += self.mf.string_get(ypos + 1, 1, 80)
-        return full_text
-
-    @staticmethod
-    def _check_limits(ypos: int, xpos: int):
-        """Checks if the user has passed some coordinate y / x greater than that existing in the mainframe"""
-        if ypos > 24:
-            raise Exception(
-                "You have exceeded the y-axis limit of the mainframe screen"
-            )
-        if xpos > 80:
-            raise Exception(
-                "You have exceeded the x-axis limit of the mainframe screen"
-            )
