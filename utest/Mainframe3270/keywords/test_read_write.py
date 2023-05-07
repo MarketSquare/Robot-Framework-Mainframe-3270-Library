@@ -1,16 +1,15 @@
 import pytest
 from pytest_mock import MockerFixture
 
-from Mainframe3270 import Mainframe3270
 from Mainframe3270.keywords.read_write import ReadWriteKeywords
 from Mainframe3270.py3270 import Emulator
+
+from .utils import create_test_object_for
 
 
 @pytest.fixture
 def under_test():
-    under_test = ReadWriteKeywords(Mainframe3270())
-    under_test.cache.register(Emulator(), None)
-    return under_test
+    return create_test_object_for(ReadWriteKeywords)
 
 
 def test_read(under_test: ReadWriteKeywords, mocker: MockerFixture):

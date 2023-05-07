@@ -4,16 +4,14 @@ import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
 
-from Mainframe3270 import Mainframe3270
 from Mainframe3270.keywords import AssertionKeywords
-from Mainframe3270.py3270 import Emulator
+
+from .utils import create_test_object_for
 
 
 @pytest.fixture
 def under_test():
-    under_test = AssertionKeywords(Mainframe3270())
-    under_test.cache.register(Emulator(), None)
-    return under_test
+    return create_test_object_for(AssertionKeywords)
 
 
 def test_page_should_contain_string(
