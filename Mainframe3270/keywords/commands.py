@@ -6,7 +6,7 @@ from robot.api.deco import keyword
 from Mainframe3270.librarycomponent import LibraryComponent
 
 
-class X3270(LibraryComponent):
+class CommandKeywords(LibraryComponent):
     @keyword("Execute Command")
     def execute_command(self, cmd: str) -> None:
         """Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
@@ -34,7 +34,7 @@ class X3270(LibraryComponent):
             | Delete Char |
             | Delete Char | ypos=9 | xpos=25 |
         """
-        if ypos is not None and xpos is not None:
+        if ypos and xpos:
             self.mf.move_to(ypos, xpos)
         self.mf.exec_command(b"Delete")
 
@@ -53,7 +53,7 @@ class X3270(LibraryComponent):
             | Delete Field |
             | Delete Field | ypos=12 | xpos=6 |
         """
-        if ypos is not None and xpos is not None:
+        if ypos and xpos:
             self.mf.move_to(ypos, xpos)
         self.mf.delete_field()
 

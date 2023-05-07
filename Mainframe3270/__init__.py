@@ -8,13 +8,12 @@ from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import ConnectionCache
 from robotlibcore import DynamicCore
 
-from Mainframe3270.keywords import (AssertionKeywords, ConnectionKeywords,
-                                    ReadWriteKeywords, ScreenshotKeywords,
-                                    WaitAndTimeoutKeywords)
+from Mainframe3270.keywords import (AssertionKeywords, CommandKeywords,
+                                    ConnectionKeywords, ReadWriteKeywords,
+                                    ScreenshotKeywords, WaitAndTimeoutKeywords)
 from Mainframe3270.py3270 import Emulator
 from Mainframe3270.utils import convert_timeout
 from Mainframe3270.version import VERSION
-from Mainframe3270.x3270 import X3270
 
 
 class Mainframe3270(DynamicCore):
@@ -117,11 +116,11 @@ class Mainframe3270(DynamicCore):
             self.output_folder = os.getcwd()
         libraries = [
             AssertionKeywords(self),
+            CommandKeywords(self),
             ConnectionKeywords(self),
             ReadWriteKeywords(self),
             ScreenshotKeywords(self),
             WaitAndTimeoutKeywords(self),
-            X3270(self),
         ]
         DynamicCore.__init__(self, libraries)
 
@@ -129,7 +128,7 @@ class Mainframe3270(DynamicCore):
     def mf(self) -> Emulator:
         return self.cache.current
 
-    @keyword
+    @keyword("Register Run On Failure Keyword")
     def register_run_on_failure_keyword(self, keyword: str) -> None:
         """
         This keyword lets you change the keyword that runs on failure during test execution.
