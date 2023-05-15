@@ -4,8 +4,15 @@ import socket
 import subprocess
 import time
 import warnings
+import re
 from abc import ABC, abstractmethod
+from contextlib import closing
 from os import name as os_name
+
+from robot.api import logger
+from robot.utils import seq2str, Matcher
+from robot.api.deco import keyword
+from typing import List, Optional
 
 log = logging.getLogger(__name__)
 
@@ -127,9 +134,9 @@ class ExecutableApp(ABC):
     def args(self):
         pass
 
-    def __init__(self, extra_args=None):
+    def __init__(self, extra_args=None, model="2"):
         if extra_args:
-            self.args = self.__class__.args + extra_args
+            self.args = (self.__class__.args + extra_args + ["-xrm", "*model: {0}".format(model)])
         self.sp = None
         self.spawn_app()
 
@@ -156,9 +163,6 @@ class ExecutableApp(ABC):
     def readline(self):
         return self.sp.stdout.readline()
 
-    @staticmethod
-    def get_model(model: str):
-        return model
 
 class x3270App(ExecutableApp):
     executable = "x3270"
@@ -167,7 +171,7 @@ class x3270App(ExecutableApp):
     # work around that, when AID commands are sent, there is a 350ms delay
     # before the command returns. This arg turns that feature off for
     # performance reasons.
-    args = ["-xrm", "x3270.unlockDelay: False", "-xrm", "x3270.model: 2", "-script"]
+    args = ["-xrm", "x3270.unlockDelay: False", "-script"]
 
 
 class s3270App(ExecutableApp):
@@ -183,14 +187,20 @@ class NotConnectedException(Exception):
 class wc3270App(ExecutableApp):
     executable = "wc3270"
     # see notes for args in x3270App
-    args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
-    script_port = 17938
+    args = ["-xrm", "wc3270.unlockDelay: False"]
 
-    def __init__(self, extra_args=None):
+    def __init__(self, extra_args=None, model="2"):
         if extra_args:
-            self.args = wc3270App.args + extra_args
+            self.args = (wc3270App.args + extra_args + ["-xrm", "wc3270.model: {0}".format(model)])
         self.sp = None
         self.socket_fh = None
+        self.script_port = self._get_free_port()
+
+    def _get_free_port(self):
+        with closing(socket.socket(socket.AF_INET, socket.SOCK_STREAM)) as s:
+            s.bind(("127.0.0.1", 0))
+            s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            return s.getsockname()[1]
 
     def connect(self, host):
         self.spawn_app(host)
@@ -251,21 +261,63 @@ class Emulator(object):
     Represents an x/s3270 emulator subprocess and provides an API for interacting
     with it.
     """
+    _MODEL_TYPES = {
+        "2": "2",
+        "3278-2": "2",
+        "3278-2-E": "2",
+        "3279-2": "2",
+        "3279-2-E": "2",
+        "3": "3",
+        "3278-3": "3",
+        "3278-3-E": "3",
+        "3279-3": "3",
+        "3279-3-E": "3",
+        "4": "4",
+        "3278-4": "4",
+        "3278-4-E": "4",
+        "3279-4": "4",
+        "3279-4-E": "4",
+        "5": "5",
+        "3278-5": "5",
+        "3278-5-E": "5",
+        "3279-5": "5",
+        "3279-5-E": "5",
+    }
+    _MODEL_DIMENSIONS = {
+        "2": {
+            "rows": 24,
+            "columns": 80,
+        },
+        "3": {
+            "rows": 32,
+            "columns": 80,
+        },
+        "4": {
+            "rows": 43,
+            "columns": 80,
+        },
+        "5": {
+            "rows": 27,
+            "columns": 132,
+        },
+    }
 
-    def __init__(self, visible=False, timeout=30, extra_args=None, app=None):
+    def __init__(self, visible=False, timeout=30, extra_args=None, model="2"):
         """
         Create an emulator instance
 
         `visible` controls which executable will be used.
         `timeout` controls the timeout paramater to any Wait() command sent
             to x3270.
-        `extra_args` allows sending parameters to the emulator executable
+        `extra_args` allows sending parameters to the emulator executable.
+        `model` the x3270 model to be used for the emulator.
         """
-        self.app = app or self.create_app(visible, extra_args)
+        self.app = self.create_app(visible, extra_args, model)
         self.is_terminated = False
         self.status = Status(None)
         self.timeout = timeout
         self.last_host = None
+        self.model_dimensions = self._set_model_dimensions(model)
 
     def __del__(self):
         """
@@ -276,14 +328,14 @@ class Emulator(object):
         # self.terminate()     # The terminate function is no longer needed in python 3.8
         pass
 
-    def create_app(self, visible, extra_args):
+    def create_app(self, visible, extra_args, model):
         if os_name == "nt":
             if visible:
-                return wc3270App(extra_args)
-            return ws3270App(extra_args)
+                return wc3270App(extra_args, model)
+            return ws3270App(extra_args, model)
         if visible:
-            return x3270App(extra_args)
-        return s3270App(extra_args)
+            return x3270App(extra_args, model)
+        return s3270App(extra_args, model)
 
     def exec_command(self, cmdstr):
         """
@@ -485,3 +537,384 @@ class Emulator(object):
 
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
+
+    def _set_model_dimensions(self, model):
+        try:
+            model_type = Emulator._MODEL_TYPES[model]
+        except KeyError:
+            raise KeyError(
+                f"Model should be one of {seq2str(Emulator._MODEL_TYPES.keys()).replace('and', 'or')}, "
+                f"but was '{model}'."
+            )
+        return Emulator._MODEL_DIMENSIONS[model_type]
+
+    @keyword("Read All Screen")
+    def read_all_screen(self) -> str:
+        """Read the current screen and returns all content in one string.
+
+        This is useful if your automation scripts should take different routes depending
+        on a message shown on the screen.
+
+        Example:
+            | ${screen} | Read All Screen              |
+            | IF   | 'certain text' in '''${screen}''' |
+            |      | Do Something                      |
+            | ELSE |                                   |
+            |      | Do Something Else                 |
+            | END  |                                   |
+        """
+        return self._read_all_screen()
+
+    @keyword("Read")
+    def read(self, ypos: int, xpos: int, length: int) -> str:
+        """Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.
+
+        Co-ordinates are 1 based, as listed in the status area of the terminal.
+
+        Example for read a string in the position y=8 / x=10 of a length 15:
+            | ${value} | Read | 8 | 10 | 15 |
+        """
+        self._check_limits(ypos, xpos)
+        # Checks if the user has passed a length that will be larger than the x limit of the screen.
+        if (xpos + length) > (self.model_dimensions["columns"] + 1):
+            raise Exception(
+                "You have exceeded the x-axis limit of the mainframe screen"
+            )
+        string = self.string_get(ypos, xpos, length)
+        return string
+
+    def _search_string(self, string: str, ignore_case: bool = False) -> bool:
+        """Search if a string exists on the mainframe screen and return True or False."""
+
+        def __read_screen(string: str, ignore_case: bool) -> bool:
+            for ypos in range(self.model_dimensions["rows"]):
+                line = self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
+                if ignore_case:
+                    line = line.lower()
+                if string in line:
+                    return True
+            return False
+
+        status = __read_screen(string, ignore_case)
+        return status
+
+    @keyword("Page Should Contain String")
+    def page_should_contain_string(
+            self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
+    ) -> None:
+        """Assert that a given string exists on the mainframe screen.
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Contain String | something |
+            | Page Should Contain String | someTHING | ignore_case=True                |
+            | Page Should Contain String | something | error_message=New error message |
+        """
+        message = f'The string "{txt}" was not found'
+        if error_message:
+            message = error_message
+        if ignore_case:
+            txt = txt.lower()
+        result = self._search_string(txt, ignore_case)
+        if not result:
+            raise Exception(message)
+        logger.info(f'The string "{txt}" was found')
+
+    @keyword("Page Should Not Contain String")
+    def page_should_not_contain_string(
+            self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
+    ) -> None:
+        """Assert that a given string does NOT exists on the mainframe screen.
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Not Contain String | something |
+            | Page Should Not Contain String | someTHING | ignore_case=True |
+            | Page Should Not Contain String | something | error_message=New error message |
+        """
+        message = f'The string "{txt}" was found'
+        if error_message:
+            message = error_message
+        if ignore_case:
+            txt = txt.lower()
+        result = self._search_string(txt, ignore_case)
+        if result:
+            raise Exception(message)
+
+    @keyword("Page Should Contain Any String")
+    def page_should_contain_any_string(
+            self,
+            list_string: List[str],
+            ignore_case: bool = False,
+            error_message: Optional[str] = None,
+    ) -> None:
+        """Assert that one of the strings in a given list exists on the mainframe screen.
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Contain Any String | ${list_of_string} |
+            | Page Should Contain Any String | ${list_of_string} | ignore_case=True |
+            | Page Should Contain Any String | ${list_of_string} | error_message=New error message |
+        """
+        message = f'The strings "{list_string}" were not found'
+        if error_message:
+            message = error_message
+        if ignore_case:
+            list_string = [item.lower() for item in list_string]
+        for string in list_string:
+            result = self._search_string(string, ignore_case)
+            if result:
+                break
+        if not result:
+            raise Exception(message)
+
+    @keyword("Page Should Not Contain Any String")
+    def page_should_not_contain_any_string(
+            self,
+            list_string: List[str],
+            ignore_case: bool = False,
+            error_message: Optional[str] = None,
+    ) -> None:
+        """Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the
+        string are found, the keyword will raise a exception.
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Not Contain Any Strings | ${list_of_string} |
+            | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=True |
+            | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |
+        """
+        self._compare_all_list_with_screen_text(
+            list_string, ignore_case, error_message, should_match=False
+        )
+
+    @keyword("Page Should Contain All Strings")
+    def page_should_contain_all_strings(
+            self,
+            list_string: List[str],
+            ignore_case: bool = False,
+            error_message: Optional[str] = None,
+    ) -> None:
+        """Assert that all of the strings in a given list exist on the mainframe screen.
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Contain All Strings | ${list_of_string} |
+            | Page Should Contain All Strings | ${list_of_string} | ignore_case=True |
+            | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |
+        """
+        self._compare_all_list_with_screen_text(
+            list_string, ignore_case, error_message, should_match=True
+        )
+
+    @keyword("Page Should Not Contain All Strings")
+    def page_should_not_contain_all_strings(
+            self,
+            list_string: List[str],
+            ignore_case: bool = False,
+            error_message: Optional[str] = None,
+    ) -> None:
+        """Fails if one of the strings in a given list exists on the mainframe screen. If one of the string
+        are found, the keyword will raise a exception.
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Not Contain All Strings | ${list_of_string} |
+            | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=True |
+            | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |
+        """
+        message = error_message
+        if ignore_case:
+            list_string = [item.lower() for item in list_string]
+        for string in list_string:
+            result = self._search_string(string, ignore_case)
+            if result:
+                if message is None:
+                    message = f'The string "{string}" was found'
+                raise Exception(message)
+
+    @keyword("Page Should Contain String X Times")
+    def page_should_contain_string_x_times(
+            self,
+            txt: str,
+            number: int,
+            ignore_case: bool = False,
+            error_message: Optional[str] = None,
+    ) -> None:
+        """Asserts that the entered string appears the desired number of times on the mainframe screen.
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+               | Page Should Contain String X Times | something | 3 |
+               | Page Should Contain String X Times | someTHING | 3 | ignore_case=True |
+               | Page Should Contain String X Times | something | 3 | error_message=New error message |
+        """
+        message = error_message
+        number = number
+        all_screen = self._read_all_screen()
+        if ignore_case:
+            txt = txt.lower()
+            all_screen = all_screen.lower()
+        number_of_times = all_screen.count(txt)
+        if number_of_times != number:
+            if message is None:
+                message = f'The string "{txt}" was not found "{number}" times, it appears "{number_of_times}" times'
+            raise Exception(message)
+        logger.info(f'The string "{txt}" was found "{number}" times')
+
+    @keyword("Page Should Match Regex")
+    def page_should_match_regex(self, regex_pattern: str) -> None:
+        r"""Fails if string does not match pattern as a regular expression. Regular expression check is
+        implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
+        regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
+        for example, in Java, Ruby and .NET.
+
+        Backslash is an escape character in the test data, and possible backslashes in the pattern must
+        thus be escaped with another backslash (e.g. \\d\\w+).
+        """
+        page_text = self._read_all_screen()
+        if not re.findall(regex_pattern, page_text, re.MULTILINE):
+            raise Exception(f'No matches found for "{regex_pattern}" pattern')
+
+    @keyword("Page Should Not Match Regex")
+    def page_should_not_match_regex(self, regex_pattern: str) -> None:
+        r"""Fails if string does match pattern as a regular expression. Regular expression check is
+        implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
+        regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
+        for example, in Java, Ruby and .NET.
+
+        Backslash is an escape character in the test data, and possible backslashes in the pattern must
+        thus be escaped with another backslash (e.g. \\d\\w+).
+        """
+        page_text = self._read_all_screen()
+        if re.findall(regex_pattern, page_text, re.MULTILINE):
+            raise Exception(f'There are matches found for "{regex_pattern}" pattern')
+
+    @keyword("Page Should Contain Match")
+    def page_should_contain_match(
+            self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
+    ) -> None:
+        """Assert that the text displayed on the mainframe screen matches the given pattern.
+
+        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+        In the pattern, * matches anything and ? matches any single character.
+
+        Note that for this keyword the entire screen is considered a string. So if you want to search
+        for the string "something" and it is somewhere other than at the beginning or end of the screen, it
+        should be reported as follows: **something**
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Contain Match | **something** |
+            | Page Should Contain Match | **so???hing** |
+            | Page Should Contain Match | **someTHING** | ignore_case=True |
+            | Page Should Contain Match | **something** | error_message=New error message |
+        """
+        message = error_message
+        all_screen = self._read_all_screen()
+        if ignore_case:
+            txt = txt.lower()
+            all_screen = all_screen.lower()
+        matcher = Matcher(txt, caseless=False, spaceless=False)
+        result = matcher.match(all_screen)
+        if not result:
+            if message is None:
+                message = f'No matches found for "{txt}" pattern'
+            raise Exception(message)
+
+    @keyword("Page Should Not Contain Match")
+    def page_should_not_contain_match(
+            self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
+    ) -> None:
+        """Assert that the text displayed on the mainframe screen does NOT match the given pattern.
+
+        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+        In the pattern, * matches anything and ? matches any single character.
+
+        Note that for this keyword the entire screen is considered a string. So if you want to search
+        for the string "something" and it is somewhere other than at the beginning or end of the screen, it
+        should be reported as follows: **something**
+
+        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+
+        You can change the exception message by setting a custom string to error_message.
+
+        Example:
+            | Page Should Not Contain Match | **something** |
+            | Page Should Not Contain Match | **so???hing** |
+            | Page Should Not Contain Match | **someTHING** | ignore_case=True |
+            | Page Should Not Contain Match | **something** | error_message=New error message |
+        """
+        message = error_message
+        all_screen = self._read_all_screen()
+        if ignore_case:
+            txt = txt.lower()
+            all_screen = all_screen.lower()
+        matcher = Matcher(txt, caseless=False, spaceless=False)
+        result = matcher.match(all_screen)
+        if result:
+            if message is None:
+                message = f'There are matches found for "{txt}" pattern'
+            raise Exception(message)
+
+    def _read_all_screen(self) -> str:
+        """Read all the mainframe screen and return in a single string."""
+        full_text = ""
+        for ypos in range(self.model_dimensions["rows"]):
+            full_text += self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
+        return full_text
+
+    def _compare_all_list_with_screen_text(
+            self,
+            list_string: List[str],
+            ignore_case: bool,
+            message: Optional[str],
+            should_match: bool,
+    ) -> None:
+        if ignore_case:
+            list_string = [item.lower() for item in list_string]
+        for string in list_string:
+            result = self._search_string(string, ignore_case)
+            if not should_match and result:
+                if message is None:
+                    message = f'The string "{string}" was found'
+                raise Exception(message)
+            elif should_match and not result:
+                if message is None:
+                    message = f'The string "{string}" was not found'
+                raise Exception(message)
+
+    def _check_limits(self, ypos: int, xpos: int):
+        """Checks if the user has passed some coordinate y / x greater than that existing in the mainframe"""
+        if ypos > self.model_dimensions["rows"]:
+            raise Exception(
+                "You have exceeded the y-axis limit of the mainframe screen"
+            )
+        if xpos > self.model_dimensions["columns"]:
+            raise Exception(
+                "You have exceeded the x-axis limit of the mainframe screen"
+            )

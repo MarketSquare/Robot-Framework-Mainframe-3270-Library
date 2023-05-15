@@ -9,18 +9,18 @@ Here are some guidelines to help you get started:
 - If a change you'd like to make does not already have an issue, please create one. This helps us discuss the new functionality beforehand.
 - Fork the repository on GitHub.
 - Clone the repository to your local machine.
-- Install the dependencies by running `pip install -r requirements-dev.txt`.
+- Install the dependencies by running `pip install -r requirements-dev.txt` from the cloned folder.
 - Create a new branch for your changes.
 
 ## Making Changes
 
 - When creating new user keywords, please provide documentation.
 - Write tests for your changes. You may need to include unit tests, acceptance tests, or both, depending on the change you made.
-- Ensure all tests pass by running `inv utest` for unit tests and `inv atest` for acceptance tests.
-- Format your code by running `inv lint`.
+- Format your code by running `inv lint` from the cloned folder.
+- Ensure all tests pass by running `inv utest` for unit tests and `inv atest` for acceptance tests again from the cloned folder.
 - Push your changes to your fork on GitHub.
 - Create a pull request.
 
 ## License
 
-By contributing to the Robot-Framework-Mainframe-3270-Library, you agree that your contributions will be licensed under the project's [MIT license](LICENSE).
+By contributing to the Robot-Framework-Mainframe-3270-Library, you agree that your contributions will be licensed under the project's [MIT license](LICENSE.md).

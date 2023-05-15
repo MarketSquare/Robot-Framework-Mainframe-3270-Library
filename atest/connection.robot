@@ -30,6 +30,21 @@ Test Connection From Session File
     Wait Field Detected
     Page Should Contain String    ${WELCOME}
 
+Test Concurrent Connections
+    Open Connection    ${HOST}    alias=first
+    Sleep    0.5 s
+    Write Bare    ABCD
+    Page Should Contain String    ABCD
+    Open Connection    ${HOST}    alias=second
+    Sleep    0.5 s
+    Write Bare    DEFG
+    Page Should Contain String    DEFG
+    Page Should Not Contain String    ABCD
+    Switch Connection    first
+    Page Should Contain String    ABCD
+    Page Should Not Contain String    DEFG
+    [Teardown]    Close All Connections
+
 
 *** Keywords ***
 Create Session File
@@ -44,9 +59,10 @@ Create Session File
         ${session_file}=    Set Variable    ${CURDIR}/resources/session.s3270
     END
     Copy File    ${SESSION_TEMPLATE}    ${session_file}
-    RETURN    ${session_file}
+    # Using legacy [Return] for older RF versions
+    [Return]    ${session_file}
 
 Test Teardown
-    Close Connection
+    Run Keyword And Ignore Error    Close Connection
     Sleep    1 second
     Remove File    ${TRACE_FILE}

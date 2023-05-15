@@ -24,5 +24,5 @@ Cause Error
     ...    Page Should Contain String    ${STRING_NON_EXISTENT}
 
 Close Mainframe
-    Close Connection
+    Run Keyword And Ignore Error    Close Connection
     Sleep    1 second

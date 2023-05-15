@@ -1,62 +1,22 @@
 import os
 import re
 import shlex
-import socket
 import time
 from datetime import timedelta
 from os import name as os_name
 from typing import Any, List, Optional, Union
 
+# fmt: off
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
-from robot.utils import Matcher, secs_to_timestr, timestr_to_secs, seq2str
+from robot.utils import (ConnectionCache, secs_to_timestr,  timestr_to_secs)
 
-from .py3270 import Emulator, ExecutableApp
+# fmt: on
+from .py3270 import Emulator
 
 
 class X3270(object):
-    _MODEL_TYPES = {
-        "2": "2",
-        "3278-2": "2",
-        "3278-2-E": "2",
-        "3279-2": "2",
-        "3279-2-E": "2",
-        "3": "3",
-        "3278-3": "3",
-        "3278-3-E": "3",
-        "3279-3": "3",
-        "3279-3-E": "3",
-        "4": "4",
-        "3278-4": "4",
-        "3278-4-E": "4",
-        "3279-4": "4",
-        "3279-4-E": "4",
-        "5": "5",
-        "3278-5": "5",
-        "3278-5-E": "5",
-        "3279-5": "5",
-        "3279-5-E": "5",
-    }
-    _MODEL_DIMENSIONS = {
-        "2": {
-            "rows": 24,
-            "columns": 80,
-        },
-        "3": {
-            "rows": 32,
-            "columns": 80,
-        },
-        "4": {
-            "rows": 43,
-            "columns": 80,
-        },
-        "5": {
-            "rows": 27,
-            "columns": 132,
-        },
-    }
-
     def __init__(
         self,
         visible: bool,
@@ -64,36 +24,29 @@ class X3270(object):
         wait_time: timedelta,
         wait_time_after_write: timedelta,
         img_folder: str,
-        model: str,
+        model
     ) -> None:
         self.visible = visible
         self.timeout = self._convert_timeout(timeout)
         self.wait = self._convert_timeout(wait_time)
         self.wait_write = self._convert_timeout(wait_time_after_write)
         self.imgfolder = img_folder
+        self.cache = ConnectionCache()
         self.model = model
-        self.model_dimensions = self._set_model_dimensions(model)
-        self.mf: Emulator = None  # type: ignore
         # Try Catch to run in Pycharm, and make a documentation in libdoc with no error
         try:
             self.output_folder = BuiltIn().get_variable_value("${OUTPUT DIR}")
         except RobotNotRunningError:
             self.output_folder = os.getcwd()
 
+    @property
+    def mf(self) -> Emulator:
+        return self.cache.current
+
     def _convert_timeout(self, time):
         if isinstance(time, timedelta):
             return time.total_seconds()
         return timestr_to_secs(time, round_to=None)
-
-    def _set_model_dimensions(self, model):
-        try:
-            model_type = X3270._MODEL_TYPES[model]
-        except KeyError:
-            raise KeyError(
-                f"Model should be one of {seq2str(X3270._MODEL_TYPES.keys()).replace('and', 'or')}, "
-                f"but was '{model}'."
-            )
-        return X3270._MODEL_DIMENSIONS[model_type]
 
     @keyword("Change Timeout")
     def change_timeout(self, seconds: timedelta) -> None:
@@ -111,8 +64,9 @@ class X3270(object):
         host: str,
         LU: Optional[str] = None,
         port: int = 23,
-        extra_args: Optional[Union[List[str], os.PathLike,  ExecutableApp.get_model("2")]] = None,
-    ):
+        extra_args: Optional[Union[List[str], os.PathLike]] = None,
+        alias: Optional[str] = None,
+    ) -> int:
         """Create a connection to an IBM3270 mainframe with the default port 23.
         To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
 
@@ -137,6 +91,10 @@ class X3270(object):
         Note: If you specify the port with the `-port` command-line option in `extra_args` (or use the -xrm resource command for it),
         it will take precedence over the `port` argument provided in the `Open Connection` keyword.
 
+        This keyword returns the index of the opened connection, which can be used to reference the connection when switching between connections
+        using the `Switch Connection` keyword. For more information on opening and switching between multiple connections,
+        please refer to the `Concurrent Connections` section.
+
         Example:
             | Open Connection | Hostname |
             | Open Connection | Hostname | LU=LUname |
@@ -145,11 +103,11 @@ class X3270(object):
             | Append To List  | ${extra_args} | -port | 992 |
             | Open Connection | Hostname | extra_args=${extra_args} |
             | Open Connection | Hostname | extra_args=${CURDIR}/argfile.txt |
+            | Open Connection | Hostname | alias=my_first_connection |
         """
-        if self.mf:
-            self.close_connection()
         extra_args = self._process_args(extra_args)
-        self.mf = Emulator(self.visible, self.timeout, extra_args)
+        model = self._get_model_from_list_or_file(extra_args)
+        connection = Emulator(self.visible, self.timeout, extra_args, model or self.model)
         host_string = f"{LU}@{host}" if LU else host
         if self._port_in_extra_args(extra_args):
             if port != 23:
@@ -159,17 +117,10 @@ class X3270(object):
                     "To avoid this warning, you can either remove the port command-line option from `extra_args`, "
                     "or leave the `port` argument at its default value of 23."
                 )
-            self.mf.connect(host_string)
+            connection.connect(host_string)
         else:
-            self.mf.connect(f"{host_string}:{port}")
-
-        size_args = ["-model", X3270._MODEL_TYPES[self.model], "-oversize", self.model_dimensions]
-
-        if len(extra_args) == 0:
-            extra_args = size_args
-        else:
-            if ("-model" and "-charset") not in extra_args:
-                extra_args.extend(size_args)
+            connection.connect(f"{host_string}:{port}")
+        return self.cache.register(connection, alias)
 
     def _process_args(self, args) -> list:
         processed_args = []
@@ -186,16 +137,28 @@ class X3270(object):
                         processed_args.append(arg)
         return processed_args
 
+    def _get_model_from_list_or_file(self, list_or_file):
+        pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
+        match = None
+        if isinstance(list_or_file, list):
+            match = pattern.findall(str(list_or_file))
+        elif isinstance(list_or_file, os.PathLike) or isinstance(list_or_file, str):
+            with open(list_or_file) as file:
+                match = pattern.findall(file.read())
+        return None if not match else match[-1]
+
     def _port_in_extra_args(self, args) -> bool:
         if not args:
             return False
-        for arg in args:
-            if arg == "-port" or ".port" in arg:
-                return True
+        pattern = re.compile(r"[wcxs3270.*-]+port[:]{0,1}")
+        if pattern.search(str(args)):
+            return True
         return False
 
     @keyword("Open Connection From Session File")
-    def open_connection_from_session_file(self, session_file: os.PathLike):
+    def open_connection_from_session_file(
+        self, session_file: os.PathLike, alias: Optional[str] = None
+    ) -> int:
         """Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].
 
         The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a specific host session.
@@ -206,6 +169,10 @@ class X3270(object):
 
         For more information on session file syntax and detailed examples, please consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
 
+        This keyword returns the index of the opened connection, which can be used to reference the connection when switching between connections
+        using the `Switch Connection` keyword. For more information on opening and switching between multiple connections,
+        please refer to the `Concurrent Connections` section.
+
         Example:
         | Open Connection From Session File | ${CURDIR}/session.wc3270 |
 
@@ -213,16 +180,15 @@ class X3270(object):
         | wc3270.hostname: myhost.com:23
         | wc3270.model: 2
         """
-        if self.mf:
-            self.close_connection()
         self._check_session_file_extension(session_file)
         self._check_contains_hostname(session_file)
-        self._check_model(session_file)
+        model = self._get_model_from_list_or_file(session_file)
         if os_name == "nt" and self.visible:
-            self.mf = Emulator(self.visible, self.timeout)
-            self.mf.connect(str(session_file))
+            connection = Emulator(self.visible, self.timeout, model=model or self.model)
+            connection.connect(str(session_file))
         else:
-            self.mf = Emulator(self.visible, self.timeout, [str(session_file)])
+            connection = Emulator(self.visible, self.timeout, [str(session_file)], model or self.model)
+        return self.cache.register(connection, alias)
 
     def _check_session_file_extension(self, session_file):
         file_extension = str(session_file).rsplit(".")[-1]
@@ -250,30 +216,31 @@ class X3270(object):
                     "wc3270.hostname: myhost.com\n"
                 )
 
-    def _check_model(self, session_file):
-        with open(session_file) as file:
-            pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
-            match = pattern.findall(file.read())
-            if not match:
-                return
-            elif match[-1] == "2":
-                return
-            else:
-                raise ValueError(
-                    f'Robot-Framework-Mainframe-3270-Library currently only supports model "2", '
-                    f'the model you specified in your session file was "{match[-1]}". '
-                    f'Please change it to "2", using either the session wizard if you are on Windows, '
-                    f'or by editing the model resource like this "*model: 2"'
-                )
+    @keyword("Switch Connection")
+    def switch_connection(self, alias_or_index: Union[str, int]):
+        """Switch the current to the one identified by index or alias. Indices are returned from
+        and aliases can be optionally provided to the `Open Connection` and `Open Connection From Session File`
+        keywords.
+
+        For more information on opening and switching between multiple connections,
+        please refer to the `Concurrent Connections` section.
+
+        Examples:
+        | Open Connection   | Hostname | alias=first  |
+        | Open Connection   | Hostname | alias=second | # second is now the current connection |
+        | Switch Connection | first    |              | # first is now the current connection  |
+        """
+        self.cache.switch(alias_or_index)
 
     @keyword("Close Connection")
     def close_connection(self) -> None:
-        """Disconnect from the host."""
-        try:
-            self.mf.terminate()
-        except socket.error:
-            pass
-        self.mf = None  # type: ignore
+        """Close the current connection."""
+        self.mf.terminate()
+
+    @keyword("Close All Connections")
+    def close_all_connections(self) -> None:
+        """Close all currently opened connections."""
+        self.cache.close_all("terminate")
 
     @keyword("Change Wait Time")
     def change_wait_time(self, wait_time: timedelta) -> None:
@@ -316,41 +283,6 @@ class X3270(object):
             | Change Wait Time After Write | 0:00:02       |
         """
         self.wait_write = self._convert_timeout(wait_time_after_write)
-
-    @keyword("Read")
-    def read(self, ypos: int, xpos: int, length: int) -> str:
-        """Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.
-
-        Co-ordinates are 1 based, as listed in the status area of the terminal.
-
-        Example for read a string in the position y=8 / x=10 of a length 15:
-            | ${value} | Read | 8 | 10 | 15 |
-        """
-        self._check_limits(ypos, xpos)
-        # Checks if the user has passed a length that will be larger than the x limit of the screen.
-        if (xpos + length) > (self.model_dimensions["columns"] + 1):
-            raise Exception(
-                "You have exceeded the x-axis limit of the mainframe screen"
-            )
-        string = self.mf.string_get(ypos, xpos, length)
-        return string
-
-    @keyword("Read All Screen")
-    def read_all_screen(self) -> str:
-        """Read the current screen and returns all content in one string.
-
-        This is useful if your automation scripts should take different routes depending
-        on a message shown on the screen.
-
-        Example:
-            | ${screen} | Read All Screen              |
-            | IF   | 'certain text' in '''${screen}''' |
-            |      | Do Something                      |
-            | ELSE |                                   |
-            |      | Do Something Else                 |
-            | END  |                                   |
-        """
-        return self._read_all_screen()
 
     @keyword("Execute Command")
     def execute_command(self, cmd: str) -> None:
@@ -544,10 +476,10 @@ class X3270(object):
     ) -> None:
         txt = txt.encode("unicode_escape")
         if ypos is not None and xpos is not None:
-            self._check_limits(ypos, xpos)
-            self.mf.send_string(txt, ypos, xpos)
+            Emulator()._check_limits(ypos, xpos)
+            Emulator().send_string(txt, ypos, xpos)
         else:
-            self.mf.send_string(txt)
+            Emulator().send_string(txt)
         time.sleep(self.wait_write)
         for i in range(enter):
             self.mf.send_enter()
@@ -569,343 +501,8 @@ class X3270(object):
         timeout = self._convert_timeout(timeout)
         max_time = time.time() + timeout  # type: ignore
         while time.time() < max_time:
-            result = self._search_string(str(txt))
+            result = Emulator()._search_string(str(txt))
             if result:
                 return txt
         raise Exception(f'String "{txt}" not found in {secs_to_timestr(timeout)}')
 
-    def _search_string(self, string: str, ignore_case: bool = False) -> bool:
-        """Search if a string exists on the mainframe screen and return True or False."""
-
-        def __read_screen(string: str, ignore_case: bool) -> bool:
-            for ypos in range(self.model_dimensions["rows"]):
-                line = self.mf.string_get(ypos + 1, 1, self.model_dimensions["columns"])
-                if ignore_case:
-                    line = line.lower()
-                if string in line:
-                    return True
-            return False
-
-        status = __read_screen(string, ignore_case)
-        return status
-
-    @keyword("Page Should Contain String")
-    def page_should_contain_string(
-        self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
-    ) -> None:
-        """Assert that a given string exists on the mainframe screen.
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Contain String | something |
-            | Page Should Contain String | someTHING | ignore_case=True                |
-            | Page Should Contain String | something | error_message=New error message |
-        """
-        message = f'The string "{txt}" was not found'
-        if error_message:
-            message = error_message
-        if ignore_case:
-            txt = txt.lower()
-        result = self._search_string(txt, ignore_case)
-        if not result:
-            raise Exception(message)
-        logger.info(f'The string "{txt}" was found')
-
-    @keyword("Page Should Not Contain String")
-    def page_should_not_contain_string(
-        self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
-    ) -> None:
-        """Assert that a given string does NOT exists on the mainframe screen.
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Not Contain String | something |
-            | Page Should Not Contain String | someTHING | ignore_case=True |
-            | Page Should Not Contain String | something | error_message=New error message |
-        """
-        message = f'The string "{txt}" was found'
-        if error_message:
-            message = error_message
-        if ignore_case:
-            txt = txt.lower()
-        result = self._search_string(txt, ignore_case)
-        if result:
-            raise Exception(message)
-
-    @keyword("Page Should Contain Any String")
-    def page_should_contain_any_string(
-        self,
-        list_string: List[str],
-        ignore_case: bool = False,
-        error_message: Optional[str] = None,
-    ) -> None:
-        """Assert that one of the strings in a given list exists on the mainframe screen.
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Contain Any String | ${list_of_string} |
-            | Page Should Contain Any String | ${list_of_string} | ignore_case=True |
-            | Page Should Contain Any String | ${list_of_string} | error_message=New error message |
-        """
-        message = f'The strings "{list_string}" were not found'
-        if error_message:
-            message = error_message
-        if ignore_case:
-            list_string = [item.lower() for item in list_string]
-        for string in list_string:
-            result = self._search_string(string, ignore_case)
-            if result:
-                break
-        if not result:
-            raise Exception(message)
-
-    @keyword("Page Should Not Contain Any String")
-    def page_should_not_contain_any_string(
-        self,
-        list_string: List[str],
-        ignore_case: bool = False,
-        error_message: Optional[str] = None,
-    ) -> None:
-        """Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the
-        string are found, the keyword will raise a exception.
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Not Contain Any Strings | ${list_of_string} |
-            | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=True |
-            | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |
-        """
-        self._compare_all_list_with_screen_text(
-            list_string, ignore_case, error_message, should_match=False
-        )
-
-    @keyword("Page Should Contain All Strings")
-    def page_should_contain_all_strings(
-        self,
-        list_string: List[str],
-        ignore_case: bool = False,
-        error_message: Optional[str] = None,
-    ) -> None:
-        """Assert that all of the strings in a given list exist on the mainframe screen.
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Contain All Strings | ${list_of_string} |
-            | Page Should Contain All Strings | ${list_of_string} | ignore_case=True |
-            | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |
-        """
-        self._compare_all_list_with_screen_text(
-            list_string, ignore_case, error_message, should_match=True
-        )
-
-    @keyword("Page Should Not Contain All Strings")
-    def page_should_not_contain_all_strings(
-        self,
-        list_string: List[str],
-        ignore_case: bool = False,
-        error_message: Optional[str] = None,
-    ) -> None:
-        """Fails if one of the strings in a given list exists on the mainframe screen. If one of the string
-        are found, the keyword will raise a exception.
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Not Contain All Strings | ${list_of_string} |
-            | Page Should Not Contain All Strings | ${list_of_string} | ignore_case=True |
-            | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |
-        """
-        message = error_message
-        if ignore_case:
-            list_string = [item.lower() for item in list_string]
-        for string in list_string:
-            result = self._search_string(string, ignore_case)
-            if result:
-                if message is None:
-                    message = f'The string "{string}" was found'
-                raise Exception(message)
-
-    @keyword("Page Should Contain String X Times")
-    def page_should_contain_string_x_times(
-        self,
-        txt: str,
-        number: int,
-        ignore_case: bool = False,
-        error_message: Optional[str] = None,
-    ) -> None:
-        """Asserts that the entered string appears the desired number of times on the mainframe screen.
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-               | Page Should Contain String X Times | something | 3 |
-               | Page Should Contain String X Times | someTHING | 3 | ignore_case=True |
-               | Page Should Contain String X Times | something | 3 | error_message=New error message |
-        """
-        message = error_message
-        number = number
-        all_screen = self._read_all_screen()
-        if ignore_case:
-            txt = txt.lower()
-            all_screen = all_screen.lower()
-        number_of_times = all_screen.count(txt)
-        if number_of_times != number:
-            if message is None:
-                message = f'The string "{txt}" was not found "{number}" times, it appears "{number_of_times}" times'
-            raise Exception(message)
-        logger.info(f'The string "{txt}" was found "{number}" times')
-
-    @keyword("Page Should Match Regex")
-    def page_should_match_regex(self, regex_pattern: str) -> None:
-        r"""Fails if string does not match pattern as a regular expression. Regular expression check is
-        implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
-        regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
-        for example, in Java, Ruby and .NET.
-
-        Backslash is an escape character in the test data, and possible backslashes in the pattern must
-        thus be escaped with another backslash (e.g. \\d\\w+).
-        """
-        page_text = self._read_all_screen()
-        if not re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception(f'No matches found for "{regex_pattern}" pattern')
-
-    @keyword("Page Should Not Match Regex")
-    def page_should_not_match_regex(self, regex_pattern: str) -> None:
-        r"""Fails if string does match pattern as a regular expression. Regular expression check is
-        implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
-        regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
-        for example, in Java, Ruby and .NET.
-
-        Backslash is an escape character in the test data, and possible backslashes in the pattern must
-        thus be escaped with another backslash (e.g. \\d\\w+).
-        """
-        page_text = self._read_all_screen()
-        if re.findall(regex_pattern, page_text, re.MULTILINE):
-            raise Exception(f'There are matches found for "{regex_pattern}" pattern')
-
-    @keyword("Page Should Contain Match")
-    def page_should_contain_match(
-        self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
-    ) -> None:
-        """Assert that the text displayed on the mainframe screen matches the given pattern.
-
-        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
-        In the pattern, * matches anything and ? matches any single character.
-
-        Note that for this keyword the entire screen is considered a string. So if you want to search
-        for the string "something" and it is somewhere other than at the beginning or end of the screen, it
-        should be reported as follows: **something**
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Contain Match | **something** |
-            | Page Should Contain Match | **so???hing** |
-            | Page Should Contain Match | **someTHING** | ignore_case=True |
-            | Page Should Contain Match | **something** | error_message=New error message |
-        """
-        message = error_message
-        all_screen = self._read_all_screen()
-        if ignore_case:
-            txt = txt.lower()
-            all_screen = all_screen.lower()
-        matcher = Matcher(txt, caseless=False, spaceless=False)
-        result = matcher.match(all_screen)
-        if not result:
-            if message is None:
-                message = f'No matches found for "{txt}" pattern'
-            raise Exception(message)
-
-    @keyword("Page Should Not Contain Match")
-    def page_should_not_contain_match(
-        self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
-    ) -> None:
-        """Assert that the text displayed on the mainframe screen does NOT match the given pattern.
-
-        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
-        In the pattern, * matches anything and ? matches any single character.
-
-        Note that for this keyword the entire screen is considered a string. So if you want to search
-        for the string "something" and it is somewhere other than at the beginning or end of the screen, it
-        should be reported as follows: **something**
-
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
-
-        You can change the exception message by setting a custom string to error_message.
-
-        Example:
-            | Page Should Not Contain Match | **something** |
-            | Page Should Not Contain Match | **so???hing** |
-            | Page Should Not Contain Match | **someTHING** | ignore_case=True |
-            | Page Should Not Contain Match | **something** | error_message=New error message |
-        """
-        message = error_message
-        all_screen = self._read_all_screen()
-        if ignore_case:
-            txt = txt.lower()
-            all_screen = all_screen.lower()
-        matcher = Matcher(txt, caseless=False, spaceless=False)
-        result = matcher.match(all_screen)
-        if result:
-            if message is None:
-                message = f'There are matches found for "{txt}" pattern'
-            raise Exception(message)
-
-    def _read_all_screen(self) -> str:
-        """Read all the mainframe screen and return in a single string."""
-        full_text = ""
-        for ypos in range(self.model_dimensions["rows"]):
-            full_text += self.mf.string_get(ypos + 1, 1, self.model_dimensions["columns"])
-        return full_text
-
-    def _compare_all_list_with_screen_text(
-        self,
-        list_string: List[str],
-        ignore_case: bool,
-        message: Optional[str],
-        should_match: bool,
-    ) -> None:
-        if ignore_case:
-            list_string = [item.lower() for item in list_string]
-        for string in list_string:
-            result = self._search_string(string, ignore_case)
-            if not should_match and result:
-                if message is None:
-                    message = f'The string "{string}" was found'
-                raise Exception(message)
-            elif should_match and not result:
-                if message is None:
-                    message = f'The string "{string}" was not found'
-                raise Exception(message)
-
-    def _check_limits(self, ypos: int, xpos: int):
-        """Checks if the user has passed some coordinate y / x greater than that existing in the mainframe"""
-        if ypos > self.model_dimensions["rows"]:
-            raise Exception(
-                "You have exceeded the y-axis limit of the mainframe screen"
-            )
-        if xpos > self.model_dimensions["columns"]:
-            raise Exception(
-                "You have exceeded the x-axis limit of the mainframe screen"
-            )

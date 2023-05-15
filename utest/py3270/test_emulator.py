@@ -22,8 +22,6 @@ def test_emulator_visible():
     assert under_test.app.args == [
         "-xrm",
         "wc3270.unlockDelay: False",
-        "-xrm",
-        "wc3270.model: 2",
     ]
 
 

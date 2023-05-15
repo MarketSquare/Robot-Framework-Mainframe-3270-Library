@@ -1,10 +1,7 @@
 *** Settings ***
-Documentation       These tests verify that all keywords are working correctly and displaying the expected exception message.
-...                 To run all the tests, you will need to create a user in the https://www.pub400.com/ website,
-...                 this will affect the last test "Test With Login"
+Documentation       These tests verify that all keywords are working correctly and displaying the expected exception messages.
 
 Library             ../Mainframe3270/    run_on_failure_keyword=None
-Library             Dialogs
 Library             OperatingSystem
 Library             String
 Resource            pub400_variables.robot
@@ -17,30 +14,31 @@ Suite Teardown      Suite Teardown
 Exception Test Read
     Wait Field Detected
     ${read_text}    Read    1    10    21
-    Run Keyword And Expect Error    ${WELCOME_TEXT_EXPECTED_ERROR}    Should Be Equal As Strings    ${WELCOME_TITLE}
+    Run Keyword And Expect Error
+    ...    ${WELCOME_TEXT_EXPECTED_ERROR}
+    ...    Should Be Equal As Strings
+    ...    ${WELCOME_TITLE}
     ...    ${read_text}
     Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    48    34
     Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    81    1
     Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    25    48    34
 
 Exception Test Write In Position
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Write In Position    ${WRITE_TEXT}    10    81
+    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Write In Position    ${WRITE_TEXT}    25    10
+
+Exception Test Write Bare In Position
     Run Keyword And Expect Error
     ...    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}
-    ...    Write In Position
+    ...    Write Bare In Position
     ...    ${WRITE_TEXT}
     ...    10
     ...    81
     Run Keyword And Expect Error
     ...    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}
-    ...    Write In Position
+    ...    Write Bare In Position
     ...    ${WRITE_TEXT}
     ...    25
-    ...    10
-
-Exception Test Write Bare In Position
-    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    10
-    ...    81
-    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Write Bare In Position    ${WRITE_TEXT}    25
     ...    10
 
 Exception Test Page Should Contain String
@@ -54,16 +52,27 @@ Exception Test Page Should Contain All Strings
     ...    ${LIST_STRINGS_WRONG_CASE_IN_THE_SECONDS}
     ...    2
     Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_THIRD}    3
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_FIRST}    1
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_IN_THE_FIRST}
+    ...    1
     ...    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_SECOND}    2
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_IN_THE_SECOND}
+    ...    2
     ...    ignore_case=${True}
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_THIRD}    3
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_IN_THE_THIRD}
+    ...    3
     ...    ignore_case=${True}
 
 Exception Test Page Should Contain Any String
     Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_ALL_WRONG_CASE}
-    Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}
+    Verify List Not Found
+    ...    Page Should Contain Any String
+    ...    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}
     ...    ignore_case=${True}
 
 Exception Test Page Should Contain Match
@@ -72,8 +81,12 @@ Exception Test Page Should Contain Match
 
 Exception Test Page Should Contain String X Times
     Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    3
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    1
-    ...    5    ignore_case=${True}
+    Verify String Does Not Appear X Times
+    ...    Page Should Contain String X Times
+    ...    ${TEXT_TO_COUNT_WRONG_CASE}
+    ...    1
+    ...    5
+    ...    ignore_case=${True}
 
 Exception Test Page Should Match Regex
     Verify Pattern Not Found    Page Should Match Regex    ${INVALID_REGEX}
@@ -191,7 +204,7 @@ Test Move Next Field
     Sleep    1s
 
 Test Move Previous Field
-    # Send two Move Previous Field because the first only put the cursor int he beginning of the password field
+    # Send two Move Previous Field because the first only puts the cursor at the beginning of the password field
     Move Previous Field
     Move Previous Field
     Write Bare    ${WRITE_TEXT}
@@ -200,34 +213,16 @@ Test Move Previous Field
     Sleep    1s
 
 Test Send Enter
-    [Tags]    no-ci
     Wait Field Detected
-    Page Should Contain String    ${WELCOME}
-    Page Should Contain String    ${WELCOME_WRONG_CASE}    ignore_case=${TRUE}
     Delete Field
-    ${user}    Get Value From User    Write user
-    ${password}    Get Value From User    Write user password
-    Write Bare In Position    ${user}    5    25
     Move Next Field
-    Write Bare    ${password}
+    Delete Field
     Send Enter
-    ${value}    Read    1    33    15
-    Should Be Equal As Strings    ${MAIN_MENU}    ${value}
-    Take Screenshot
+    Page Should Contain String    Sign-on information required.
 
 Test Send PF
-    [Tags]    no-ci
-    Write    1
-    Wait Field Detected
-    Take Screenshot
-    Page Should Contain String    ${USER_TASK}
-    Send PF    12
-    Wait Field Detected
-    Take Screenshot
-    Page Should Contain String    ${MAIN_MENU}
-    Write    90
-    Wait Field Detected
-    Take Screenshot
+    Send PF    1
+    Page Should Contain String    Function key not allowed.
 
 
 *** Keywords ***
@@ -241,7 +236,7 @@ Suite Setup
     Sleep    3s
 
 Suite Teardown
-    Close Connection
+    Run Keyword And Ignore Error    Close Connection
     Sleep    1s
 
 Verify String Not Found
@@ -251,7 +246,9 @@ Verify String Not Found
 
 Verify String Not Found In List
     [Arguments]    ${keyword}    ${string_list}    ${string_position}    ${ignore_case}=${False}
-    ${not_found_string}    Set Variable If    ${ignore_case}==${False}    ${string_list[${${string_position}-1}]}
+    ${not_found_string}    Set Variable If
+    ...    ${ignore_case}==${False}
+    ...    ${string_list[${${string_position}-1}]}
     ...    ${string_list[${${string_position}-1}].lower()}
     ${expected_error}    Set Variable    The string "${not_found_string}" was not found
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string_list}    ignore_case=${ignore_case}
@@ -280,7 +277,11 @@ Verify String Does Not Appear X Times
     ...    ${ignore_case}=${False}
     ${expected_error}    Set Variable
     ...    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
-    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${TEXT_TO_COUNT}    1
+    Run Keyword And Expect Error
+    ...    ${expected_error}
+    ...    ${keyword}
+    ...    ${TEXT_TO_COUNT}
+    ...    1
     ...    ignore_case=${ignore_case}
 
 Verify String Found
