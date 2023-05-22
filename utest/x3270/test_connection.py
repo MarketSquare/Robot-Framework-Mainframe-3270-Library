@@ -116,14 +116,12 @@ def test_process_args_from_file_oneline(under_test: X3270):
     ]
     assert processed_args == args_from_file
 
-
 def test_process_args_from_multiline_file(under_test: X3270):
     args = os.path.join(CURDIR, "resources", "argfile_multiline.txt")
     processed_args = under_test._process_args(args)
 
     args_from_file = ["-charset", "bracket", "-accepthostname", "myhost.com"]
     assert processed_args == args_from_file
-
 
 def test_process_args_from_multiline_file_with_comments(under_test: X3270):
     args = os.path.join(CURDIR, "resources", "argfile_multiline_comments.txt")
@@ -220,6 +218,54 @@ def test_open_connection_from_session_file_returns_index(
 ):
     mocker.patch("Mainframe3270.x3270.X3270._check_session_file_extension")
     mocker.patch("Mainframe3270.x3270.X3270._check_contains_hostname")
+    mocker.patch("robot.utils.ConnectionCache.register", return_value=1)
+    index = under_test.open_connection_from_session_file("session.wc3270")
+
+    assert index == 1
+
+
+def test_switch_connection(mocker: MockerFixture, under_test: X3270):
+    mocker.patch("robot.utils.ConnectionCache.switch")
+
+    under_test.switch_connection(1)
+    ConnectionCache.switch.assert_called_with(1)
+
+    under_test.switch_connection("myalias")
+    ConnectionCache.switch.assert_called_with("myalias")
+
+
+def test_open_connection_from_session_file_registers_connection(
+    mocker: MockerFixture, under_test: X3270
+):
+    mocker.patch("Mainframe3270.x3270.X3270._check_session_file_extension")
+    mocker.patch("Mainframe3270.x3270.X3270._check_contains_hostname")
+    mocker.patch("Mainframe3270.x3270.X3270._check_model")
+    mocker.patch("robot.utils.ConnectionCache.register")
+    under_test.open_connection_from_session_file("session.wc3270")
+
+    assert isinstance(ConnectionCache.register.call_args[0][0], Emulator)
+    assert ConnectionCache.register.call_args[0][1] is None
+
+
+def test_open_connection_from_session_file_registers_connection_with_alias(
+    mocker: MockerFixture, under_test: X3270
+):
+    mocker.patch("Mainframe3270.x3270.X3270._check_session_file_extension")
+    mocker.patch("Mainframe3270.x3270.X3270._check_contains_hostname")
+    mocker.patch("Mainframe3270.x3270.X3270._check_model")
+    mocker.patch("robot.utils.ConnectionCache.register")
+    under_test.open_connection_from_session_file("session.wc3270", "myalias")
+
+    assert isinstance(ConnectionCache.register.call_args[0][0], Emulator)
+    assert ConnectionCache.register.call_args[0][1] == "myalias"
+
+
+def test_open_connection_from_session_file_returns_index(
+    mocker: MockerFixture, under_test: X3270
+):
+    mocker.patch("Mainframe3270.x3270.X3270._check_session_file_extension")
+    mocker.patch("Mainframe3270.x3270.X3270._check_contains_hostname")
+    mocker.patch("Mainframe3270.x3270.X3270._check_model")
     mocker.patch("robot.utils.ConnectionCache.register", return_value=1)
     index = under_test.open_connection_from_session_file("session.wc3270")
 

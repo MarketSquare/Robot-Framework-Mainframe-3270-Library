@@ -232,6 +232,22 @@ class X3270(object):
         """
         self.cache.switch(alias_or_index)
 
+    @keyword("Switch Connection")
+    def switch_connection(self, alias_or_index: Union[str, int]):
+        """Switch the current to the one identified by index or alias. Indices are returned from
+        and aliases can be optionally provided to the `Open Connection` and `Open Connection From Session File`
+        keywords.
+
+        For more information on opening and switching between multiple connections,
+        please refer to the `Concurrent Connections` section.
+
+        Examples:
+        | Open Connection   | Hostname | alias=first  |
+        | Open Connection   | Hostname | alias=second | # second is now the current connection |
+        | Switch Connection | first    |              | # first is now the current connection  |
+        """
+        self.cache.switch(alias_or_index)
+
     @keyword("Close Connection")
     def close_connection(self) -> None:
         """Close the current connection."""
