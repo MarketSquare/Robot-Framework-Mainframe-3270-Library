@@ -1,10 +1,8 @@
 import re
 from typing import List, Optional
-
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.utils import Matcher
-
 from Mainframe3270.librarycomponent import LibraryComponent
 
 
@@ -15,13 +13,14 @@ class AssertionKeywords(LibraryComponent):
     ) -> None:
         """Assert that a given string exists on the mainframe screen.
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
         Example:
             | Page Should Contain String | something |
-            | Page Should Contain String | someTHING | ignore_case=True                |
+            | Page Should Contain String | someTHING | ignore_case=True |
             | Page Should Contain String | something | error_message=New error message |
         """
         message = f'The string "{txt}" was not found'
@@ -38,9 +37,10 @@ class AssertionKeywords(LibraryComponent):
     def page_should_not_contain_string(
         self, txt: str, ignore_case: bool = False, error_message: Optional[str] = None
     ) -> None:
-        """Assert that a given string does NOT exists on the mainframe screen.
+        """Assert that a given string does NOT exist on the mainframe screen.
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
@@ -67,7 +67,8 @@ class AssertionKeywords(LibraryComponent):
     ) -> None:
         """Assert that one of the strings in a given list exists on the mainframe screen.
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
@@ -96,9 +97,10 @@ class AssertionKeywords(LibraryComponent):
         error_message: Optional[str] = None,
     ) -> None:
         """Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the
-        string are found, the keyword will raise a exception.
+        string are found, the keyword will raise an exception.
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
@@ -118,9 +120,10 @@ class AssertionKeywords(LibraryComponent):
         ignore_case: bool = False,
         error_message: Optional[str] = None,
     ) -> None:
-        """Assert that all of the strings in a given list exist on the mainframe screen.
+        """Assert that all the strings in a given list exist on the mainframe screen.
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
@@ -141,9 +144,10 @@ class AssertionKeywords(LibraryComponent):
         error_message: Optional[str] = None,
     ) -> None:
         """Fails if one of the strings in a given list exists on the mainframe screen. If one of the string
-        are found, the keyword will raise a exception.
+        are found, the keyword will raise an exception.
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
@@ -172,7 +176,8 @@ class AssertionKeywords(LibraryComponent):
     ) -> None:
         """Asserts that the entered string appears the desired number of times on the mainframe screen.
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
@@ -228,14 +233,15 @@ class AssertionKeywords(LibraryComponent):
     ) -> None:
         """Assert that the text displayed on the mainframe screen matches the given pattern.
 
-        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+        Pattern matching is similar to matching files in a shell, and it is always case-sensitive.
         In the pattern, * matches anything and ? matches any single character.
 
         Note that for this keyword the entire screen is considered a string. So if you want to search
         for the string "something" and it is somewhere other than at the beginning or end of the screen, it
         should be reported as follows: **something**
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 
@@ -263,14 +269,15 @@ class AssertionKeywords(LibraryComponent):
     ) -> None:
         """Assert that the text displayed on the mainframe screen does NOT match the given pattern.
 
-        Pattern matching is similar to matching files in a shell, and it is always case sensitive.
+        Pattern matching is similar to matching files in a shell, and it is always case-sensitive.
         In the pattern, * matches anything and ? matches any single character.
 
         Note that for this keyword the entire screen is considered a string. So if you want to search
         for the string "something" and it is somewhere other than at the beginning or end of the screen, it
         should be reported as follows: **something**
 
-        The assertion is case sensitive. If you want it to be case insensitive, you can pass the argument ignore_case=True.
+        The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
+        ignore_case=True.
 
         You can change the exception message by setting a custom string to error_message.
 

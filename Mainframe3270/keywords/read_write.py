@@ -1,17 +1,15 @@
 import time
 from typing import Any, Optional
-
 from robot.api.deco import keyword
-
 from Mainframe3270.librarycomponent import LibraryComponent
 
 
 class ReadWriteKeywords(LibraryComponent):
     @keyword("Read")
     def read(self, ypos: int, xpos: int, length: int) -> str:
-        """Get a string of ``length`` at screen co-ordinates ``ypos`` / ``xpos``.
+        """Get a string of ``length`` at screen coordinates ``ypos`` / ``xpos``.
 
-        Co-ordinates are 1 based, as listed in the status area of the terminal.
+        Coordinates are 1 based, as listed in the status area of the terminal.
 
         Example for read a string in the position y=8 / x=10 of a length 15:
             | ${value} | Read | 8 | 10 | 15 |
@@ -26,12 +24,12 @@ class ReadWriteKeywords(LibraryComponent):
         on a message shown on the screen.
 
         Example:
-            | ${screen} | Read All Screen              |
-            | IF   | 'certain text' in '''${screen}''' |
-            |      | Do Something                      |
-            | ELSE |                                   |
-            |      | Do Something Else                 |
-            | END  |                                   |
+            | ${screen} | Read All Screen |
+            | IF | 'certain text' in '''${screen}''' |
+            | | Do Something |
+            | ELSE | |
+            | | Do Something Else |
+            | END | |
         """
         return self.mf.read_all_screen()
 
@@ -55,9 +53,9 @@ class ReadWriteKeywords(LibraryComponent):
 
     @keyword("Write In Position")
     def write_in_position(self, txt: str, ypos: int, xpos: int) -> None:
-        """Send a string *and Enter* to the screen at screen co-ordinates ``ypos`` / ``xpos``.
+        """Send a string *and Enter* to the screen at screen coordinates ``ypos`` / ``xpos``.
 
-        Co-ordinates are 1 based, as listed in the status area of the
+        Coordinates are 1 based, as listed in the status area of the
         terminal.
 
         Example:
@@ -67,9 +65,9 @@ class ReadWriteKeywords(LibraryComponent):
 
     @keyword("Write Bare In Position")
     def write_bare_in_position(self, txt: str, ypos: int, xpos: int):
-        """Send only the string to the screen at screen co-ordinates ``ypos`` / ``xpos``.
+        """Send only the string to the screen at screen coordinates ``ypos`` / ``xpos``.
 
-        Co-ordinates are 1 based, as listed in the status area of the
+        Coordinates are 1 based, as listed in the status area of the
         terminal.
 
         Example:

@@ -15,7 +15,7 @@ Mainframe3270 requires Python 3. It is tested with Python 3.7 and 3.10, but shou
 
 ## Installation
 
-In order to use this library, first install the package from PyPI.
+In order to use this library, first install the package from [PyPI](https://pypi.org/project/robotframework-mainframe3270/).
 ```commandline
 pip install robotframework-mainframe3270
 ```
@@ -80,7 +80,7 @@ Arguments:
    - img_folder = .
    - run_on_failure_keyword = Take Screenshot
 
-By default the emulator visibility is set to visible=True.
+By default, the emulator visibility is set to visible=True.
 In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
 You can change this by setting visible=False. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
 This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.
@@ -129,6 +129,9 @@ For an overview of the (latest) changes see [CHANGELOG](https://github.com/Altra
    - **Joao Gomes**
    - **Bruno Calado**
    - **Ricardo Morgado**
+
+## Maintainers
+   - **Robin Matz**
 
 ## License
 This project is licensed under the MIT License - see [LICENSE](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.

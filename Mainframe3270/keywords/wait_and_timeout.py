@@ -1,9 +1,7 @@
 import time
 from datetime import timedelta
-
 from robot.api.deco import keyword
 from robot.utils import secs_to_timestr
-
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.utils import convert_timeout
 
@@ -33,9 +31,9 @@ class WaitAndTimeoutKeywords(LibraryComponent):
         If you want to change this value, just use this keyword passing the time in seconds.
 
         Example:
-            | Change Wait Time | 0.5              |
+            | Change Wait Time | 0.5 |
             | Change Wait Time | 200 milliseconds |
-            | Change Wait Time | 0:00:01.500      |
+            | Change Wait Time | 0:00:01.500 |
         """
         self.wait_time = convert_timeout(wait_time)
 
@@ -55,9 +53,9 @@ class WaitAndTimeoutKeywords(LibraryComponent):
         Note: This keyword is useful for debug purpose
 
         Example:
-            | Change Wait Time After Write | 1             |
-            | Change Wait Time After Write | 0.5 seconds   |
-            | Change Wait Time After Write | 0:00:02       |
+            | Change Wait Time After Write | 1 |
+            | Change Wait Time After Write | 0.5 seconds |
+            | Change Wait Time After Write | 0:00:02 |
         """
         self.wait_time_after_write = convert_timeout(wait_time_after_write)
 
@@ -80,8 +78,8 @@ class WaitAndTimeoutKeywords(LibraryComponent):
     def wait_until_string(
         self, txt: str, timeout: timedelta = timedelta(seconds=5)
     ) -> str:
-        """Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in
-        5 seconds, the keyword will raise an exception. You can define a different timeout.
+        """Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear
+        in 5 seconds, the keyword will raise an exception. You can define a different timeout.
 
         Example:
             | Wait Until String | something |
