@@ -1,10 +1,38 @@
+import pytest
 from pytest_mock import MockerFixture
 
+from Mainframe3270.keywords.read_write import ReadWriteKeywords
 from Mainframe3270.py3270 import Emulator
-from Mainframe3270.x3270 import X3270
+
+from .utils import create_test_object_for
 
 
-def test_write(mocker: MockerFixture, under_test: X3270):
+@pytest.fixture
+def under_test():
+    return create_test_object_for(ReadWriteKeywords)
+
+
+def test_read(under_test: ReadWriteKeywords, mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
+
+    string = under_test.read(1, 1, 3)
+
+    Emulator.string_get.assert_called_once_with(1, 1, 3)
+    assert string == "abc"
+
+
+def test_read_all_screen(under_test: ReadWriteKeywords, mocker: MockerFixture):
+    mocker.patch(
+        "Mainframe3270.py3270.Emulator.read_all_screen", return_value="all screen"
+    )
+
+    content = under_test.read_all_screen()
+
+    Emulator.read_all_screen.assert_called_once()
+    assert content == "all screen"
+
+
+def test_write(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
     mocker.patch("Mainframe3270.py3270.Emulator.send_enter")
 
@@ -14,7 +42,7 @@ def test_write(mocker: MockerFixture, under_test: X3270):
     Emulator.send_enter.assert_called_once()
 
 
-def test_write_bare(mocker: MockerFixture, under_test: X3270):
+def test_write_bare(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
     mocker.patch("Mainframe3270.py3270.Emulator.send_enter")
 
@@ -24,7 +52,7 @@ def test_write_bare(mocker: MockerFixture, under_test: X3270):
     Emulator.send_enter.assert_not_called()
 
 
-def test_write_in_position(mocker: MockerFixture, under_test: X3270):
+def test_write_in_position(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
     mocker.patch("Mainframe3270.py3270.Emulator.move_to")
     mocker.patch("Mainframe3270.py3270.Emulator.send_enter")
@@ -36,7 +64,7 @@ def test_write_in_position(mocker: MockerFixture, under_test: X3270):
     Emulator.send_enter.assert_called_once()
 
 
-def test_write_bare_in_position(mocker: MockerFixture, under_test: X3270):
+def test_write_bare_in_position(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
     mocker.patch("Mainframe3270.py3270.Emulator.move_to")
     mocker.patch("Mainframe3270.py3270.Emulator.send_enter")

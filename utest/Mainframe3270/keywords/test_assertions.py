@@ -4,10 +4,19 @@ import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
 
-from Mainframe3270.x3270 import X3270
+from Mainframe3270.keywords import AssertionKeywords
+
+from .utils import create_test_object_for
 
 
-def test_page_should_contain_string(mocker: MockerFixture, under_test: X3270):
+@pytest.fixture
+def under_test():
+    return create_test_object_for(AssertionKeywords)
+
+
+def test_page_should_contain_string(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
     mocker.patch("robot.api.logger.info")
 
@@ -17,7 +26,7 @@ def test_page_should_contain_string(mocker: MockerFixture, under_test: X3270):
 
 
 def test_page_should_contain_string_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="aBc")
     mocker.patch("robot.api.logger.info")
@@ -27,7 +36,9 @@ def test_page_should_contain_string_ignore_case(
     logger.info.assert_called_with('The string "abc" was found')
 
 
-def test_page_should_contain_string_fails(mocker: MockerFixture, under_test: X3270):
+def test_page_should_contain_string_fails(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(Exception, match='The string "def" was not found'):
@@ -35,7 +46,7 @@ def test_page_should_contain_string_fails(mocker: MockerFixture, under_test: X32
 
 
 def test_page_should_contain_string_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -43,21 +54,25 @@ def test_page_should_contain_string_custom_message(
         under_test.page_should_contain_string("def", error_message="my error message")
 
 
-def test_page_should_not_contain_string(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_contain_string(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_not_contain_string("ABC")
 
 
 def test_page_should_not_contain_string_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_not_contain_string("def", ignore_case=True)
 
 
-def test_page_should_not_contain_string_fails(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_contain_string_fails(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(Exception, match='The string "ABC" was found'):
@@ -65,7 +80,7 @@ def test_page_should_not_contain_string_fails(mocker: MockerFixture, under_test:
 
 
 def test_page_should_not_contain_string_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -75,21 +90,25 @@ def test_page_should_not_contain_string_custom_message(
         )
 
 
-def test_page_should_contain_any_string(mocker: MockerFixture, under_test: X3270):
+def test_page_should_contain_any_string(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_contain_any_string(["abc", "def"])
 
 
 def test_page_should_contain_any_string_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_contain_any_string(["ABC", "def"], ignore_case=True)
 
 
-def test_page_should_contain_any_string_fails(mocker: MockerFixture, under_test: X3270):
+def test_page_should_contain_any_string_fails(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(
@@ -99,7 +118,7 @@ def test_page_should_contain_any_string_fails(mocker: MockerFixture, under_test:
 
 
 def test_page_should_contain_any_string_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -109,14 +128,16 @@ def test_page_should_contain_any_string_custom_message(
         )
 
 
-def test_page_should_contain_all_strings(mocker: MockerFixture, under_test: X3270):
+def test_page_should_contain_all_strings(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", side_effect=["abc", "def"])
 
     under_test.page_should_contain_all_strings(["abc", "def"])
 
 
 def test_page_should_contain_all_strings_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", side_effect=["AbC", "DeF"])
 
@@ -124,7 +145,7 @@ def test_page_should_contain_all_strings_ignore_case(
 
 
 def test_page_should_contain_all_strings_fails(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value=["def"])
 
@@ -133,7 +154,7 @@ def test_page_should_contain_all_strings_fails(
 
 
 def test_page_should_contain_all_strings_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -143,14 +164,16 @@ def test_page_should_contain_all_strings_custom_message(
         )
 
 
-def test_page_should_not_contain_any_string(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_contain_any_string(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_not_contain_any_string(["def", "ghi"])
 
 
 def test_page_should_not_contain_any_string_fails(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -159,7 +182,7 @@ def test_page_should_not_contain_any_string_fails(
 
 
 def test_page_should_not_contain_any_string_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="ABC")
 
@@ -168,7 +191,7 @@ def test_page_should_not_contain_any_string_ignore_case(
 
 
 def test_page_should_not_contain_any_string_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -178,14 +201,16 @@ def test_page_should_not_contain_any_string_custom_message(
         )
 
 
-def test_page_should_not_contain_all_strings(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_contain_all_strings(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_not_contain_all_strings(["def", "ghi"])
 
 
 def test_page_should_not_contain_all_strings_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -194,7 +219,7 @@ def test_page_should_not_contain_all_strings_ignore_case(
 
 
 def test_page_should_not_contain_all_strings_fails(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -203,7 +228,7 @@ def test_page_should_not_contain_all_strings_fails(
 
 
 def test_page_should_not_contain_all_strings_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -213,14 +238,16 @@ def test_page_should_not_contain_all_strings_custom_message(
         )
 
 
-def test_page_should_contain_string_x_times(mocker: MockerFixture, under_test: X3270):
+def test_page_should_contain_string_x_times(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="a")
 
     under_test.page_should_contain_string_x_times("a", 24)
 
 
 def test_page_should_contain_string_x_times_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="a")
 
@@ -228,7 +255,7 @@ def test_page_should_contain_string_x_times_ignore_case(
 
 
 def test_page_should_contain_string_x_times_fails(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="a")
 
@@ -244,7 +271,7 @@ def test_page_should_contain_string_x_times_fails(
 
 
 def test_page_should_contain_string_x_times_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="a")
 
@@ -254,13 +281,15 @@ def test_page_should_contain_string_x_times_custom_message(
         )
 
 
-def test_page_should_match_regex(mocker: MockerFixture, under_test: X3270):
+def test_page_should_match_regex(mocker: MockerFixture, under_test: AssertionKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_match_regex(r"\w+")
 
 
-def test_page_should_match_regex_fails(mocker: MockerFixture, under_test: X3270):
+def test_page_should_match_regex_fails(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(
@@ -269,13 +298,17 @@ def test_page_should_match_regex_fails(mocker: MockerFixture, under_test: X3270)
         under_test.page_should_match_regex(r"\d+")
 
 
-def test_page_should_not_match_regex(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_match_regex(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_not_match_regex(r"\d+")
 
 
-def test_page_should_not_match_regex_fails(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_match_regex_fails(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="a")
 
     with pytest.raises(
@@ -284,13 +317,17 @@ def test_page_should_not_match_regex_fails(mocker: MockerFixture, under_test: X3
         under_test.page_should_not_match_regex("[a]+")
 
 
-def test_page_should_contain_match(mocker: MockerFixture, under_test: X3270):
+def test_page_should_contain_match(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_contain_match("*a?c*")
 
 
-def test_page_should_contain_match_fails(mocker: MockerFixture, under_test: X3270):
+def test_page_should_contain_match_fails(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(
@@ -300,7 +337,7 @@ def test_page_should_contain_match_fails(mocker: MockerFixture, under_test: X327
 
 
 def test_page_should_contain_match_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="ABC")
 
@@ -308,7 +345,7 @@ def test_page_should_contain_match_ignore_case(
 
 
 def test_page_should_contain_match_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -316,13 +353,17 @@ def test_page_should_contain_match_custom_message(
         under_test.page_should_contain_match("*def*", error_message="my error message")
 
 
-def test_page_should_not_contain_match(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_contain_match(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     under_test.page_should_not_contain_match("*def*")
 
 
-def test_page_should_not_contain_match_fails(mocker: MockerFixture, under_test: X3270):
+def test_page_should_not_contain_match_fails(
+    mocker: MockerFixture, under_test: AssertionKeywords
+):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(
@@ -332,7 +373,7 @@ def test_page_should_not_contain_match_fails(mocker: MockerFixture, under_test: 
 
 
 def test_page_should_not_contain_match_ignore_case(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
@@ -343,7 +384,7 @@ def test_page_should_not_contain_match_ignore_case(
 
 
 def test_page_should_not_contain_match_custom_message(
-    mocker: MockerFixture, under_test: X3270
+    mocker: MockerFixture, under_test: AssertionKeywords
 ):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 

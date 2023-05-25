@@ -401,7 +401,8 @@ class Emulator(object):
         Co-ordinates are 1 based, as listed in the status area of the
         terminal.
         """
-        if xpos is not None and ypos is not None:
+        if xpos and ypos:
+            self._check_limits(ypos, xpos)
             self.move_to(ypos, xpos)
 
         # escape double quotes in the data to send
@@ -437,6 +438,11 @@ class Emulator(object):
         Co-ordinates are 1 based, as listed in the status area of the
         terminal.
         """
+        self._check_limits(ypos, xpos)
+        if (xpos + length) > (80 + 1):
+            raise Exception(
+                "You have exceeded the x-axis limit of the mainframe screen"
+            )
         # the screen's co-ordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
@@ -447,17 +453,22 @@ class Emulator(object):
         assert len(cmd.data) == 1, cmd.data
         return cmd.data[0].decode("unicode_escape")
 
-    def string_found(self, ypos, xpos, string):
-        """
-        Return True if `string` is found at screen co-ordinates
-        `ypos`/`xpos`, False otherwise.
+    def search_string(self, string, ignore_case=False):
+        """Check if a string exists on the mainframe screen and return True or False."""
+        for ypos in range(24):
+            line = self.string_get(ypos + 1, 1, 80)
+            if ignore_case:
+                line = line.lower()
+            if string in line:
+                return True
+        return False
 
-        Co-ordinates are 1 based, as listed in the status area of the
-        terminal.
-        """
-        found = self.string_get(ypos, xpos, len(string))
-        log.debug('string_found() saw "{0}"'.format(found))
-        return found == string
+    def read_all_screen(self):
+        """Read all the mainframe screen and return it in a single string."""
+        full_text = ""
+        for ypos in range(24):
+            full_text += self.string_get(ypos + 1, 1, 80)
+        return full_text
 
     def delete_field(self):
         """
@@ -489,3 +500,13 @@ class Emulator(object):
 
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
+
+    def _check_limits(self, ypos, xpos):
+        if ypos > 24:
+            raise Exception(
+                "You have exceeded the y-axis limit of the mainframe screen"
+            )
+        if xpos > 80:
+            raise Exception(
+                "You have exceeded the x-axis limit of the mainframe screen"
+            )
