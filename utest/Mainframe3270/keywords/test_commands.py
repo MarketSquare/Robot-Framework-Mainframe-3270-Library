@@ -92,6 +92,6 @@ def test_move_previous_field(mocker: MockerFixture, under_test: CommandKeywords)
 def test_send_pf(mocker: MockerFixture, under_test: CommandKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
 
-    under_test.send_PF("5")
+    under_test.send_pf("5")
 
     Emulator.exec_command.assert_called_with("PF(5)".encode("utf-8"))
