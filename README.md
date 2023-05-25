@@ -115,13 +115,13 @@ docker run --user mfuser -v /path/to/your/tests:/home/mfuser/tests mainframe3270
 
 ## Contributing to Robot-Framework-Mainframe3270-Library
 
-Interested in contributing to the project? Great to hear! Whether you found a bug, or want to develop a new feature, please refer to our [Contributing Guidelines](CONTRIBUTING.md) to help you get started.
+Interested in contributing to the project? Great to hear! Whether you found a bug, or want to develop a new feature, please refer to our [Contributing Guidelines](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/CONTRIBUTING.md) to help you get started.
 
 ## Wiki
 For more information visit the repository [Wiki](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/wiki).
 
 ## Changelog
-For an overview of the (latest) changes see [CHANGELOG](CHANGELOG.md).
+For an overview of the (latest) changes see [CHANGELOG](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/CHANGELOG.md).
 
 ## Authors
    - **Altran -** [Altran Web Site](https://www.altran.com/us/en/)
@@ -131,4 +131,4 @@ For an overview of the (latest) changes see [CHANGELOG](CHANGELOG.md).
    - **Ricardo Morgado**
 
 ## License
-This project is licensed under the MIT License - see [LICENSE](LICENSE.md) for details.
+This project is licensed under the MIT License - see [LICENSE](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/LICENSE.md) for details.
