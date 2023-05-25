@@ -3,10 +3,8 @@ import re
 import shlex
 from os import name as os_name
 from typing import List, Optional, Union
-
 from robot.api import logger
 from robot.api.deco import keyword
-
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.py3270 import Emulator
 
@@ -22,10 +20,12 @@ class ConnectionKeywords(LibraryComponent):
         alias: Optional[str] = None,
     ) -> int:
         """Create a connection to an IBM3270 mainframe with the default port 23.
-        To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.
+        To establish a connection, only the hostname is required.
+        Optional parameters include logical unit name (LU) and port.
 
         Additional configuration data can be provided through the `extra_args` parameter.
-        `extra_args` accepts either a list or a path to a file containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
+        `extra_args` accepts either a list or a path
+        to a file containing [https://x3270.miraheze.org/wiki/Category:Command-line_options|x3270 command line options].
 
         Entries in the argfile can be on one line or multiple lines. Lines starting with "#" are considered comments.
         Arguments containing whitespace must be enclosed in single or double quotes.
@@ -40,14 +40,16 @@ class ConnectionKeywords(LibraryComponent):
         | -port 992
 
         Please ensure that the arguments provided are available for your specific x3270 application and version.
-        Refer to the [https://x3270.miraheze.org/wiki/Wc3270/Command-line_options|wc3270 command line options] for a subset of available options.
+        Refer to the [https://x3270.miraheze.org/wiki/Wc3270/Command-line_options|wc3270 command line options]
+        for a subset of available options.
 
-        Note: If you specify the port with the `-port` command-line option in `extra_args` (or use the -xrm resource command for it),
-        it will take precedence over the `port` argument provided in the `Open Connection` keyword.
+        Note: If you specify the port with the `-port` command-line option in `extra_args`
+        (or use the -xrm resource command for it), it will take precedence over the `port` argument provided
+        in the `Open Connection` keyword.
 
-        This keyword returns the index of the opened connection, which can be used to reference the connection when switching between connections
-        using the `Switch Connection` keyword. For more information on opening and switching between multiple connections,
-        please refer to the `Concurrent Connections` section.
+        This keyword returns the index of the opened connection, which can be used to reference the connection
+        when switching between connections using the `Switch Connection` keyword. For more information on opening
+        and switching between multiple connections, please refer to the `Concurrent Connections` section.
 
         Example:
             | Open Connection | Hostname |
@@ -75,7 +77,8 @@ class ConnectionKeywords(LibraryComponent):
             connection.connect(f"{host_string}:{port}")
         return self.cache.register(connection, alias)
 
-    def _process_args(self, args) -> list:
+    @staticmethod
+    def _process_args(args) -> list:
         processed_args = []
         if not args:
             return []
@@ -90,7 +93,8 @@ class ConnectionKeywords(LibraryComponent):
                         processed_args.append(arg)
         return processed_args
 
-    def _port_in_extra_args(self, args) -> bool:
+    @staticmethod
+    def _port_in_extra_args(args) -> bool:
         if not args:
             return False
         pattern = re.compile(r"[wcxs3270.*-]+port[:]{0,1}")
@@ -102,19 +106,24 @@ class ConnectionKeywords(LibraryComponent):
     def open_connection_from_session_file(
         self, session_file: os.PathLike, alias: Optional[str] = None
     ) -> int:
-        """Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].
+        """Create a connection to an IBM3270 mainframe
+        using a [https://x3270.miraheze.org/wiki/Session_file|session file].
 
-        The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)] for a specific host session.
-        The only mandatory setting required to establish the connection is the [https://x3270.miraheze.org/wiki/Hostname_resource|hostname resource].
+        The session file contains [https://x3270.miraheze.org/wiki/Category:Resources|resources (settings)]
+        for a specific host session.
+
+        The only mandatory setting required to establish the connection
+        is the [https://x3270.miraheze.org/wiki/Hostname_resource|hostname resource].
 
         This keyword is an alternative to `Open Connection`. Please note that the Robot-Framework-Mainframe-3270-Library
         currently only supports model "2". Specifying any other model will result in a failure.
 
-        For more information on session file syntax and detailed examples, please consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
+        For more information on session file syntax and detailed examples, please
+        consult the [https://x3270.miraheze.org/wiki/Session_file|x3270 wiki].
 
-        This keyword returns the index of the opened connection, which can be used to reference the connection when switching between connections
-        using the `Switch Connection` keyword. For more information on opening and switching between multiple connections,
-        please refer to the `Concurrent Connections` section.
+        This keyword returns the index of the opened connection, which can be used to reference the connection
+        when switching between connections using the `Switch Connection` keyword. For more information on opening and
+        switching between multiple connections, please refer to the `Concurrent Connections` section.
 
         Example:
         | Open Connection From Session File | ${CURDIR}/session.wc3270 |
@@ -149,7 +158,8 @@ class ConnectionKeywords(LibraryComponent):
                 f'but it was ".{file_extension}"'
             )
 
-    def _check_contains_hostname(self, session_file):
+    @staticmethod
+    def _check_contains_hostname(session_file):
         with open(session_file) as file:
             if "hostname:" not in file.read():
                 raise ValueError(
@@ -159,7 +169,8 @@ class ConnectionKeywords(LibraryComponent):
                     "wc3270.hostname: myhost.com\n"
                 )
 
-    def _check_model(self, session_file):
+    @staticmethod
+    def _check_model(session_file):
         with open(session_file) as file:
             pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
             match = pattern.findall(file.read())
@@ -185,18 +196,22 @@ class ConnectionKeywords(LibraryComponent):
         please refer to the `Concurrent Connections` section.
 
         Examples:
-        | Open Connection   | Hostname | alias=first  |
-        | Open Connection   | Hostname | alias=second | # second is now the current connection |
-        | Switch Connection | first    |              | # first is now the current connection  |
+        | Open Connection | Hostname | alias=first |
+        | Open Connection | Hostname | alias=second | # second is now the current connection |
+        | Switch Connection | first | | # first is now the current connection  |
         """
         self.cache.switch(alias_or_index)
 
     @keyword("Close Connection")
     def close_connection(self) -> None:
-        """Close the current connection."""
+        """
+        Close the current connection.
+        """
         self.mf.terminate()
 
     @keyword("Close All Connections")
     def close_all_connections(self) -> None:
-        """Close all currently opened connections and reset the index counter to 1."""
+        """
+        Close all currently opened connections and reset the index counter to 1.
+        """
         self.cache.close_all("terminate")

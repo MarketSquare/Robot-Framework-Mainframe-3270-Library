@@ -9,8 +9,6 @@ from contextlib import closing
 from os import name as os_name
 
 log = logging.getLogger(__name__)
-
-
 """
     Python 3+ note: unicode strings should be used when communicating with the Emulator methods.
     utf-8 is used internally when reading from or writing to the 3270 emulator (this includes
@@ -224,7 +222,7 @@ class wc3270App(ExecutableApp):
                 sock.connect(("127.0.0.1", self.script_port))
                 break
             except socket.error as e:
-                log.warn(e)
+                log.warning(e)
                 if e.errno != errno.ECONNREFUSED:
                     raise
                 time.sleep(1)
@@ -261,7 +259,7 @@ class Emulator(object):
         Create an emulator instance
 
         `visible` controls which executable will be used.
-        `timeout` controls the timeout paramater to any Wait() command sent
+        `timeout` controls the timeout parameter to any Wait() command sent
             to x3270.
         `extra_args` allows sending parameters to the emulator executable
         """
@@ -280,7 +278,8 @@ class Emulator(object):
         # self.terminate()     # The terminate function is no longer needed in python 3.8
         pass
 
-    def create_app(self, visible, extra_args):
+    @staticmethod
+    def create_app(visible, extra_args):
         if os_name == "nt":
             if visible:
                 return wc3270App(extra_args)
@@ -291,9 +290,9 @@ class Emulator(object):
 
     def exec_command(self, cmdstr):
         """
-        Execute an x3270 command
+        Execute a x3270 command
 
-        `cmdstr` gets sent directly to the x3270 subprocess on it's stdin.
+        `cmdstr` gets sent directly to the x3270 subprocess on its stdin.
         """
         if self.is_terminated:
             raise TerminatedError("This Emulator instance has been terminated")
@@ -310,8 +309,7 @@ class Emulator(object):
 
     def terminate(self):
         """
-        terminates the underlying x3270 subprocess. Once called, this
-        Emulator instance must no longer be used.
+        terminates the underlying x3270 subprocess. Once called, this Emulator instance must no longer be used.
         """
         if not self.is_terminated:
             log.debug("terminal client terminated")
@@ -385,10 +383,10 @@ class Emulator(object):
 
     def move_to(self, ypos, xpos):
         """
-        move the cursor to the given co-ordinates.  Co-ordinates are 1
+        move the cursor to the given coordinates.  Coordinates are 1
         based, as listed in the status area of the terminal.
         """
-        # the screen's co-ordinates are 1 based, but the command is 0 based
+        # the screen's coordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
         self.exec_command("MoveCursor({0}, {1})".format(ypos, xpos).encode("utf-8"))
@@ -396,18 +394,16 @@ class Emulator(object):
     def send_string(self, tosend, ypos=None, xpos=None):
         """
         Send a string to the screen at the current cursor location or at
-        screen co-ordinates `ypos`/`xpos` if they are both given.
+        screen coordinates `ypos`/`xpos` if they are both given.
 
-        Co-ordinates are 1 based, as listed in the status area of the
+        Coordinates are 1 based, as listed in the status area of the
         terminal.
         """
         if xpos and ypos:
             self._check_limits(ypos, xpos)
             self.move_to(ypos, xpos)
-
         # escape double quotes in the data to send
         tosend = tosend.decode("utf-8").replace('"', '"')
-
         self.exec_command('String("{0}")'.format(tosend).encode("utf-8"))
 
     def send_enter(self):
@@ -433,9 +429,9 @@ class Emulator(object):
 
     def string_get(self, ypos, xpos, length):
         """
-        Get a string of `length` at screen co-ordinates `ypos`/`xpos`
+        Get a string of `length` at screen coordinates `ypos`/`xpos`
 
-        Co-ordinates are 1 based, as listed in the status area of the
+        Coordinates are 1 based, as listed in the status area of the
         terminal.
         """
         self._check_limits(ypos, xpos)
@@ -443,7 +439,7 @@ class Emulator(object):
             raise Exception(
                 "You have exceeded the x-axis limit of the mainframe screen"
             )
-        # the screen's co-ordinates are 1 based, but the command is 0 based
+        # the screen's coordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
         cmd = self.exec_command(
@@ -454,7 +450,9 @@ class Emulator(object):
         return cmd.data[0].decode("unicode_escape")
 
     def search_string(self, string, ignore_case=False):
-        """Check if a string exists on the mainframe screen and return True or False."""
+        """
+        Check if a string exists on the mainframe screen and return True or False.
+        """
         for ypos in range(24):
             line = self.string_get(ypos + 1, 1, 80)
             if ignore_case:
@@ -464,7 +462,9 @@ class Emulator(object):
         return False
 
     def read_all_screen(self):
-        """Read all the mainframe screen and return it in a single string."""
+        """
+        Read all the mainframe screen and return it in a single string.
+        """
         full_text = ""
         for ypos in range(24):
             full_text += self.string_get(ypos + 1, 1, 80)
@@ -485,7 +485,7 @@ class Emulator(object):
         tosend: the string to insert
         length: the length of the field
 
-        Co-ordinates are 1 based, as listed in the status area of the
+        Coordinates are 1 based, as listed in the status area of the
         terminal.
 
         raises: FieldTruncateError if `tosend` is longer than
@@ -501,7 +501,8 @@ class Emulator(object):
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
 
-    def _check_limits(self, ypos, xpos):
+    @staticmethod
+    def _check_limits(ypos, xpos):
         if ypos > 24:
             raise Exception(
                 "You have exceeded the y-axis limit of the mainframe screen"
