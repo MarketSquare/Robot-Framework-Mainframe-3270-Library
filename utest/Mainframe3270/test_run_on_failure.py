@@ -36,6 +36,4 @@ def test_run_on_failure_could_not_be_run(mocker: MockerFixture):
 
     with pytest.raises(Exception, match="my error message"):
         under_test.run_keyword("Keyword", None, None)
-        logger.warn.assert_called_with(
-            "Keyword 'Keyword' could not be run on failure: my error message"
-        )
+        logger.warn.assert_called_with("Keyword 'Keyword' could not be run on failure: my error message")

@@ -8,9 +8,14 @@ from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import ConnectionCache
 from robotlibcore import DynamicCore
 
-from Mainframe3270.keywords import (AssertionKeywords, CommandKeywords,
-                                    ConnectionKeywords, ReadWriteKeywords,
-                                    ScreenshotKeywords, WaitAndTimeoutKeywords)
+from Mainframe3270.keywords import (
+    AssertionKeywords,
+    CommandKeywords,
+    ConnectionKeywords,
+    ReadWriteKeywords,
+    ScreenshotKeywords,
+    WaitAndTimeoutKeywords,
+)
 from Mainframe3270.py3270 import Emulator
 from Mainframe3270.utils import convert_timeout
 from Mainframe3270.version import VERSION
@@ -159,8 +164,6 @@ class Mainframe3270(DynamicCore):
             self._running_on_failure_keyword = True
             BuiltIn().run_keyword(self.run_on_failure_keyword)
         except Exception as error:
-            logger.warn(
-                f"Keyword '{self.run_on_failure_keyword}' could not be run on failure: {error}"
-            )
+            logger.warn(f"Keyword '{self.run_on_failure_keyword}' could not be run on failure: {error}")
         finally:
             self._running_on_failure_keyword = False

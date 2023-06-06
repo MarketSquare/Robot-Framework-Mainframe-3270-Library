@@ -31,9 +31,7 @@ def test_open_connection(mocker: MockerFixture, under_test: ConnectionKeywords):
     assert ConnectionCache.register.call_args[0][1] is None
 
 
-def test_open_connection_with_alias(
-    mocker: MockerFixture, under_test: ConnectionKeywords
-):
+def test_open_connection_with_alias(mocker: MockerFixture, under_test: ConnectionKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
     mocker.patch("robot.utils.ConnectionCache.register")
 
@@ -44,9 +42,7 @@ def test_open_connection_with_alias(
     assert ConnectionCache.register.call_args[0][1] == "myalias"
 
 
-def test_open_connection_returns_index(
-    mocker: MockerFixture, under_test: ConnectionKeywords
-):
+def test_open_connection_returns_index(mocker: MockerFixture, under_test: ConnectionKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
     mocker.patch("robot.utils.ConnectionCache.register", return_value=1)
 
@@ -63,9 +59,7 @@ def test_open_connection_with_lu(mocker: MockerFixture, under_test: ConnectionKe
     Emulator.connect.assert_called_with("lu@myhost:23")
 
 
-def test_open_connection_with_port(
-    mocker: MockerFixture, under_test: ConnectionKeywords
-):
+def test_open_connection_with_port(mocker: MockerFixture, under_test: ConnectionKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
 
     under_test.open_connection("myhost", port=2222)
@@ -73,9 +67,7 @@ def test_open_connection_with_port(
     Emulator.connect.assert_called_with("myhost:2222")
 
 
-def test_open_connection_with_extra_args(
-    mocker: MockerFixture, under_test: ConnectionKeywords
-):
+def test_open_connection_with_extra_args(mocker: MockerFixture, under_test: ConnectionKeywords):
     extra_args = ["-xrm", "*blankFill: true"]
     mocker.patch("Mainframe3270.py3270.Emulator.__init__", return_value=None)
     mocker.patch("Mainframe3270.py3270.Emulator.connect")
@@ -199,9 +191,7 @@ def test_check_session_file_extension(
 
 
 def test_contains_hostname_raises_ValueError(under_test: ConnectionKeywords):
-    with patch(
-        "builtins.open", mock_open(read_data="wc3270.port: 992\n")
-    ) as session_file:
+    with patch("builtins.open", mock_open(read_data="wc3270.port: 992\n")) as session_file:
         with pytest.raises(
             ValueError,
             match="Your session file needs to specify the hostname resource to set up the connection",
@@ -235,9 +225,7 @@ def test_check_model(model: str, under_test: ConnectionKeywords):
         ("*model: 3278-4", "3278-4"),
     ],
 )
-def test_check_model_raises_ValueError(
-    model_string: str, model: SystemError, under_test: ConnectionKeywords
-):
+def test_check_model_raises_ValueError(model_string: str, model: SystemError, under_test: ConnectionKeywords):
     with patch("builtins.open", mock_open(read_data=model_string)) as session_file:
         with pytest.raises(
             ValueError,
@@ -251,12 +239,8 @@ def test_check_model_raises_ValueError(
             under_test._check_model(session_file)
 
 
-def test_open_connection_from_session_file_registers_connection(
-    mocker: MockerFixture, under_test: ConnectionKeywords
-):
-    mocker.patch(
-        "Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension"
-    )
+def test_open_connection_from_session_file_registers_connection(mocker: MockerFixture, under_test: ConnectionKeywords):
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_model")
     mocker.patch("robot.utils.ConnectionCache.register")
@@ -270,9 +254,7 @@ def test_open_connection_from_session_file_registers_connection(
 def test_open_connection_from_session_file_registers_connection_with_alias(
     mocker: MockerFixture, under_test: ConnectionKeywords
 ):
-    mocker.patch(
-        "Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension"
-    )
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_model")
     mocker.patch("robot.utils.ConnectionCache.register")
@@ -283,12 +265,8 @@ def test_open_connection_from_session_file_registers_connection_with_alias(
     assert ConnectionCache.register.call_args[0][1] == "myalias"
 
 
-def test_open_connection_from_session_file_returns_index(
-    mocker: MockerFixture, under_test: ConnectionKeywords
-):
-    mocker.patch(
-        "Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension"
-    )
+def test_open_connection_from_session_file_returns_index(mocker: MockerFixture, under_test: ConnectionKeywords):
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_model")
     mocker.patch("robot.utils.ConnectionCache.register", return_value=1)

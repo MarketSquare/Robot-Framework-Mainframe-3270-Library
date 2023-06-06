@@ -1,7 +1,9 @@
 import os
 import time
+
 from robot.api import logger
 from robot.api.deco import keyword
+
 from Mainframe3270.librarycomponent import LibraryComponent
 
 
@@ -42,13 +44,10 @@ class ScreenshotKeywords(LibraryComponent):
         """
         extension = "html"
         filename_sufix = round(time.time() * 1000)
-        filepath = os.path.join(
-            self.img_folder, "%s_%s.%s" % (filename_prefix, filename_sufix, extension)
-        )
+        filepath = os.path.join(self.img_folder, "%s_%s.%s" % (filename_prefix, filename_sufix, extension))
         self.mf.save_screen(os.path.join(self.output_folder, filepath))
         logger.write(
-            '<iframe src="%s" height="%s" width="%s"></iframe>'
-            % (filepath.replace("\\", "/"), height, width),
+            '<iframe src="%s" height="%s" width="%s"></iframe>' % (filepath.replace("\\", "/"), height, width),
             level="INFO",
             html=True,
         )

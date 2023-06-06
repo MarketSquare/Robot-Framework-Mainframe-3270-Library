@@ -8,6 +8,8 @@ from abc import ABC, abstractmethod
 from contextlib import closing
 from os import name as os_name
 
+from robot.utils import seq2str
+
 log = logging.getLogger(__name__)
 """
     Python 3+ note: unicode strings should be used when communicating with the Emulator methods.
@@ -78,9 +80,7 @@ class Command(object):
         if result == "ok":
             return
         if result != "error":
-            raise ValueError(
-                'expected "ok" or "error" result, but received: {0}'.format(result)
-            )
+            raise ValueError('expected "ok" or "error" result, but received: {0}'.format(result))
 
         msg = b"[no error message]"
         if self.data:
@@ -254,7 +254,49 @@ class Emulator(object):
     with it.
     """
 
-    def __init__(self, visible=False, timeout=30, extra_args=None, app=None):
+    _MODEL_TYPES = {
+        "2": "2",
+        "3278-2": "2",
+        "3278-2-E": "2",
+        "3279-2": "2",
+        "3279-2-E": "2",
+        "3": "3",
+        "3278-3": "3",
+        "3278-3-E": "3",
+        "3279-3": "3",
+        "3279-3-E": "3",
+        "4": "4",
+        "3278-4": "4",
+        "3278-4-E": "4",
+        "3279-4": "4",
+        "3279-4-E": "4",
+        "5": "5",
+        "3278-5": "5",
+        "3278-5-E": "5",
+        "3279-5": "5",
+        "3279-5-E": "5",
+    }
+
+    _MODEL_DIMENSIONS = {
+        "2": {
+            "rows": 24,
+            "columns": 80,
+        },
+        "3": {
+            "rows": 32,
+            "columns": 80,
+        },
+        "4": {
+            "rows": 43,
+            "columns": 80,
+        },
+        "5": {
+            "rows": 27,
+            "columns": 132,
+        },
+    }
+
+    def __init__(self, visible=False, timeout=30, extra_args=None, model="2"):
         """
         Create an emulator instance
 
@@ -263,23 +305,26 @@ class Emulator(object):
             to x3270.
         `extra_args` allows sending parameters to the emulator executable
         """
-        self.app = app or self.create_app(visible, extra_args)
+        self.model = model
+        self.model_dimensions = self._set_model_dimensions(model)
+        self.app = self.create_app(visible, extra_args, model)
         self.is_terminated = False
         self.status = Status(None)
         self.timeout = timeout
         self.last_host = None
 
-    def __del__(self):
-        """
-        Since an emulator creates a process (and sometimes a socket handle), it is good practice
-        to clean these up when done. Note, not terminating at this point will usually have no
-        ill effect - only Python 3+ on Windows had problems in this regard.
-        """
-        # self.terminate()     # The terminate function is no longer needed in python 3.8
-        pass
+    def _set_model_dimensions(self, model):
+        try:
+            model_type = Emulator._MODEL_TYPES[model]
+        except KeyError:
+            raise KeyError(
+                f"Model should be one of {seq2str(Emulator._MODEL_TYPES.keys()).replace('and', 'or')}, "
+                f"but was '{model}'."
+            )
+        return Emulator._MODEL_DIMENSIONS[model_type]
 
     @staticmethod
-    def create_app(visible, extra_args):
+    def create_app(visible, extra_args, model):
         if os_name == "nt":
             if visible:
                 return wc3270App(extra_args)
@@ -376,9 +421,7 @@ class Emulator(object):
         self.exec_command("Wait({0}, InputField)".format(self.timeout).encode("utf-8"))
         if self.status.keyboard != b"U":
             raise KeyboardStateError(
-                "keyboard not unlocked, state was: {0}".format(
-                    self.status.keyboard.decode("utf-8")
-                )
+                "keyboard not unlocked, state was: {0}".format(self.status.keyboard.decode("utf-8"))
             )
 
     def move_to(self, ypos, xpos):
@@ -435,16 +478,12 @@ class Emulator(object):
         terminal.
         """
         self._check_limits(ypos, xpos)
-        if (xpos + length) > (80 + 1):
-            raise Exception(
-                "You have exceeded the x-axis limit of the mainframe screen"
-            )
+        if (xpos + length) > (self.model_dimensions["columns"] + 1):
+            raise Exception("You have exceeded the x-axis limit of the mainframe screen")
         # the screen's coordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
-        cmd = self.exec_command(
-            "ascii({0},{1},{2})".format(ypos, xpos, length).encode("utf-8")
-        )
+        cmd = self.exec_command("ascii({0},{1},{2})".format(ypos, xpos, length).encode("utf-8"))
         # this usage of utf-8 should only return a single line of data
         assert len(cmd.data) == 1, cmd.data
         return cmd.data[0].decode("unicode_escape")
@@ -453,8 +492,8 @@ class Emulator(object):
         """
         Check if a string exists on the mainframe screen and return True or False.
         """
-        for ypos in range(24):
-            line = self.string_get(ypos + 1, 1, 80)
+        for ypos in range(self.model_dimensions["rows"]):
+            line = self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
             if ignore_case:
                 line = line.lower()
             if string in line:
@@ -466,8 +505,8 @@ class Emulator(object):
         Read all the mainframe screen and return it in a single string.
         """
         full_text = ""
-        for ypos in range(24):
-            full_text += self.string_get(ypos + 1, 1, 80)
+        for ypos in range(self.model_dimensions["rows"]):
+            full_text += self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
         return full_text
 
     def delete_field(self):
@@ -501,13 +540,8 @@ class Emulator(object):
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
 
-    @staticmethod
-    def _check_limits(ypos, xpos):
-        if ypos > 24:
-            raise Exception(
-                "You have exceeded the y-axis limit of the mainframe screen"
-            )
-        if xpos > 80:
-            raise Exception(
-                "You have exceeded the x-axis limit of the mainframe screen"
-            )
+    def _check_limits(self, ypos, xpos):
+        if ypos > self.model_dimensions["rows"]:
+            raise Exception("You have exceeded the y-axis limit of the mainframe screen")
+        if xpos > self.model_dimensions["columns"]:
+            raise Exception("You have exceeded the x-axis limit of the mainframe screen")

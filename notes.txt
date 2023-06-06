@@ -1,0 +1,20 @@
+- Write test for Mainframe3270.__init__
+
+
+Here is what the new structure might look like
+
+```
+Mainframe3270/
+├── __init__.py
+├── keywords
+│   ├── connection.py (contains class ConnectionKeywords)
+     ├── read.py (contains class ReadKeywords)
+      ... etc.
+│   └── __init__.py
+├── py3270.py
+├── librarycomponent.py
+└── version.py
+```
+
+Since we are using pythonlibcore, adding keywords from other classes 
+`librar

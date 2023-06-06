@@ -1,8 +1,10 @@
 import re
 from typing import List, Optional
+
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.utils import Matcher
+
 from Mainframe3270.librarycomponent import LibraryComponent
 
 
@@ -109,9 +111,7 @@ class AssertionKeywords(LibraryComponent):
             | Page Should Not Contain Any Strings | ${list_of_string} | ignore_case=True |
             | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |
         """
-        self._compare_all_list_with_screen_text(
-            list_string, ignore_case, error_message, should_match=False
-        )
+        self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=False)
 
     @keyword("Page Should Contain All Strings")
     def page_should_contain_all_strings(
@@ -132,9 +132,7 @@ class AssertionKeywords(LibraryComponent):
             | Page Should Contain All Strings | ${list_of_string} | ignore_case=True |
             | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |
         """
-        self._compare_all_list_with_screen_text(
-            list_string, ignore_case, error_message, should_match=True
-        )
+        self._compare_all_list_with_screen_text(list_string, ignore_case, error_message, should_match=True)
 
     @keyword("Page Should Not Contain All Strings")
     def page_should_not_contain_all_strings(

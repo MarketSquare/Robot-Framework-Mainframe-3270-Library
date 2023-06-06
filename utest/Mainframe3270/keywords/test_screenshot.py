@@ -22,9 +22,7 @@ def test_set_screenshot_folder(under_test: ScreenshotKeywords):
     assert under_test.img_folder == os.getcwd()
 
 
-def test_set_screenshot_folder_nonexistent(
-    mocker: MockerFixture, under_test: ScreenshotKeywords
-):
+def test_set_screenshot_folder_nonexistent(mocker: MockerFixture, under_test: ScreenshotKeywords):
     mocker.patch("robot.api.logger.error")
     mocker.patch("robot.api.logger.warn")
     path = os.path.join(os.getcwd(), "nonexistent")
@@ -32,9 +30,7 @@ def test_set_screenshot_folder_nonexistent(
     under_test.set_screenshot_folder(path)
 
     logger.error.assert_called_with('Given screenshots path "%s" does not exist' % path)
-    logger.warn.assert_called_with(
-        'Screenshots will be saved in "%s"' % under_test.img_folder
-    )
+    logger.warn.assert_called_with('Screenshots will be saved in "%s"' % under_test.img_folder)
 
 
 def test_take_screenshot(mocker: MockerFixture, under_test: ScreenshotKeywords):
@@ -55,9 +51,7 @@ def test_take_screenshot(mocker: MockerFixture, under_test: ScreenshotKeywords):
         assert filepath == "./screenshot_1000.html"
 
 
-def test_take_screenshot_with_filename_prefix(
-    mocker: MockerFixture, under_test: ScreenshotKeywords
-):
+def test_take_screenshot_with_filename_prefix(mocker: MockerFixture, under_test: ScreenshotKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.save_screen")
     mocker.patch("robot.api.logger.write")
     mocker.patch("time.time", return_value=1.0)

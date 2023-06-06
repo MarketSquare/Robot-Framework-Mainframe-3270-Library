@@ -3,8 +3,10 @@ import re
 import shlex
 from os import name as os_name
 from typing import List, Optional, Union
+
 from robot.api import logger
 from robot.api.deco import keyword
+
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.py3270 import Emulator
 
@@ -103,9 +105,7 @@ class ConnectionKeywords(LibraryComponent):
         return False
 
     @keyword("Open Connection From Session File")
-    def open_connection_from_session_file(
-        self, session_file: os.PathLike, alias: Optional[str] = None
-    ) -> int:
+    def open_connection_from_session_file(self, session_file: os.PathLike, alias: Optional[str] = None) -> int:
         """Create a connection to an IBM3270 mainframe
         using a [https://x3270.miraheze.org/wiki/Session_file|session file].
 
