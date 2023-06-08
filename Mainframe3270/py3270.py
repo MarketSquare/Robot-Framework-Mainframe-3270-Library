@@ -126,9 +126,8 @@ class ExecutableApp(ABC):
     def args(self):
         pass
 
-    def __init__(self, extra_args=None):
-        if extra_args:
-            self.args = self.__class__.args + extra_args
+    def __init__(self, extra_args=None, model="2"):
+        self.args = self._get_executable_app_args(extra_args, model)
         self.sp = None
         self.spawn_app()
 
@@ -155,6 +154,9 @@ class ExecutableApp(ABC):
     def readline(self):
         return self.sp.stdout.readline()
 
+    def _get_executable_app_args(self, extra_args, model):
+        return self.__class__.args + ["-xrm", f"*model: {model}"] + (extra_args or [])
+
 
 class x3270App(ExecutableApp):
     executable = "x3270"
@@ -163,7 +165,7 @@ class x3270App(ExecutableApp):
     # work around that, when AID commands are sent, there is a 350ms delay
     # before the command returns. This arg turns that feature off for
     # performance reasons.
-    args = ["-xrm", "x3270.unlockDelay: False", "-xrm", "x3270.model: 2", "-script"]
+    args = ["-xrm", "x3270.unlockDelay: False", "-script"]
 
 
 class s3270App(ExecutableApp):
@@ -179,11 +181,10 @@ class NotConnectedException(Exception):
 class wc3270App(ExecutableApp):
     executable = "wc3270"
     # see notes for args in x3270App
-    args = ["-xrm", "wc3270.unlockDelay: False", "-xrm", "wc3270.model: 2"]
+    args = ["-xrm", "wc3270.unlockDelay: False"]
 
-    def __init__(self, extra_args=None):
-        if extra_args:
-            self.args = wc3270App.args + extra_args
+    def __init__(self, extra_args=None, model="2"):
+        self.args = self._get_executable_app_args(extra_args, model)
         self.sp = None
         self.socket_fh = None
         self.script_port = self._get_free_port()
@@ -323,15 +324,14 @@ class Emulator(object):
             )
         return Emulator._MODEL_DIMENSIONS[model_type]
 
-    @staticmethod
-    def create_app(visible, extra_args, model):
+    def create_app(self, visible, extra_args, model):
         if os_name == "nt":
             if visible:
-                return wc3270App(extra_args)
-            return ws3270App(extra_args)
+                return wc3270App(extra_args, model)
+            return ws3270App(extra_args, model)
         if visible:
-            return x3270App(extra_args)
-        return s3270App(extra_args)
+            return x3270App(extra_args, model)
+        return s3270App(extra_args, model)
 
     def exec_command(self, cmdstr):
         """

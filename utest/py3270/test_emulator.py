@@ -3,6 +3,7 @@ import errno
 import pytest
 from pytest_mock import MockerFixture
 
+from Mainframe3270 import py3270
 from Mainframe3270.py3270 import Emulator, TerminatedError
 
 
@@ -11,7 +12,7 @@ def test_emulator_default_args():
     under_test = Emulator()
 
     assert under_test.app.executable == "ws3270"
-    assert under_test.app.args == ["-xrm", "ws3270.unlockDelay: False"]
+    assert under_test.app.args == ["-xrm", "ws3270.unlockDelay: False", "-xrm", "*model: 2"]
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -23,7 +24,7 @@ def test_emulator_visible():
         "-xrm",
         "wc3270.unlockDelay: False",
         "-xrm",
-        "wc3270.model: 2",
+        "*model: 2",
     ]
 
 
@@ -62,6 +63,29 @@ def test_emulator_with_model():
     under_test = Emulator(model="4")
 
     assert under_test.model == "4"
+
+
+@pytest.mark.usefixtures("mock_windows")
+@pytest.mark.parametrize(
+    ("os_name", "visible", "model"),
+    # Here we only test combinations of apps that inherit from py3270.ExecutableApp,
+    # e.g. ws3270, x3270, and s3270
+    [
+        ("nt", True, "2"),
+        ("nt", False, "2"),
+        ("nt", True, "3"),
+        ("nt", False, "3"),
+        ("posix", True, "2"),
+        ("posix", False, "2"),
+        ("posix", True, "3"),
+        ("posix", False, "3"),
+    ],
+)
+def test_emulator_ws3270App_has_model_as_last_arg(visible: bool, os_name: str, model: str):
+    py3270.os_name = os_name
+    under_test = Emulator(visible, model=model)
+
+    assert under_test.app.args[-2:] == ["-xrm", f"*model: {model}"]
 
 
 @pytest.mark.usefixtures("mock_windows")
