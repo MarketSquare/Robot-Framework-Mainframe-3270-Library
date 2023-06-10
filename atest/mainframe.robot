@@ -1,9 +1,10 @@
 *** Settings ***
 Documentation       These tests verify that all keywords are working correctly and displaying the expected exception messages.
 
-Library             ../Mainframe3270/    run_on_failure_keyword=None
 Library             OperatingSystem
 Library             String
+Library             ../Mainframe3270/    run_on_failure_keyword=None
+Library             HelperLibrary.py
 Resource            pub400_variables.robot
 
 Suite Setup         Suite Setup
@@ -233,11 +234,9 @@ Suite Setup
     Set Screenshot Folder    ${FOLDER}
     Change Wait Time    0.4
     Change Wait Time After Write    0.4
-    Sleep    3s
 
 Suite Teardown
     Run Keyword And Ignore Error    Close Connection
-    Sleep    1s
 
 Verify String Not Found
     [Arguments]    ${keyword}    ${string}    ${ignore_case}=${False}
