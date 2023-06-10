@@ -2,6 +2,7 @@
 Resource            pub400_variables.robot
 Library             OperatingSystem
 Library             ../Mainframe3270/    ${VISIBLE}
+Library             HelperLibrary.py
 
 Test Teardown       Test Teardown
 
@@ -16,12 +17,10 @@ ${TRACE_FILE}           ${CURDIR}/x3270.trace
 Test Connection With Extra Args List
     ${extra_args}=    Create List    -port    992    -trace    -tracefile    ${TRACE_FILE}
     Open Connection    L:${HOST}    extra_args=${extra_args}
-    Sleep    0.5 s
     File Should Exist    ${TRACE_FILE}
 
 Test Connection With Argfile
     Open Connection    ${HOST}    extra_args=${ARGFILE}
-    Sleep    0.5 s
     File Should Exist    ${TRACE_FILE}
 
 Test Connection From Session File
@@ -32,11 +31,9 @@ Test Connection From Session File
 
 Test Concurrent Connections
     Open Connection    ${HOST}    alias=first
-    Sleep    0.5 s
     Write Bare    ABCD
     Page Should Contain String    ABCD
     Open Connection    ${HOST}    alias=second
-    Sleep    0.5 s
     Write Bare    DEFG
     Page Should Contain String    DEFG
     Page Should Not Contain String    ABCD
@@ -64,5 +61,4 @@ Create Session File
 
 Test Teardown
     Run Keyword And Ignore Error    Close Connection
-    Sleep    1 second
     Remove File    ${TRACE_FILE}

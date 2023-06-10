@@ -25,4 +25,4 @@ class HelperLibrary:
             "Close Connection",
             "Close All Connections",
         ]:
-            time.sleep(3)
+            time.sleep(1.5)
