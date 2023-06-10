@@ -3,7 +3,7 @@ Library             ../../Mainframe3270/
 Library             ../HelperLibrary.py
 Resource            ../pub400_variables.robot
 
-Test Teardown       Close All Connections
+Test Teardown       Run Keyword And Ignore Error    Close All Connections
 
 
 *** Test Cases ***
