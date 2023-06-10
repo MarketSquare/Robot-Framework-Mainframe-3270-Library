@@ -1,11 +1,9 @@
 *** Settings ***
-Library             Collections
-Library             OperatingSystem
 Library             ../../Mainframe3270/
-Library             modellibrary.py
+Library             ModelLibrary.py
 Resource            ../pub400_variables.robot
 
-Test Teardown       Test Teardown
+Test Teardown       Close All Connections
 
 
 *** Test Cases ***
@@ -20,12 +18,6 @@ Open Connection Can Override Model
 Can Use Different Models In Different Sessions
     Open Connection    ${HOST}    extra_args=["-xrm", "*model: 5"]
     Emulator Model Should Be    5
-    Sleep    3 s
+    Sleep    0.5 s
     Open Connection    ${HOST}    extra_args=["-xrm", "*model: 4"]
     Emulator Model Should Be    4
-
-
-*** Keywords ***
-Test Teardown
-    Close All Connections
-    Sleep    3 s
