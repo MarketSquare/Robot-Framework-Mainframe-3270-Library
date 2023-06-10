@@ -64,7 +64,8 @@ class ConnectionKeywords(LibraryComponent):
             | Open Connection | Hostname | alias=my_first_connection |
         """
         extra_args = self._process_args(extra_args)
-        connection = Emulator(self.visible, self.timeout, extra_args)
+        model = self._get_model_from_list_or_file(extra_args)
+        connection = Emulator(self.visible, self.timeout, extra_args, model or self.model)
         host_string = f"{LU}@{host}" if LU else host
         if self._port_in_extra_args(extra_args):
             if port != 23:
@@ -94,6 +95,17 @@ class ConnectionKeywords(LibraryComponent):
                     for arg in shlex.split(line):
                         processed_args.append(arg)
         return processed_args
+
+    @staticmethod
+    def _get_model_from_list_or_file(list_or_file):
+        pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
+        match = None
+        if isinstance(list_or_file, list):
+            match = pattern.findall(str(list_or_file))
+        elif isinstance(list_or_file, os.PathLike) or isinstance(list_or_file, str):
+            with open(list_or_file) as file:
+                match = pattern.findall(file.read())
+        return None if not match else match[-1]
 
     @staticmethod
     def _port_in_extra_args(args) -> bool:

@@ -67,3 +67,7 @@ class LibraryComponent:
     @property
     def output_folder(self):
         return self.library.output_folder
+
+    @property
+    def model(self):
+        return self.library.model

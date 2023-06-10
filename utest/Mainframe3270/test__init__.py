@@ -12,6 +12,7 @@ def test_default_args():
     assert under_test.wait_time == 0.5
     assert under_test.wait_time_after_write == 0.0
     assert under_test.img_folder == "."
+    assert under_test.model == "2"
     under_test.mf is None
 
 

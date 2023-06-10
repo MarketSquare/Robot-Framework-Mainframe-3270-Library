@@ -86,6 +86,7 @@ class Mainframe3270(DynamicCore):
         wait_time_after_write: timedelta = timedelta(seconds=0),
         img_folder: str = ".",
         run_on_failure_keyword: str = "Take Screenshot",
+        model: str = "2",
     ) -> None:
         """
         By default the emulator visibility is set to visible=True.
@@ -112,6 +113,7 @@ class Mainframe3270(DynamicCore):
         self.img_folder = img_folder
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
+        self.model = model
         self.cache = ConnectionCache()
         # When generating the library documentation with libdoc, BuiltIn.get_variable_value throws
         # a RobotNotRunningError. Therefore, we catch it here to be able to generate the documentation.

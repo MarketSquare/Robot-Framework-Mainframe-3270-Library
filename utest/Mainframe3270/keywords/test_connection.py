@@ -74,7 +74,7 @@ def test_open_connection_with_extra_args(mocker: MockerFixture, under_test: Conn
 
     under_test.open_connection("myhost", extra_args=extra_args)
 
-    Emulator.__init__.assert_called_with(True, 30.0, extra_args)
+    Emulator.__init__.assert_called_with(True, 30.0, extra_args, "2")
 
 
 def test_open_connection_with_port_from_argument_and_from_extra_args(
@@ -91,6 +91,26 @@ def test_open_connection_with_port_from_argument_and_from_extra_args(
         "To avoid this warning, you can either remove the port command-line option from `extra_args`, "
         "or leave the `port` argument at its default value of 23."
     )
+
+
+def test_open_connection_with_default_model(mocker: MockerFixture, under_test: ConnectionKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.__init__", return_value=None)
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+
+    under_test.open_connection("myhost")
+
+    Emulator.__init__.assert_called_with(True, 30.0, [], "2")
+
+
+def test_open_connection_with_model_from_extra_args(mocker: MockerFixture, under_test: ConnectionKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.__init__", return_value=None)
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    model = "4"
+    extra_args = ["-xrm", f"*model: {model}"]
+
+    under_test.open_connection("myhost", extra_args=extra_args)
+
+    Emulator.__init__.assert_called_with(True, 30.0, extra_args, model)
 
 
 def test_process_args_returns_empty_list(under_test: ConnectionKeywords):
@@ -141,6 +161,47 @@ def test_process_args_from_multiline_file_with_comments(under_test: ConnectionKe
 
     args_from_file = ["-charset", "bracket", "-accepthostname", "myhost.com"]
     assert processed_args == args_from_file
+
+
+@pytest.mark.parametrize(
+    ("model_arg", "expected_model"),
+    [
+        (["-xrm", "wc3270.model: 2"], "2"),
+        (["-xrm", "ws3270.model: 2"], "2"),
+        (["-xrm", "x3270.model: 2"], "2"),
+        (["-xrm", "s3270.model: 2"], "2"),
+        (["-xrm", "*model: 2"], "2"),
+        (["-xrm", "*model:2"], "2"),
+        (["-xrm", "*model:3"], "3"),
+        (["-xrm", "*model:4"], "4"),
+        (["-xrm", "*model:5"], "5"),
+        (["-xrm", "*model:3278-2"], "3278-2"),
+        (["-xrm", "*model:3278-2-E"], "3278-2-E"),
+        (["-xrm", "*model:3279-2"], "3279-2"),
+        (["-xrm", "*model:3279-2-E"], "3279-2-E"),
+        (["-xrm", "*model:3278-3"], "3278-3"),
+        (["-xrm", "*model:3278-3-E"], "3278-3-E"),
+        (["-xrm", "*model:3279-3"], "3279-3"),
+        (["-xrm", "*model:3279-3-E"], "3279-3-E"),
+        (["-xrm", "*model:3278-4"], "3278-4"),
+        (["-xrm", "*model:3278-4-E"], "3278-4-E"),
+        (["-xrm", "*model:3279-4"], "3279-4"),
+        (["-xrm", "*model:3279-4-E"], "3279-4-E"),
+        (["-xrm", "*model:3278-5"], "3278-5"),
+        (["-xrm", "*model:3278-5-E"], "3278-5-E"),
+        (["-xrm", "*model:3279-5"], "3279-5"),
+        (["-xrm", "*model:3279-5-E"], "3279-5-E"),
+    ],
+)
+def test_get_model_from_list_or_file_with_list(under_test: ConnectionKeywords, model_arg: list, expected_model: str):
+    model = under_test._get_model_from_list_or_file(model_arg)
+
+    assert model == expected_model
+
+
+def test_get_model_from_list_or_file_returns_None(under_test: ConnectionKeywords):
+    assert under_test._get_model_from_list_or_file([]) is None
+    assert under_test._get_model_from_list_or_file(None) is None
 
 
 @pytest.mark.parametrize(

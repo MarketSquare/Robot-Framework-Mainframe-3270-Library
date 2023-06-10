@@ -21,6 +21,7 @@ def test_librarycomponent_returns_common_attributes():
     assert library.cache == under_test.cache
     assert library.mf == under_test.mf
     assert library.output_folder == under_test.output_folder
+    assert library.model == under_test.model
 
 
 def test_can_set_visible():
