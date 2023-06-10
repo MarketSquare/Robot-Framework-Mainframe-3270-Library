@@ -24,7 +24,7 @@ Test Connection With Argfile
     File Should Exist    ${TRACE_FILE}
 
 Test Connection From Session File
-    ${session_file}=    Create Session File    *hostname: L:pub400.com${\n}*port: 992
+    ${session_file}=    Create Session File    *hostname: L:pub400.com    *port: 992
     Open Connection From Session File    ${SESSION_FILE}
     Wait Field Detected
     Page Should Contain String    ${WELCOME}

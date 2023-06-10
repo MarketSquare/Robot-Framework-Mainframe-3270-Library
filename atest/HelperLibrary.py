@@ -15,7 +15,7 @@ class HelperLibrary:
         except RobotNotRunningError:
             pass
 
-    def create_session_file(self, content):
+    def create_session_file(self, *content_lines):
         extensions = {
             ("nt", True): "wc3270",
             ("nt", False): "ws3270",
@@ -25,7 +25,8 @@ class HelperLibrary:
         extension = extensions.get((os.name, self.library.visible))
         session_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", f"session.{extension}")
         with open(session_file, "w", encoding="utf-8") as file:
-            file.write(content)
+            for line in content_lines:
+                file.write(line + "\n")
         return session_file
 
     def emulator_model_should_be(self, model):

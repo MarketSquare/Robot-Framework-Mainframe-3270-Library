@@ -16,7 +16,7 @@ Open Connection Can Override Model
     Emulator Model Should Be    4
 
 Open Connection From Session File Can Override Model
-    ${session_file}=    Create Session File    *hostname: ${HOST}${\n}*model: 5
+    ${session_file}=    Create Session File    *hostname: ${HOST}    *model: 5
     Open Connection From Session File    ${session_file}
     Emulator Model Should Be    5
 
