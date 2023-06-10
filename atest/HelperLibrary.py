@@ -1,3 +1,4 @@
+import os
 import time
 
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
@@ -13,6 +14,19 @@ class HelperLibrary:
             self.library = self.built_in.get_library_instance("Mainframe3270")
         except RobotNotRunningError:
             pass
+
+    def create_session_file(self, content):
+        extensions = {
+            ("nt", True): "wc3270",
+            ("nt", False): "ws3270",
+            ("posix", True): "x3270",
+            ("posix", False): "s3270",
+        }
+        extension = extensions.get((os.name, self.library.visible))
+        session_file = os.path.join(os.path.dirname(os.path.realpath(__file__)), "resources", f"session.{extension}")
+        with open(session_file, "w", encoding="utf-8") as file:
+            file.write(content)
+        return session_file
 
     def emulator_model_should_be(self, model):
         error_message = f'Emulator model should have been "{model}", but was "{self.library.mf.model}"'

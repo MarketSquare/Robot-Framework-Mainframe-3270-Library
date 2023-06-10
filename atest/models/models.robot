@@ -15,6 +15,11 @@ Open Connection Can Override Model
     Open Connection    ${HOST}    extra_args=["-xrm", "*model: 4"]
     Emulator Model Should Be    4
 
+Open Connection From Session File Can Override Model
+    ${session_file}=    Create Session File    *hostname: ${HOST}${\n}*model: 5
+    Open Connection From Session File    ${session_file}
+    Emulator Model Should Be    5
+
 Can Use Different Models In Different Sessions
     Open Connection    ${HOST}    extra_args=["-xrm", "*model: 5"]
     Emulator Model Should Be    5
