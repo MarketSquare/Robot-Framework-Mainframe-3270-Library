@@ -1,10 +1,9 @@
 import time
 
-from robot.api import logger
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 
 
-class ModelLibrary:
+class HelperLibrary:
     ROBOT_LISTENER_API_VERSION = 2
 
     def __init__(self):

@@ -1,6 +1,6 @@
 *** Settings ***
 Library             ../../Mainframe3270/
-Library             ModelLibrary.py
+Library             ../HelperLibrary.py
 Resource            ../pub400_variables.robot
 
 Test Teardown       Close All Connections
