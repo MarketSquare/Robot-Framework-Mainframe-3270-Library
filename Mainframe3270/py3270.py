@@ -318,7 +318,7 @@ class Emulator(object):
         try:
             model_type = Emulator._MODEL_TYPES[model]
         except KeyError:
-            raise KeyError(
+            raise ValueError(
                 f"Model should be one of {seq2str(Emulator._MODEL_TYPES.keys()).replace('and', 'or')}, "
                 f"but was '{model}'."
             )

@@ -68,8 +68,6 @@ def test_emulator_with_model():
 @pytest.mark.usefixtures("mock_windows")
 @pytest.mark.parametrize(
     ("os_name", "visible", "model"),
-    # Here we only test combinations of apps that inherit from py3270.ExecutableApp,
-    # e.g. ws3270, x3270, and s3270
     [
         ("nt", True, "2"),
         ("nt", False, "2"),
@@ -108,7 +106,7 @@ def test_emulator_sets_model_dimensions(model, model_dimensions):
 def test_set_model_dimensions_raises_ValueError():
     under_test = Emulator()
 
-    with pytest.raises(KeyError, match=r"Model should be one of .+, but was 'wrong model'"):
+    with pytest.raises(ValueError, match=r"Model should be one of .+, but was 'wrong model'"):
         under_test._set_model_dimensions("wrong model")
 
 
