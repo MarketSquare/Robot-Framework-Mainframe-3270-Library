@@ -1,5 +1,4 @@
 import os
-import re
 from unittest.mock import mock_open, patch
 
 import pytest
@@ -199,6 +198,12 @@ def test_get_model_from_list_or_file_with_list(under_test: ConnectionKeywords, m
     assert model == expected_model
 
 
+def test_get_model_from_list_or_file_with_file(mocker: MockerFixture, under_test: ConnectionKeywords):
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
+    with patch("builtins.open", mock_open(read_data="*hostname: pub400.com\n*model: 5")):
+        under_test.open_connection_from_session_file("session.x3270")
+
+
 def test_get_model_from_list_or_file_returns_None(under_test: ConnectionKeywords):
     assert under_test._get_model_from_list_or_file([]) is None
     assert under_test._get_model_from_list_or_file(None) is None
@@ -252,58 +257,90 @@ def test_check_session_file_extension(
 
 
 def test_contains_hostname_raises_ValueError(under_test: ConnectionKeywords):
-    with patch("builtins.open", mock_open(read_data="wc3270.port: 992\n")) as session_file:
+    with patch("builtins.open", mock_open(read_data="wc3270.port: 992\n")):
         with pytest.raises(
             ValueError,
             match="Your session file needs to specify the hostname resource to set up the connection",
         ):
-            under_test._check_contains_hostname(session_file)
+            under_test._check_contains_hostname("wc3270.session")
 
 
 @pytest.mark.parametrize(
-    "model",
+    ("os_name", "visible"),
     [
-        "wc3270.model: 2",
-        "ws3270.model:2",
-        "x3270.model: 2",
-        "s3270.model: 2",
-        "*model:2",
-        "",
+        ("nt", False),
+        ("posix", True),
+        ("posix", False),
     ],
 )
-def test_check_model(model: str, under_test: ConnectionKeywords):
-    with patch("builtins.open", mock_open(read_data=model)) as session_file:
-        under_test._check_model(session_file)
+def test_open_connection_from_session_file_uses_default_model(
+    under_test: ConnectionKeywords, os_name: str, visible: bool, mocker: MockerFixture
+):
+    mocker.patch("Mainframe3270.keywords.connection.os_name", os_name)
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
+    mocker.patch("Mainframe3270.py3270.Emulator.__init__", return_value=None)
+    under_test.visible = visible
+
+    with patch("builtins.open", mock_open(read_data="*hostname: pub400.com")):
+        under_test.open_connection_from_session_file("session.s3270")
+
+        Emulator.__init__.assert_called_with(visible, 30.0, ["session.s3270"], "2")
+
+
+def test_open_connection_from_session_file_uses_default_model_for_wc3270(
+    mocker: MockerFixture, under_test: ConnectionKeywords
+):
+    mocker.patch("Mainframe3270.keywords.connection.os_name", "nt")
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
+    mocker.patch("Mainframe3270.py3270.Emulator.__init__", return_value=None)
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    under_test.visible = True
+    with patch("builtins.open", mock_open(read_data="*hostname: pub400.com")):
+        under_test.open_connection_from_session_file("session.s3270")
+
+        Emulator.__init__.assert_called_with(True, 30.0, model="2")
 
 
 @pytest.mark.parametrize(
-    ("model_string", "model"),
+    ("os_name", "visible"),
     [
-        ("wc3270.model: 4", "4"),
-        ("ws3270.model:4", "4"),
-        ("x3270.model: 5", "5"),
-        ("s3270.model: 3279-4-E", "3279-4-E"),
-        ("*model: 3278-4", "3278-4"),
+        ("nt", False),
+        ("posix", True),
+        ("posix", False),
     ],
 )
-def test_check_model_raises_ValueError(model_string: str, model: SystemError, under_test: ConnectionKeywords):
-    with patch("builtins.open", mock_open(read_data=model_string)) as session_file:
-        with pytest.raises(
-            ValueError,
-            match=re.escape(
-                f'Robot-Framework-Mainframe-3270-Library currently only supports model "2", '
-                f'the model you specified in your session file was "{model}". '
-                f'Please change it to "2", using either the session wizard if you are on Windows, '
-                f'or by editing the model resource like this "*model: 2"'
-            ),
-        ):
-            under_test._check_model(session_file)
+def test_open_connection_from_session_file_uses_model_from_file(
+    mocker: MockerFixture, os_name: str, visible: bool, under_test: ConnectionKeywords
+):
+    mocker.patch("Mainframe3270.keywords.connection.os_name", os_name)
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
+    mocker.patch("Mainframe3270.py3270.Emulator.__init__", return_value=None)
+    under_test.visible = visible
+
+    with patch("builtins.open", mock_open(read_data="*hostname: pub400.com\n*model: 5")):
+        under_test.open_connection_from_session_file("session.x3270")
+
+        Emulator.__init__.assert_called_with(visible, 30.0, ["session.x3270"], "5")
+
+
+def test_open_connection_from_session_file_uses_model_from_file_for_wc3270(
+    mocker: MockerFixture, under_test: ConnectionKeywords
+):
+    mocker.patch("Mainframe3270.keywords.connection.os_name", "nt")
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
+    mocker.patch("Mainframe3270.py3270.Emulator.__init__", return_value=None)
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
+    under_test.visible = True
+    with patch("builtins.open", mock_open(read_data="*hostname: pub400.com\nwc3270.model: 5")):
+        under_test.open_connection_from_session_file("session.wc3270")
+
+        Emulator.__init__.assert_called_with(True, 30.0, model="5")
 
 
 def test_open_connection_from_session_file_registers_connection(mocker: MockerFixture, under_test: ConnectionKeywords):
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
-    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_model")
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._get_model_from_list_or_file", return_value="2")
     mocker.patch("robot.utils.ConnectionCache.register")
 
     under_test.open_connection_from_session_file("session.wc3270")
@@ -317,7 +354,7 @@ def test_open_connection_from_session_file_registers_connection_with_alias(
 ):
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
-    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_model")
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._get_model_from_list_or_file", return_value="3")
     mocker.patch("robot.utils.ConnectionCache.register")
 
     under_test.open_connection_from_session_file("session.wc3270", "myalias")
@@ -329,7 +366,7 @@ def test_open_connection_from_session_file_registers_connection_with_alias(
 def test_open_connection_from_session_file_returns_index(mocker: MockerFixture, under_test: ConnectionKeywords):
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
-    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_model")
+    mocker.patch("Mainframe3270.keywords.ConnectionKeywords._get_model_from_list_or_file", return_value="4")
     mocker.patch("robot.utils.ConnectionCache.register", return_value=1)
 
     index = under_test.open_connection_from_session_file("session.wc3270")
