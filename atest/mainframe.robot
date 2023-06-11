@@ -81,12 +81,12 @@ Exception Test Page Should Contain Match
     Verify Pattern Not Found    Page Should Contain Match    ${STRING_NON_EXISTENT}    ignore_case=${True}
 
 Exception Test Page Should Contain String X Times
-    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1    3
+    Verify String Does Not Appear X Times    Page Should Contain String X Times    ${TEXT_TO_COUNT}    2    1
     Verify String Does Not Appear X Times
     ...    Page Should Contain String X Times
     ...    ${TEXT_TO_COUNT_WRONG_CASE}
-    ...    1
-    ...    5
+    ...    3
+    ...    2
     ...    ignore_case=${True}
 
 Exception Test Page Should Match Regex
@@ -132,8 +132,8 @@ Test Page Should Contain Match
     Page Should Contain Match    ${TEXT_MATCH_WRONG_CASE}    ignore_case=${True}
 
 Test Page Should Contain String X Times
-    Page Should Contain String X Times    ${TEXT_TO_COUNT}    3
-    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    5    ignore_case=${True}
+    Page Should Contain String X Times    ${TEXT_TO_COUNT}    1
+    Page Should Contain String X Times    ${TEXT_TO_COUNT_WRONG_CASE}    2    ignore_case=${True}
 
 Test Page Should Match Regex
     Page Should Match Regex    ${VALID_REGEX}
@@ -279,8 +279,8 @@ Verify String Does Not Appear X Times
     Run Keyword And Expect Error
     ...    ${expected_error}
     ...    ${keyword}
-    ...    ${TEXT_TO_COUNT}
-    ...    1
+    ...    ${string}
+    ...    ${wrong_number_of_times}
     ...    ignore_case=${ignore_case}
 
 Verify String Found
