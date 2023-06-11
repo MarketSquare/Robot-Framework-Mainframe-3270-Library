@@ -4,6 +4,7 @@ from invoke import task
 @task
 def lint_python(c):
     """Perform python code formatting with black, isort and flake8."""
+    print("Linting python code with black, isort, flake8 and mypy...")
     c.run("black ./setup.py ./tasks.py Mainframe3270/ atest/ utest/")
     c.run("isort ./setup.py ./tasks.py Mainframe3270/ atest/ utest/")
     c.run("flake8 ./setup.py ./tasks.py Mainframe3270/ atest/ utest/")
@@ -13,7 +14,8 @@ def lint_python(c):
 @task
 def lint_robot(c):
     """Perform robot code formatting with robotidy."""
-    c.run("robotidy --configure ReplaceReturns:enabled=False atest/")
+    print("Lingting Robot Framework code with robotidy...")
+    c.run("robotidy atest/")
 
 
 @task(lint_python, lint_robot)
