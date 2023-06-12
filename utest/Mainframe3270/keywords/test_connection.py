@@ -201,7 +201,9 @@ def test_get_model_from_list_or_file_with_list(under_test: ConnectionKeywords, m
 def test_get_model_from_list_or_file_with_file(mocker: MockerFixture, under_test: ConnectionKeywords):
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     with patch("builtins.open", mock_open(read_data="*hostname: pub400.com\n*model: 5")):
-        under_test.open_connection_from_session_file("session.x3270")
+        model = under_test._get_model_from_list_or_file("session.x3270")
+
+        assert model == "5"
 
 
 def test_get_model_from_list_or_file_returns_None(under_test: ConnectionKeywords):
@@ -341,6 +343,7 @@ def test_open_connection_from_session_file_registers_connection(mocker: MockerFi
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._get_model_from_list_or_file", return_value="2")
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
     mocker.patch("robot.utils.ConnectionCache.register")
 
     under_test.open_connection_from_session_file("session.wc3270")
@@ -355,6 +358,7 @@ def test_open_connection_from_session_file_registers_connection_with_alias(
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._get_model_from_list_or_file", return_value="3")
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
     mocker.patch("robot.utils.ConnectionCache.register")
 
     under_test.open_connection_from_session_file("session.wc3270", "myalias")
@@ -367,6 +371,7 @@ def test_open_connection_from_session_file_returns_index(mocker: MockerFixture, 
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_session_file_extension")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._check_contains_hostname")
     mocker.patch("Mainframe3270.keywords.ConnectionKeywords._get_model_from_list_or_file", return_value="4")
+    mocker.patch("Mainframe3270.py3270.Emulator.connect")
     mocker.patch("robot.utils.ConnectionCache.register", return_value=1)
 
     index = under_test.open_connection_from_session_file("session.wc3270")
