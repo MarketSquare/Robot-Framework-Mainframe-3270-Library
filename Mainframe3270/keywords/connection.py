@@ -3,8 +3,10 @@ import re
 import shlex
 from os import name as os_name
 from typing import List, Optional, Union
+
 from robot.api import logger
 from robot.api.deco import keyword
+
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.py3270 import Emulator
 
@@ -62,7 +64,8 @@ class ConnectionKeywords(LibraryComponent):
             | Open Connection | Hostname | alias=my_first_connection |
         """
         extra_args = self._process_args(extra_args)
-        connection = Emulator(self.visible, self.timeout, extra_args)
+        model = self._get_model_from_list_or_file(extra_args)
+        connection = Emulator(self.visible, self.timeout, extra_args, model or self.model)
         host_string = f"{LU}@{host}" if LU else host
         if self._port_in_extra_args(extra_args):
             if port != 23:
@@ -94,6 +97,17 @@ class ConnectionKeywords(LibraryComponent):
         return processed_args
 
     @staticmethod
+    def _get_model_from_list_or_file(list_or_file):
+        pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
+        match = None
+        if isinstance(list_or_file, list):
+            match = pattern.findall(str(list_or_file))
+        elif isinstance(list_or_file, os.PathLike) or isinstance(list_or_file, str):
+            with open(list_or_file) as file:
+                match = pattern.findall(file.read())
+        return None if not match else match[-1]
+
+    @staticmethod
     def _port_in_extra_args(args) -> bool:
         if not args:
             return False
@@ -103,9 +117,7 @@ class ConnectionKeywords(LibraryComponent):
         return False
 
     @keyword("Open Connection From Session File")
-    def open_connection_from_session_file(
-        self, session_file: os.PathLike, alias: Optional[str] = None
-    ) -> int:
+    def open_connection_from_session_file(self, session_file: os.PathLike, alias: Optional[str] = None) -> int:
         """Create a connection to an IBM3270 mainframe
         using a [https://x3270.miraheze.org/wiki/Session_file|session file].
 
@@ -134,12 +146,12 @@ class ConnectionKeywords(LibraryComponent):
         """
         self._check_session_file_extension(session_file)
         self._check_contains_hostname(session_file)
-        self._check_model(session_file)
+        model = self._get_model_from_list_or_file(session_file)
         if os_name == "nt" and self.visible:
-            connection = Emulator(self.visible, self.timeout)
+            connection = Emulator(self.visible, self.timeout, model=model or self.model)
             connection.connect(str(session_file))
         else:
-            connection = Emulator(self.visible, self.timeout, [str(session_file)])
+            connection = Emulator(self.visible, self.timeout, [str(session_file)], model or self.model)
         return self.cache.register(connection, alias)
 
     def _check_session_file_extension(self, session_file):
@@ -167,23 +179,6 @@ class ConnectionKeywords(LibraryComponent):
                     "to set up the connection. "
                     "An example for wc3270 looks like this: \n"
                     "wc3270.hostname: myhost.com\n"
-                )
-
-    @staticmethod
-    def _check_model(session_file):
-        with open(session_file) as file:
-            pattern = re.compile(r"[wcxs3270.*]+model:\s*([327892345E-]+)")
-            match = pattern.findall(file.read())
-            if not match:
-                return
-            elif match[-1] == "2":
-                return
-            else:
-                raise ValueError(
-                    f'Robot-Framework-Mainframe-3270-Library currently only supports model "2", '
-                    f'the model you specified in your session file was "{match[-1]}". '
-                    f'Please change it to "2", using either the session wizard if you are on Windows, '
-                    f'or by editing the model resource like this "*model: 2"'
                 )
 
     @keyword("Switch Connection")

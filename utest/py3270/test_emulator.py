@@ -3,6 +3,7 @@ import errno
 import pytest
 from pytest_mock import MockerFixture
 
+from Mainframe3270 import py3270
 from Mainframe3270.py3270 import Emulator, TerminatedError
 
 
@@ -11,7 +12,7 @@ def test_emulator_default_args():
     under_test = Emulator()
 
     assert under_test.app.executable == "ws3270"
-    assert under_test.app.args == ["-xrm", "ws3270.unlockDelay: False"]
+    assert under_test.app.args == ["-xrm", "ws3270.unlockDelay: False", "-xrm", "*model: 2"]
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -23,7 +24,7 @@ def test_emulator_visible():
         "-xrm",
         "wc3270.unlockDelay: False",
         "-xrm",
-        "wc3270.model: 2",
+        "*model: 2",
     ]
 
 
@@ -51,22 +52,77 @@ def test_emulator_with_extra_args():
 
 
 @pytest.mark.usefixtures("mock_windows")
+def test_emulator_with_model_default_model():
+    under_test = Emulator()
+
+    assert under_test.model == "2", 'default model should be "2"'
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_emulator_with_model():
+    under_test = Emulator(model="4")
+
+    assert under_test.model == "4"
+
+
+@pytest.mark.usefixtures("mock_windows")
+@pytest.mark.parametrize(
+    ("os_name", "visible", "model"),
+    [
+        ("nt", True, "2"),
+        ("nt", False, "2"),
+        ("nt", True, "3"),
+        ("nt", False, "3"),
+        ("posix", True, "2"),
+        ("posix", False, "2"),
+        ("posix", True, "3"),
+        ("posix", False, "3"),
+    ],
+)
+def test_emulator_ws3270App_has_model_as_last_arg(visible: bool, os_name: str, model: str):
+    py3270.os_name = os_name
+    under_test = Emulator(visible, model=model)
+
+    assert under_test.app.args[-2:] == ["-xrm", f"*model: {model}"]
+
+
+@pytest.mark.usefixtures("mock_windows")
+@pytest.mark.parametrize(
+    ("model", "model_dimensions"),
+    [
+        ("2", {"rows": 24, "columns": 80}),
+        ("3", {"rows": 32, "columns": 80}),
+        ("4", {"rows": 43, "columns": 80}),
+        ("5", {"rows": 27, "columns": 132}),
+    ],
+)
+def test_emulator_sets_model_dimensions(model, model_dimensions):
+    under_test = Emulator(model=model)
+
+    assert under_test.model_dimensions == model_dimensions
+
+
+@pytest.mark.usefixtures("mock_windows")
+def test_set_model_dimensions_raises_ValueError():
+    under_test = Emulator()
+
+    with pytest.raises(ValueError, match=r"Model should be one of .+, but was 'wrong model'"):
+        under_test._set_model_dimensions("wrong model")
+
+
+@pytest.mark.usefixtures("mock_windows")
 def test_exec_command_when_is_terminated():
     under_test = Emulator()
     under_test.is_terminated = True
 
-    with pytest.raises(
-        TerminatedError, match="This Emulator instance has been terminated"
-    ):
+    with pytest.raises(TerminatedError, match="This Emulator instance has been terminated"):
         under_test.exec_command(b"abc")
 
 
 @pytest.mark.usefixtures("mock_windows")
 def test_terminate_BrokenPipeError(mocker: MockerFixture):
     mocker.patch("Mainframe3270.py3270.wc3270App.close")
-    mocker.patch(
-        "Mainframe3270.py3270.Emulator.exec_command", side_effect=BrokenPipeError
-    )
+    mocker.patch("Mainframe3270.py3270.Emulator.exec_command", side_effect=BrokenPipeError)
     under_test = Emulator()
 
     under_test.terminate()
@@ -79,9 +135,7 @@ def test_terminate_socket_error(mocker: MockerFixture):
     mock_os_error = OSError()
     mock_os_error.errno = errno.ECONNRESET
     mocker.patch("Mainframe3270.py3270.wc3270App.close")
-    mocker.patch(
-        "Mainframe3270.py3270.Emulator.exec_command", side_effect=mock_os_error
-    )
+    mocker.patch("Mainframe3270.py3270.Emulator.exec_command", side_effect=mock_os_error)
     under_test = Emulator()
 
     under_test.terminate()
@@ -176,13 +230,21 @@ def test_string_get_calls__check_limits(mocker: MockerFixture):
 
 
 @pytest.mark.usefixtures("mock_windows")
-def test_string_get_exceeds_x_axis(mocker: MockerFixture):
-    under_test = Emulator(True)
+@pytest.mark.parametrize(
+    ("model", "length"),
+    [
+        ("2", 72),
+        ("3", 72),
+        ("4", 72),
+        ("5", 124),
+    ],
+)
+def test_string_get_exceeds_x_axis(mocker: MockerFixture, model: str, length: int):
+    mocker.patch("Mainframe3270.py3270.wc3270App.readline")
+    under_test = Emulator(True, model=model)
 
-    with pytest.raises(
-        Exception, match="You have exceeded the x-axis limit of the mainframe screen"
-    ):
-        under_test.string_get(1, 10, 72)
+    with pytest.raises(Exception, match="You have exceeded the x-axis limit of the mainframe screen"):
+        under_test.string_get(1, 10, length)
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -210,6 +272,18 @@ def test_search_string_ignoring_case(mocker: MockerFixture):
 
 
 @pytest.mark.usefixtures("mock_windows")
+@pytest.mark.parametrize(("model", "rows", "columns"), [("2", 24, 80), ("3", 32, 80), ("4", 43, 80), ("5", 27, 132)])
+def test_search_string_with_different_model_dimensions(mocker: MockerFixture, model: str, rows: int, columns: int):
+    mocker.patch("Mainframe3270.py3270.Emulator.string_get")
+    under_test = Emulator(model=model)
+
+    under_test.search_string("abc")
+
+    assert Emulator.string_get.call_count == rows
+    Emulator.string_get.assert_called_with(rows, 1, columns)
+
+
+@pytest.mark.usefixtures("mock_windows")
 def test_read_all_screen(mocker: MockerFixture):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="a")
     under_test = Emulator()
@@ -217,6 +291,18 @@ def test_read_all_screen(mocker: MockerFixture):
     content = under_test.read_all_screen()
 
     assert content == "a" * 24
+
+
+@pytest.mark.usefixtures("mock_windows")
+@pytest.mark.parametrize(("model", "rows", "columns"), [("2", 24, 80), ("3", 32, 80), ("4", 43, 80), ("5", 27, 132)])
+def test_read_all_screen_with_different_model_dimensions(mocker: MockerFixture, model: str, rows: int, columns: int):
+    mocker.patch("Mainframe3270.py3270.Emulator.string_get")
+    under_test = Emulator(model=model)
+
+    under_test.read_all_screen()
+
+    assert Emulator.string_get.call_count == rows
+    Emulator.string_get.assert_called_with(rows, 1, columns)
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -228,14 +314,20 @@ def test_check_limits():
 
 @pytest.mark.usefixtures("mock_windows")
 @pytest.mark.parametrize(
-    ("ypos", "xpos", "expected_error"),
+    ("model", "ypos", "xpos", "expected_error"),
     [
-        (25, 80, "You have exceeded the y-axis limit of the mainframe screen"),
-        (24, 81, "You have exceeded the x-axis limit of the mainframe screen"),
+        ("2", 25, 80, "You have exceeded the y-axis limit of the mainframe screen"),
+        ("3", 33, 80, "You have exceeded the y-axis limit of the mainframe screen"),
+        ("4", 44, 80, "You have exceeded the y-axis limit of the mainframe screen"),
+        ("5", 28, 80, "You have exceeded the y-axis limit of the mainframe screen"),
+        ("2", 24, 81, "You have exceeded the x-axis limit of the mainframe screen"),
+        ("3", 32, 81, "You have exceeded the x-axis limit of the mainframe screen"),
+        ("4", 43, 81, "You have exceeded the x-axis limit of the mainframe screen"),
+        ("5", 27, 133, "You have exceeded the x-axis limit of the mainframe screen"),
     ],
 )
-def test_check_limits_raises_Exception(ypos, xpos, expected_error):
-    under_test = Emulator()
+def test_check_limits_raises_Exception(model, ypos, xpos, expected_error):
+    under_test = Emulator(model=model)
 
     with pytest.raises(Exception, match=expected_error):
         under_test._check_limits(ypos, xpos)

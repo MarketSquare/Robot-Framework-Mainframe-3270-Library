@@ -1,6 +1,8 @@
 import time
 from typing import Any, Optional
+
 from robot.api.deco import keyword
+
 from Mainframe3270.librarycomponent import LibraryComponent
 
 

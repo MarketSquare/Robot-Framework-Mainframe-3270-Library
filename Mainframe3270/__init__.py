@@ -8,9 +8,14 @@ from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import ConnectionCache
 from robotlibcore import DynamicCore
 
-from Mainframe3270.keywords import (AssertionKeywords, CommandKeywords,
-                                    ConnectionKeywords, ReadWriteKeywords,
-                                    ScreenshotKeywords, WaitAndTimeoutKeywords)
+from Mainframe3270.keywords import (
+    AssertionKeywords,
+    CommandKeywords,
+    ConnectionKeywords,
+    ReadWriteKeywords,
+    ScreenshotKeywords,
+    WaitAndTimeoutKeywords,
+)
 from Mainframe3270.py3270 import Emulator
 from Mainframe3270.utils import convert_timeout
 from Mainframe3270.version import VERSION
@@ -68,6 +73,46 @@ class Mainframe3270(DynamicCore):
     |     Switch Connection    second    # switchting the ocnnection using the alias
     |     Page Should Contain String    Second String
     |     [Teardown]    Close All Connections
+
+    = Changing the emulator model (experimental) =
+
+    By default, the library uses the emulator model 2, which is 24 rows by 80 columns.
+    You can, however, change the model globally when `importing` the library with the `model` argument
+    set to the model of your choice.
+
+    The basic models are 2, 3, 4, and 5. These models differ in their screen size as illustrated in this table:
+
+    | *3270 Model* | *Rows* | *Columns* |
+    | 2            | 24     | 80        |
+    | 3            | 32     | 80        |
+    | 4            | 43     | 80        |
+    | 5            | 27     | 132       |
+
+
+    They can be combined with the 3278 (monochrome green-screen) or 3279 (color) prefix, e.g. 3278-2 or 3279-2.
+
+    In addition to that, there is a -E suffix that indicates support for the [https://x3270.miraheze.org/wiki/3270_data_stream_protocol#extended|x3270 extended data stream].
+
+    You can find more information on emulator models on the [https://x3270.miraheze.org/wiki/3270_models|x3270 wiki].
+
+    In addition to setting the model globally, you can also set the model on the individual emulator basis by providing the model arguments to the `Open Connection`
+    or `Open Connection From Session File` keywords.
+
+    Here is an example for setting the emulator in the Open Connection keyword:
+
+    | Open Connection    pub400.com    extra_args=["-xrm", "*model: 4"]
+
+    And this is how you would set the emulator model in the Open Connection From Session File keyword:
+
+    | Open Connection From Session File    /path/to/session/file
+
+    Where the content of the session file would be
+
+    | *hostname: pub400.com
+    | *model: 4
+
+
+    Note that this is an experimental feature, so not all models might work as expected.
     """
 
     ROBOT_LIBRARY_SCOPE = "TEST SUITE"
@@ -81,6 +126,7 @@ class Mainframe3270(DynamicCore):
         wait_time_after_write: timedelta = timedelta(seconds=0),
         img_folder: str = ".",
         run_on_failure_keyword: str = "Take Screenshot",
+        model: str = "2",
     ) -> None:
         """
         By default the emulator visibility is set to visible=True.
@@ -107,6 +153,7 @@ class Mainframe3270(DynamicCore):
         self.img_folder = img_folder
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
+        self.model = model
         self.cache = ConnectionCache()
         # When generating the library documentation with libdoc, BuiltIn.get_variable_value throws
         # a RobotNotRunningError. Therefore, we catch it here to be able to generate the documentation.
@@ -159,8 +206,6 @@ class Mainframe3270(DynamicCore):
             self._running_on_failure_keyword = True
             BuiltIn().run_keyword(self.run_on_failure_keyword)
         except Exception as error:
-            logger.warn(
-                f"Keyword '{self.run_on_failure_keyword}' could not be run on failure: {error}"
-            )
+            logger.warn(f"Keyword '{self.run_on_failure_keyword}' could not be run on failure: {error}")
         finally:
             self._running_on_failure_keyword = False

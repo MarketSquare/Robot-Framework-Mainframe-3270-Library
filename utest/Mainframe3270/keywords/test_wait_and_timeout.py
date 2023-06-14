@@ -86,27 +86,21 @@ def test_wait_until_string(mocker: MockerFixture, under_test: WaitAndTimeoutKeyw
     assert txt == "abc"
 
 
-def test_wait_until_string_string_not_found(
-    mocker: MockerFixture, under_test: WaitAndTimeoutKeywords
-):
+def test_wait_until_string_string_not_found(mocker: MockerFixture, under_test: WaitAndTimeoutKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(Exception, match='String "def" not found in 1 second'):
         under_test.wait_until_string("def", 1)
 
 
-def test_wait_until_string_with_time_time_string(
-    mocker: MockerFixture, under_test: WaitAndTimeoutKeywords
-):
+def test_wait_until_string_with_time_time_string(mocker: MockerFixture, under_test: WaitAndTimeoutKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(Exception, match='String "def" not found in 500 milliseconds'):
         under_test.wait_until_string("def", "500 millis")
 
 
-def test_wait_until_string_with_time_timer_string(
-    mocker: MockerFixture, under_test: WaitAndTimeoutKeywords
-):
+def test_wait_until_string_with_time_timer_string(mocker: MockerFixture, under_test: WaitAndTimeoutKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="abc")
 
     with pytest.raises(Exception, match='String "def" not found in 500 milliseconds'):

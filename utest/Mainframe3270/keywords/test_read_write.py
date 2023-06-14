@@ -22,9 +22,7 @@ def test_read(under_test: ReadWriteKeywords, mocker: MockerFixture):
 
 
 def test_read_all_screen(under_test: ReadWriteKeywords, mocker: MockerFixture):
-    mocker.patch(
-        "Mainframe3270.py3270.Emulator.read_all_screen", return_value="all screen"
-    )
+    mocker.patch("Mainframe3270.py3270.Emulator.read_all_screen", return_value="all screen")
 
     content = under_test.read_all_screen()
 

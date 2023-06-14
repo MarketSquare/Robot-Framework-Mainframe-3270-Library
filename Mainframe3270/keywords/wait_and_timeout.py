@@ -1,7 +1,9 @@
 import time
 from datetime import timedelta
+
 from robot.api.deco import keyword
 from robot.utils import secs_to_timestr
+
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.utils import convert_timeout
 
@@ -75,9 +77,7 @@ class WaitAndTimeoutKeywords(LibraryComponent):
         self.mf.wait_for_field()
 
     @keyword("Wait Until String")
-    def wait_until_string(
-        self, txt: str, timeout: timedelta = timedelta(seconds=5)
-    ) -> str:
+    def wait_until_string(self, txt: str, timeout: timedelta = timedelta(seconds=5)) -> str:
         """Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear
         in 5 seconds, the keyword will raise an exception. You can define a different timeout.
 

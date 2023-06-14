@@ -1,0 +1,15 @@
+[tool.black]
+line-length = 120
+target = ['py37']
+
+[tool.isort]
+profile = 'black'
+line_length = 120
+
+[tool.mypy]
+ignore_missing_imports = true
+
+[tool.robotidy]
+configure = [
+    "ReplaceReturns:enabled=False"
+]
