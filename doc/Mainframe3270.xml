@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2023-05-25T13:06:40+00:00" specversion="4" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\__init__.py" lineno="19">
-<version>3.2</version>
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2023-06-15T16:58:00+00:00" specversion="5" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="24">
+<version>4.0</version>
 <doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
@@ -50,41 +50,86 @@ It is worth noting that the connection that was opened last is always the curren
 |     Page Should Contain String    First String
 |     Switch Connection    second    # switchting the ocnnection using the alias
 |     Page Should Contain String    Second String
-|     [Teardown]    Close All Connections</doc>
+|     [Teardown]    Close All Connections
+
+= Changing the emulator model (experimental) =
+
+By default, the library uses the emulator model 2, which is 24 rows by 80 columns.
+You can, however, change the model globally when `importing` the library with the `model` argument
+set to the model of your choice.
+
+The basic models are 2, 3, 4, and 5. These models differ in their screen size as illustrated in this table:
+
+| *3270 Model* | *Rows* | *Columns* |
+| 2            | 24     | 80        |
+| 3            | 32     | 80        |
+| 4            | 43     | 80        |
+| 5            | 27     | 132       |
+
+
+They can be combined with the 3278 (monochrome green-screen) or 3279 (color) prefix, e.g. 3278-2 or 3279-2.
+
+In addition to that, there is a -E suffix that indicates support for the [https://x3270.miraheze.org/wiki/3270_data_stream_protocol#extended|x3270 extended data stream].
+
+You can find more information on emulator models on the [https://x3270.miraheze.org/wiki/3270_models|x3270 wiki].
+
+In addition to setting the model globally, you can also set the model on the individual emulator basis by providing the model arguments to the `Open Connection`
+or `Open Connection From Session File` keywords.
+
+Here is an example for setting the emulator in the Open Connection keyword:
+
+| Open Connection    pub400.com    extra_args=["-xrm", "*model: 4"]
+
+And this is how you would set the emulator model in the Open Connection From Session File keyword:
+
+| Open Connection From Session File    /path/to/session/file
+
+Where the content of the session file would be
+
+| *hostname: pub400.com
+| *model: 4
+
+
+Note that this is an experimental feature, so not all models might work as expected.</doc>
 <tags>
 </tags>
 <inits>
-<init name="__init__" lineno="76">
-<arguments repr="visible: bool = True, timeout: timedelta = 0:00:30, wait_time: timedelta = 0:00:00.500000, wait_time_after_write: timedelta = 0:00:00, img_folder: str = ., run_on_failure_keyword: str = Take Screenshot">
+<init name="__init__" lineno="121">
+<arguments repr="visible: bool = True, timeout: timedelta = 0:00:30, wait_time: timedelta = 0:00:00.500000, wait_time_after_write: timedelta = 0:00:00, img_folder: str = ., run_on_failure_keyword: str = Take Screenshot, model: str = 2">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="visible: bool = True">
 <name>visible</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>True</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout: timedelta = 0:00:30">
 <name>timeout</name>
-<type typedoc="timedelta">timedelta</type>
+<type name="timedelta" typedoc="timedelta">timedelta</type>
 <default>0:00:30</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time: timedelta = 0:00:00.500000">
 <name>wait_time</name>
-<type typedoc="timedelta">timedelta</type>
+<type name="timedelta" typedoc="timedelta">timedelta</type>
 <default>0:00:00.500000</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="wait_time_after_write: timedelta = 0:00:00">
 <name>wait_time_after_write</name>
-<type typedoc="timedelta">timedelta</type>
+<type name="timedelta" typedoc="timedelta">timedelta</type>
 <default>0:00:00</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="img_folder: str = .">
 <name>img_folder</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 <default>.</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="run_on_failure_keyword: str = Take Screenshot">
 <name>run_on_failure_keyword</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 <default>Take Screenshot</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="model: str = 2">
+<name>model</name>
+<type name="str" typedoc="string">str</type>
+<default>2</default>
 </arg>
 </arguments>
 <doc>By default the emulator visibility is set to visible=True.
@@ -107,11 +152,11 @@ To change the ``run_on_failure_keyword`` during runtime, see `Register Run On Fa
 </init>
 </inits>
 <keywords>
-<kw name="Change Timeout" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="11">
+<kw name="Change Timeout" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="13">
 <arguments repr="seconds: timedelta">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="seconds: timedelta">
 <name>seconds</name>
-<type typedoc="timedelta">timedelta</type>
+<type name="timedelta" typedoc="timedelta">timedelta</type>
 </arg>
 </arguments>
 <doc>Change the timeout for connection in seconds.
@@ -120,11 +165,11 @@ Example:
     | Change Timeout | 3 seconds |</doc>
 <shortdoc>Change the timeout for connection in seconds.</shortdoc>
 </kw>
-<kw name="Change Wait Time" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="21">
+<kw name="Change Wait Time" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="23">
 <arguments repr="wait_time: timedelta">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time: timedelta">
 <name>wait_time</name>
-<type typedoc="timedelta">timedelta</type>
+<type name="timedelta" typedoc="timedelta">timedelta</type>
 </arg>
 </arguments>
 <doc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
@@ -144,11 +189,11 @@ Example:
     | Change Wait Time | 0:00:01.500 |</doc>
 <shortdoc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:</shortdoc>
 </kw>
-<kw name="Change Wait Time After Write" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="41">
+<kw name="Change Wait Time After Write" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="43">
 <arguments repr="wait_time_after_write: timedelta">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time_after_write: timedelta">
 <name>wait_time_after_write</name>
-<type typedoc="timedelta">timedelta</type>
+<type name="timedelta" typedoc="timedelta">timedelta</type>
 </arg>
 </arguments>
 <doc>To give the user time to see what is happening inside the mainframe, a "wait time after write" has
@@ -170,30 +215,28 @@ Example:
     | Change Wait Time After Write | 0:00:02 |</doc>
 <shortdoc>To give the user time to see what is happening inside the mainframe, a "wait time after write" has been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these keywords:</shortdoc>
 </kw>
-<kw name="Close All Connections" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="213">
+<kw name="Close All Connections" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="208">
 <arguments repr="">
 </arguments>
 <doc>Close all currently opened connections and reset the index counter to 1.</doc>
 <shortdoc>Close all currently opened connections and reset the index counter to 1.</shortdoc>
 </kw>
-<kw name="Close Connection" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="206">
+<kw name="Close Connection" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="201">
 <arguments repr="">
 </arguments>
 <doc>Close the current connection.</doc>
 <shortdoc>Close the current connection.</shortdoc>
 </kw>
-<kw name="Delete Char" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="22">
+<kw name="Delete Char" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="24">
 <arguments repr="ypos: int | None = None, xpos: int | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
-<type typedoc="integer">int</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">int | None<type name="int" typedoc="integer">int</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos: int | None = None">
 <name>xpos</name>
-<type typedoc="integer">int</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">int | None<type name="int" typedoc="integer">int</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -207,18 +250,16 @@ Example:
     | Delete Char | ypos=9 | xpos=25 |</doc>
 <shortdoc>Delete the character under the cursor. If you want to delete a character that is in another position, simply pass the coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Delete Field" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="37">
+<kw name="Delete Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="39">
 <arguments repr="ypos: int | None = None, xpos: int | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
-<type typedoc="integer">int</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">int | None<type name="int" typedoc="integer">int</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="xpos: int | None = None">
 <name>xpos</name>
-<type typedoc="integer">int</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">int | None<type name="int" typedoc="integer">int</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -233,11 +274,11 @@ Example:
     | Delete Field | ypos=12 | xpos=6 |</doc>
 <shortdoc>Delete the entire content of a field at the current cursor location and positions the cursor at beginning of field. If you want to delete a field that is in another position, simply pass the coordinates ``ypos`` / ``xpos`` of any part in the field.</shortdoc>
 </kw>
-<kw name="Execute Command" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="9">
+<kw name="Execute Command" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="11">
 <arguments repr="cmd: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="cmd: str">
 <name>cmd</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
@@ -249,46 +290,42 @@ Example:
     | Execute Command | PF(1) |</doc>
 <shortdoc>Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].</shortdoc>
 </kw>
-<kw name="Move Next Field" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="61">
+<kw name="Move Next Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="63">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</doc>
 <shortdoc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</shortdoc>
 </kw>
-<kw name="Move Previous Field" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="68">
+<kw name="Move Previous Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="70">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</doc>
 <shortdoc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</shortdoc>
 </kw>
-<kw name="Open Connection" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="14">
+<kw name="Open Connection" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="16">
 <arguments repr="host: str, LU: str | None = None, port: int = 23, extra_args: List[str] | PathLike | None = None, alias: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="host: str">
 <name>host</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="LU: str | None = None">
 <name>LU</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="port: int = 23">
 <name>port</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 <default>23</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="extra_args: List[str] | PathLike | None = None">
 <name>extra_args</name>
-<type typedoc="list">List[str]</type>
-<type typedoc="Path">PathLike</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">List[str] | PathLike | None<type name="List" typedoc="list">List[str]<type name="str" typedoc="string">str</type></type><type name="PathLike" typedoc="Path">PathLike</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="alias: str | None = None">
 <name>alias</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -335,16 +372,15 @@ Example:
     | Open Connection | Hostname | alias=my_first_connection |</doc>
 <shortdoc>Create a connection to an IBM3270 mainframe with the default port 23. To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.</shortdoc>
 </kw>
-<kw name="Open Connection From Session File" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="106">
+<kw name="Open Connection From Session File" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="120">
 <arguments repr="session_file: PathLike, alias: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="session_file: PathLike">
 <name>session_file</name>
-<type typedoc="Path">PathLike</type>
+<type name="PathLike" typedoc="Path">PathLike</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="alias: str | None = None">
 <name>alias</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -375,21 +411,20 @@ where the content of `session.wc3270` is:
 | wc3270.model: 2</doc>
 <shortdoc>Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].</shortdoc>
 </kw>
-<kw name="Page Should Contain All Strings" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="117">
+<kw name="Page Should Contain All Strings" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="117">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
-<type typedoc="list">List[str]</type>
+<type name="List" typedoc="list">List[str]<type name="str" typedoc="string">str</type></type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -406,21 +441,20 @@ Example:
     | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Assert that all the strings in a given list exist on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Any String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="62">
+<kw name="Page Should Contain Any String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="64">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
-<type typedoc="list">List[str]</type>
+<type name="List" typedoc="list">List[str]<type name="str" typedoc="string">str</type></type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -437,21 +471,20 @@ Example:
     | Page Should Contain Any String | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Assert that one of the strings in a given list exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Match" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="231">
+<kw name="Page Should Contain Match" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="229">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -476,21 +509,20 @@ Example:
     | Page Should Contain Match | **something** | error_message=New error message |</doc>
 <shortdoc>Assert that the text displayed on the mainframe screen matches the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Contain String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="11">
+<kw name="Page Should Contain String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="13">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -507,25 +539,24 @@ Example:
     | Page Should Contain String | something | error_message=New error message |</doc>
 <shortdoc>Assert that a given string exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain String X Times" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="170">
+<kw name="Page Should Contain String X Times" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="168">
 <arguments repr="txt: str, number: int, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="number: int">
 <name>number</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -542,11 +573,11 @@ Example:
        | Page Should Contain String X Times | something | 3 | error_message=New error message |</doc>
 <shortdoc>Asserts that the entered string appears the desired number of times on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Match Regex" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="203">
+<kw name="Page Should Match Regex" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="201">
 <arguments repr="regex_pattern: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern: str">
 <name>regex_pattern</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>Fails if string does not match pattern as a regular expression. Regular expression check is
@@ -558,21 +589,20 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does not match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain All Strings" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="140">
+<kw name="Page Should Not Contain All Strings" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="138">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
-<type typedoc="list">List[str]</type>
+<type name="List" typedoc="list">List[str]<type name="str" typedoc="string">str</type></type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -590,21 +620,20 @@ Example:
     | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Fails if one of the strings in a given list exists on the mainframe screen. If one of the string are found, the keyword will raise an exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Any String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="93">
+<kw name="Page Should Not Contain Any String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="95">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
-<type typedoc="list">List[str]</type>
+<type name="List" typedoc="list">List[str]<type name="str" typedoc="string">str</type></type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -622,21 +651,20 @@ Example:
     | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the string are found, the keyword will raise an exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Match" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="267">
+<kw name="Page Should Not Contain Match" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="265">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -661,21 +689,20 @@ Example:
     | Page Should Not Contain Match | **something** | error_message=New error message |</doc>
 <shortdoc>Assert that the text displayed on the mainframe screen does NOT match the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="37">
+<kw name="Page Should Not Contain String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="39">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
 <name>ignore_case</name>
-<type typedoc="boolean">bool</type>
+<type name="bool" typedoc="boolean">bool</type>
 <default>False</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="error_message: str | None = None">
 <name>error_message</name>
-<type typedoc="string">str</type>
-<type typedoc="None">None</type>
+<type name="Union" union="true">str | None<type name="str" typedoc="string">str</type><type name="None" typedoc="None">None</type></type>
 <default>None</default>
 </arg>
 </arguments>
@@ -692,11 +719,11 @@ Example:
     | Page Should Not Contain String | something | error_message=New error message |</doc>
 <shortdoc>Assert that a given string does NOT exist on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Not Match Regex" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="217">
+<kw name="Page Should Not Match Regex" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="215">
 <arguments repr="regex_pattern: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern: str">
 <name>regex_pattern</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>Fails if string does match pattern as a regular expression. Regular expression check is
@@ -708,19 +735,19 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Read" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="9">
+<kw name="Read" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="11">
 <arguments repr="ypos: int, xpos: int, length: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
 <name>xpos</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="length: int">
 <name>length</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 </arguments>
 <doc>Get a string of ``length`` at screen coordinates ``ypos`` / ``xpos``.
@@ -731,7 +758,7 @@ Example for read a string in the position y=8 / x=10 of a length 15:
     | ${value} | Read | 8 | 10 | 15 |</doc>
 <shortdoc>Get a string of ``length`` at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Read All Screen" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="20">
+<kw name="Read All Screen" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="22">
 <arguments repr="">
 </arguments>
 <doc>Read the current screen and returns all content in one string.
@@ -748,11 +775,11 @@ Example:
     | END | |</doc>
 <shortdoc>Read the current screen and returns all content in one string.</shortdoc>
 </kw>
-<kw name="Register Run On Failure Keyword" lineno="132">
+<kw name="Register Run On Failure Keyword" lineno="179">
 <arguments repr="keyword: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="keyword: str">
 <name>keyword</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>This keyword lets you change the keyword that runs on failure during test execution.
@@ -765,17 +792,17 @@ Example:
     | Register Run On Failure Keyword | Custom Keyword | # Custom Keyword is run on failure |</doc>
 <shortdoc>This keyword lets you change the keyword that runs on failure during test execution. The default is `Take Screenshot`, which is set on library import.</shortdoc>
 </kw>
-<kw name="Send Enter" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="53">
+<kw name="Send Enter" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="55">
 <arguments repr="">
 </arguments>
 <doc>Send an Enter to the screen.</doc>
 <shortdoc>Send an Enter to the screen.</shortdoc>
 </kw>
-<kw name="Send PF" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="75">
+<kw name="Send PF" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="77">
 <arguments repr="pf: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="pf: str">
 <name>pf</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>Send a Program Function to the screen.
@@ -784,11 +811,11 @@ Example:
        | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\screenshot.py" lineno="10">
+<kw name="Set Screenshot Folder" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="12">
 <arguments repr="path: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="path: str">
 <name>path</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.
@@ -800,12 +827,11 @@ Example:
     | Set Screenshot Folder | C:\\Temp\\Images |</doc>
 <shortdoc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.</shortdoc>
 </kw>
-<kw name="Switch Connection" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="190">
+<kw name="Switch Connection" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="185">
 <arguments repr="alias_or_index: str | int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="alias_or_index: str | int">
 <name>alias_or_index</name>
-<type typedoc="string">str</type>
-<type typedoc="integer">int</type>
+<type name="Union" union="true">str | int<type name="str" typedoc="string">str</type><type name="int" typedoc="integer">int</type></type>
 </arg>
 </arguments>
 <doc>Switch the current connection to the one identified by index or alias. Indices are returned from
@@ -821,21 +847,21 @@ Examples:
 | Switch Connection | first | | # first is now the current connection  |</doc>
 <shortdoc>Switch the current connection to the one identified by index or alias. Indices are returned from and aliases can be optionally provided to the `Open Connection` and `Open Connection From Session File` keywords.</shortdoc>
 </kw>
-<kw name="Take Screenshot" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\screenshot.py" lineno="26">
+<kw name="Take Screenshot" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="28">
 <arguments repr="height: int = 410, width: int = 670, filename_prefix: str = screenshot">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="height: int = 410">
 <name>height</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 <default>410</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="width: int = 670">
 <name>width</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 <default>670</default>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="filename_prefix: str = screenshot">
 <name>filename_prefix</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 <default>screenshot</default>
 </arg>
 </arguments>
@@ -856,7 +882,7 @@ Example:
     | Take Screenshot | filename_prefix=MyScreenshot |</doc>
 <shortdoc>Generate a screenshot of the IBM 3270 Mainframe in a html format. The default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.</shortdoc>
 </kw>
-<kw name="Wait Field Detected" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="63">
+<kw name="Wait Field Detected" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="65">
 <arguments repr="">
 </arguments>
 <doc>Wait until the screen is ready, the cursor has been positioned
@@ -871,15 +897,15 @@ Using this method tells the client to wait until a field is
 detected and the cursor has been positioned on it.</doc>
 <shortdoc>Wait until the screen is ready, the cursor has been positioned on a modifiable field, and the keyboard is unlocked.</shortdoc>
 </kw>
-<kw name="Wait Until String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="78">
+<kw name="Wait Until String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="80">
 <arguments repr="txt: str, timeout: timedelta = 0:00:05">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="timeout: timedelta = 0:00:05">
 <name>timeout</name>
-<type typedoc="timedelta">timedelta</type>
+<type name="timedelta" typedoc="timedelta">timedelta</type>
 <default>0:00:05</default>
 </arg>
 </arguments>
@@ -893,11 +919,11 @@ Example:
     | Wait Until String | something | 0:00:15 |</doc>
 <shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in 5 seconds, the keyword will raise an exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="37">
+<kw name="Write" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="39">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>Send a string *and Enter* to the screen at the current cursor location.
@@ -906,11 +932,11 @@ Example:
     | Write | something |</doc>
 <shortdoc>Send a string *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="46">
+<kw name="Write Bare" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="48">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
 <doc>Send only the string to the screen at the current cursor location.
@@ -919,19 +945,19 @@ Example:
     | Write Bare | something |</doc>
 <shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="67">
+<kw name="Write Bare In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="69">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
 <name>xpos</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 </arguments>
 <doc>Send only the string to the screen at screen coordinates ``ypos`` / ``xpos``.
@@ -943,19 +969,19 @@ Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
 <shortdoc>Send only the string to the screen at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write In Position" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="55">
+<kw name="Write In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="57">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
-<type typedoc="string">str</type>
+<type name="str" typedoc="string">str</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
 <name>xpos</name>
-<type typedoc="integer">int</type>
+<type name="int" typedoc="integer">int</type>
 </arg>
 </arguments>
 <doc>Send a string *and Enter* to the screen at screen coordinates ``ypos`` / ``xpos``.
