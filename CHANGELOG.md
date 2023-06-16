@@ -1,3 +1,14 @@
+# Version: 4.0
+
+* [#97](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/97): (#73) Enable concurrent connections
+* [#99](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/99): Doclink fixes and minor textual changes
+* [#100](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/100): Improve acceptance tests
+* [#102](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/102): (#101) Modularize the library
+* [#104](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/104): (#103) Provide absolute URLs to files in README
+* [#105](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/105): Standard indentation and grammar correction
+* [#107](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/107): (#31) Setup the emulator model
+
+
 # Version: 3.2
 
 * [#89](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/89): (#88) Enable execution in Docker container
