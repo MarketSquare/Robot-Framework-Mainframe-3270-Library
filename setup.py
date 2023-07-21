@@ -27,7 +27,7 @@ package_kwargs = {
     "license": "MIT License",
     "license_files": ["LICENSE.md", "THIRD-PARTY-NOTICES.txt"],
     "url": "https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library",
-    "packages": ["Mainframe3270"],
+    "packages": ["Mainframe3270", "Mainframe3270.keywords"],
     "install_requires": ["robotframework", "robotframework-pythonlibcore"],
     "classifiers": [
         "Development Status :: 5 - Production/Stable",
