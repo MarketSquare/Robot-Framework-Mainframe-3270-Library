@@ -225,6 +225,14 @@ Test Send PF
     Send PF    1
     Page Should Contain String    Function key not allowed.
 
+Test Get Cursor Possition
+    Move Next Field
+    ${position}    Get Cursor Position
+    Should Be Equal    ${{ (1, 1) }}    ${position}
+    Write Bare    AB
+    ${position}    Get Cursor Position
+    Should Be Equal    ${{ (1, 3)}}    ${position}
+
 
 *** Keywords ***
 Suite Setup
