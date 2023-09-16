@@ -228,10 +228,14 @@ Test Send PF
 Test Get Cursor Possition
     Move Next Field
     ${position}    Get Cursor Position
-    Should Be Equal    ${{ (1, 1) }}    ${position}
+    Should Be Equal    ${{ (6, 25) }}    ${position}
+    ${position_as_dict}    Get Cursor Position    As Dict
+    Should Be Equal    ${{ {"xpos": 6, "ypos": 25} }}    ${position_as_dict}
     Write Bare    AB
     ${position}    Get Cursor Position
-    Should Be Equal    ${{ (1, 3)}}    ${position}
+    Should Be Equal    ${{ (6, 27) }}    ${position}
+    ${position_as_dict}    Get Cursor Position    As Dict
+    Should Be Equal    ${{ {"xpos": 6, "ypos": 27} }}    ${position_as_dict}
 
 
 *** Keywords ***

@@ -3,7 +3,6 @@ from typing import Optional, Union
 
 from robot.api import logger
 from robot.api.deco import keyword
-from robot.utils import normalize
 
 from Mainframe3270.librarycomponent import LibraryComponent
 
