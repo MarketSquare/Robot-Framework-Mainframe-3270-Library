@@ -4,7 +4,7 @@ import pytest
 from pytest_mock import MockerFixture
 
 from Mainframe3270 import py3270
-from Mainframe3270.py3270 import Emulator, TerminatedError
+from Mainframe3270.py3270 import Command, Emulator, TerminatedError
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -331,3 +331,25 @@ def test_check_limits_raises_Exception(model, ypos, xpos, expected_error):
 
     with pytest.raises(Exception, match=expected_error):
         under_test._check_limits(ypos, xpos)
+
+
+def test_get_current_cursor_position(mocker: MockerFixture):
+    command = Command(None, b"Query(Cursor)")
+    command.data = [b"5 5"]
+    mocker.patch("Mainframe3270.py3270.Emulator.exec_command", return_value=command)
+
+    under_test = Emulator()
+
+    # result is 1 based, that is why we expect (6, 6)
+    assert under_test.get_cursor_position() == (6, 6)
+
+
+def test_get_current_cursor_position_returns_unexpected_value(mocker: MockerFixture):
+    command = Command(None, b"Query(Cursor)")
+    command.data = [b"5 5", b"unexpected"]
+    mocker.patch("Mainframe3270.py3270.Emulator.exec_command", return_value=command)
+
+    under_test = Emulator()
+
+    with pytest.raises(Exception, match="Cursor position returned an unexpected value"):
+        under_test.get_cursor_position()

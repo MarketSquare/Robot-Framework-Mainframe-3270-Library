@@ -452,24 +452,6 @@ class Emulator(object):
     def send_enter(self):
         self.exec_command(b"Enter")
 
-    def send_pf3(self):
-        self.exec_command(b"PF(3)")
-
-    def send_pf4(self):
-        self.exec_command(b"PF(4)")
-
-    def send_pf5(self):
-        self.exec_command(b"PF(5)")
-
-    def send_pf6(self):
-        self.exec_command(b"PF(6)")
-
-    def send_pf7(self):
-        self.exec_command(b"PF(7)")
-
-    def send_pf8(self):
-        self.exec_command(b"PF(8)")
-
     def string_get(self, ypos, xpos, length):
         """
         Get a string of `length` at screen coordinates `ypos`/`xpos`
@@ -539,6 +521,14 @@ class Emulator(object):
 
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
+
+    def get_cursor_position(self):
+        """Returns the current cursor position as a tuple of 1 indexed integers."""
+        command = self.exec_command("Query(Cursor)")
+        if len(command.data) != 1:
+            raise Exception(f'Cursor position returned an unexpected value: "{command.data}"')
+        list_of_strings = command.data[0].decode("utf-8").split(" ")
+        return tuple([int(i) + 1 for i in list_of_strings])
 
     def _check_limits(self, ypos, xpos):
         if ypos > self.model_dimensions["rows"]:
