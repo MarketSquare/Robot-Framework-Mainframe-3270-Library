@@ -98,7 +98,7 @@ class CommandKeywords(LibraryComponent):
         """
         result = self.mf.get_cursor_position()
         if mode.lower() == "as dict":
-            return {"xpos": result[0], "ypos": result[1]}
+            return {"ypos": result[0], "xpos": result[1]}
         elif mode.lower() == "as tuple":
             return result
         else:
