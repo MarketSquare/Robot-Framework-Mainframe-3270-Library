@@ -35,6 +35,18 @@ class ReadWriteKeywords(LibraryComponent):
         """
         return self.mf.read_all_screen()
 
+    @keyword("Find String")
+    def find_string(self, search_string: str, ignore_case: bool = False):
+        """Returns a list of tuples of ypos and xpos for the position where the `search_string` was found,
+        or an empty list if it was not found.
+        
+        If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+        Example:
+            | ${indices} | Find String | Abc | # Returns something like [(1, 8)]
+        """
+        return self.mf.find_string(search_string, ignore_case)
+
     @keyword("Write")
     def write(self, txt: str) -> None:
         """Send a string *and Enter* to the screen at the current cursor location.

@@ -72,3 +72,19 @@ def test_write_bare_in_position(mocker: MockerFixture, under_test: ReadWriteKeyw
     Emulator.move_to.assert_called_once_with(5, 5)
     Emulator.exec_command.assert_called_once_with(b'String("abc")')
     Emulator.send_enter.assert_not_called()
+
+
+def test_find_string(mocker: MockerFixture, under_test: ReadWriteKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.find_string", return_value=[(5, 10)])
+
+    assert under_test.find_string("abc") == [(5, 10)]
+
+    Emulator.find_string.assert_called_once_with("abc", False)
+
+
+def test_find_string_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.find_string", return_value=[(5, 10)])
+
+    assert under_test.find_string("abc", ignore_case=True) == [(5, 10)]
+
+    Emulator.find_string.assert_called_once_with("abc", True)

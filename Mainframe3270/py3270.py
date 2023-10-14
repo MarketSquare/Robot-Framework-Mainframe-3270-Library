@@ -1,5 +1,7 @@
 import errno
 import logging
+import math
+import re
 import socket
 import subprocess
 import time
@@ -477,10 +479,21 @@ class Emulator(object):
         for ypos in range(self.model_dimensions["rows"]):
             line = self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
             if ignore_case:
+                string = string.lower()
                 line = line.lower()
             if string in line:
                 return True
         return False
+
+    def find_string(self, search_string, ignore_case=False):
+        """Returns a list of tuples of ypos and xpos for the position where the `search_string` was found,
+        or an empty list if it was not found."""
+        screen_content = self.read_all_screen().lower() if ignore_case else self.read_all_screen()
+        search_string = search_string.lower() if ignore_case else search_string
+        indices_object = re.finditer(re.escape(search_string), screen_content)
+        indices = [index.start() for index in indices_object]
+        # ypos and xpos should be returned 1-based
+        return [self._get_ypos_and_xpos_from_index(index + 1) for index in indices]
 
     def read_all_screen(self):
         """
@@ -535,3 +548,12 @@ class Emulator(object):
             raise Exception("You have exceeded the y-axis limit of the mainframe screen")
         if xpos > self.model_dimensions["columns"]:
             raise Exception("You have exceeded the x-axis limit of the mainframe screen")
+
+    def _get_ypos_and_xpos_from_index(self, index):
+        ypos = math.ceil(index / self.model_dimensions["columns"])
+        remainder = index % self.model_dimensions["columns"]
+        if remainder == 0:
+            xpos = self.model_dimensions["columns"]
+        else:
+            xpos = remainder
+        return (ypos, xpos)
