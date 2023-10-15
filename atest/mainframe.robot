@@ -238,16 +238,12 @@ Test Get Cursor Position
     Should Be Equal    ${{ {"xpos": 27, "ypos": 6} }}    ${position_as_dict}
 
 Test Find String
-    ${position}    Find String    ${WELCOME}
+    ${position}    Find String    Welcome
     Should Be Equal    ${{ [(1, 10)] }}    ${position}
 
-Test Find String Multiple Times
-    ${position}    Find String    IBM
-    Should Be Equal    ${{ [(1, 46), (9, 16)] }}    ${position}
-
 Test Find String Case-Insensitive
-    ${position}    Find String    ibm    ignore_case=True
-    Should Be Equal    ${{ [(1, 46), (9, 16)] }}    ${position}
+    ${position}    Find String    Welcome    ignore_case=True
+    Should Be Equal    ${{ [(1, 10), (9, 5)] }}    ${position}
 
 Test Find String Without Result
     ${position}    Find String    ${STRING_NON_EXISTENT}

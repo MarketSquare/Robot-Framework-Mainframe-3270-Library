@@ -39,7 +39,7 @@ class ReadWriteKeywords(LibraryComponent):
     def find_string(self, search_string: str, ignore_case: bool = False):
         """Returns a list of tuples of ypos and xpos for the position where the `search_string` was found,
         or an empty list if it was not found.
-        
+
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
         Example:
