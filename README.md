@@ -11,7 +11,7 @@
 Mainframe3270 is a library for Robot Framework based on the [py3270 project](https://pypi.org/project/py3270/), a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
 ## Compatibility
-Mainframe3270 requires Python 3. It is tested with Python 3.7 and 3.10, but should support all versions in between these.
+Mainframe3270 requires Python 3. It is tested with Python 3.8 and 3.12, but should support all versions in between these.
 
 ## Installation
 
