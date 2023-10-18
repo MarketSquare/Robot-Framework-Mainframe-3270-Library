@@ -245,6 +245,11 @@ Test Get String Positions Case-Insensitive
     ${position}    Get String Positions    Welcome    ignore_case=True
     Should Be Equal    ${{ [(1, 10), (9, 5)] }}    ${position}
 
+Test Get String Positions As Dict
+    ${position}    Get String Positions    Welcome    As Dict
+    Should Be Equal    ${{ [{"ypos": 1, "xpos": 10}] }}
+    ...    ${position}
+
 Test Get String Positions Without Result
     ${position}    Get String Positions    ${STRING_NON_EXISTENT}
     Should Be Equal    ${{ [] }}    ${position}

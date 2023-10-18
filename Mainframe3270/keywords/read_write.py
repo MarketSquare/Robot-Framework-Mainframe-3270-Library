@@ -36,9 +36,12 @@ class ReadWriteKeywords(LibraryComponent):
         return self.mf.read_all_screen()
 
     @keyword("Get String Positions")
-    def get_string_positions(self, string: str, ignore_case: bool = False):
+    def get_string_positions(self, string: str, mode: str = "As Tuple", ignore_case: bool = False):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found.
+
+        If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+        a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
 
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
