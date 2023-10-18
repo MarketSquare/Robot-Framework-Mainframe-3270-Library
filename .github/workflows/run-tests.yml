@@ -14,7 +14,7 @@ jobs:
       # pub400 closes the connection if there are too many requests coming from the same IP address
       max-parallel: 1
       matrix:
-        python-version: ["3.7", "3.10"]
+        python-version: ["3.8", "3.12"]
         os: [ubuntu-latest, windows-latest]
       fail-fast: false
 

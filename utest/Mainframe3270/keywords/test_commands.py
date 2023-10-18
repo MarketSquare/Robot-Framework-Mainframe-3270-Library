@@ -95,3 +95,15 @@ def test_send_pf(mocker: MockerFixture, under_test: CommandKeywords):
     under_test.send_pf("5")
 
     Emulator.exec_command.assert_called_with("PF(5)".encode("utf-8"))
+
+
+def test_get_current_cursor_position(mocker: MockerFixture, under_test: CommandKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.get_cursor_position", return_value=(6, 6))
+
+    assert under_test.get_cursor_position() == (6, 6)
+
+
+def test_get_current_cursor_position_as_dict(mocker: MockerFixture, under_test: CommandKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.get_cursor_position", return_value=(6, 6))
+
+    assert under_test.get_cursor_position("as DiCt") == {"xpos": 6, "ypos": 6}

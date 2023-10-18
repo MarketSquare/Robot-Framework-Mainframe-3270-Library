@@ -394,7 +394,7 @@ def test_close_connection(mocker: MockerFixture, under_test: ConnectionKeywords)
 
     under_test.close_connection()
 
-    assert Emulator.terminate.called_once()
+    Emulator.terminate.assert_called_once()
 
 
 def test_close_all_connections(mocker: MockerFixture, under_test: ConnectionKeywords):

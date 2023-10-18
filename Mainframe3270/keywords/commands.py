@@ -1,6 +1,7 @@
 import time
-from typing import Optional
+from typing import Optional, Union
 
+from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
@@ -78,7 +79,28 @@ class CommandKeywords(LibraryComponent):
         """Send a Program Function to the screen.
 
         Example:
-               | Send PF | 3 |
+            | Send PF | 3 |
         """
         self.mf.exec_command("PF({0})".format(pf).encode("utf-8"))
         time.sleep(self.wait_time)
+
+    @keyword("Get Cursor Position")
+    def get_cursor_position(self, mode: str = "As Tuple") -> Union[tuple, dict]:
+        """Returns the current cursor position. The coordinates are 1 based.
+
+        By default, this keyword returns a tuple of integers. However, if you specify the `mode` with the value
+        ``"As Dict"`` (case-insensitive), a dictionary in the form of ``{"xpos": int, "ypos": int}`` is returned.
+
+        Example:
+            | Get Cursor Position |         | # Returns a position like (1, 1) |
+            | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |
+
+        """
+        result = self.mf.get_cursor_position()
+        if mode.lower() == "as dict":
+            return {"ypos": result[0], "xpos": result[1]}
+        elif mode.lower() == "as tuple":
+            return result
+        else:
+            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+            return result
