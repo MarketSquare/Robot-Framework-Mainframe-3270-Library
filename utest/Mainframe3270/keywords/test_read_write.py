@@ -74,7 +74,7 @@ def test_write_bare_in_position(mocker: MockerFixture, under_test: ReadWriteKeyw
     Emulator.send_enter.assert_not_called()
 
 
-def test_find_string(mocker: MockerFixture, under_test: ReadWriteKeywords):
+def test_get_string_positions(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(5, 10)])
 
     assert under_test.get_string_positions("abc") == [(5, 10)]
@@ -82,7 +82,15 @@ def test_find_string(mocker: MockerFixture, under_test: ReadWriteKeywords):
     Emulator.get_string_positions.assert_called_once_with("abc", False)
 
 
-def test_find_string_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
+def test_get_string_positions_as_dict(mocker: MockerFixture, under_test: ReadWriteKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(5, 10), (6, 11)])
+
+    assert under_test.get_string_positions("abc") == [{"ypos": 5, "xpos": 10}, {"ypos": 6, "xpos": 11}]
+
+    Emulator.get_string_positions.assert_called_once_with("abc", False)
+
+
+def test_get_string_positions_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(5, 10)])
 
     assert under_test.get_string_positions("abc", ignore_case=True) == [(5, 10)]
