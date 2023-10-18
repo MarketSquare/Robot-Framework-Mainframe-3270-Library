@@ -35,9 +35,9 @@ class ReadWriteKeywords(LibraryComponent):
         """
         return self.mf.read_all_screen()
 
-    @keyword("Find String")
-    def find_string(self, search_string: str, ignore_case: bool = False):
-        """Returns a list of tuples of ypos and xpos for the position where the `search_string` was found,
+    @keyword("Get String Positions")
+    def get_string_positions(self, string: str, ignore_case: bool = False):
+        """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found.
 
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
@@ -45,7 +45,7 @@ class ReadWriteKeywords(LibraryComponent):
         Example:
             | ${indices} | Find String | Abc | # Returns something like [(1, 8)]
         """
-        return self.mf.find_string(search_string, ignore_case)
+        return self.mf.get_string_positions(string, ignore_case)
 
     @keyword("Write")
     def write(self, txt: str) -> None:

@@ -485,12 +485,12 @@ class Emulator(object):
                 return True
         return False
 
-    def find_string(self, search_string, ignore_case=False):
-        """Returns a list of tuples of ypos and xpos for the position where the `search_string` was found,
+    def get_string_positions(self, string, ignore_case=False):
+        """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found."""
         screen_content = self.read_all_screen().lower() if ignore_case else self.read_all_screen()
-        search_string = search_string.lower() if ignore_case else search_string
-        indices_object = re.finditer(re.escape(search_string), screen_content)
+        string = string.lower() if ignore_case else string
+        indices_object = re.finditer(re.escape(string), screen_content)
         indices = [index.start() for index in indices_object]
         # ypos and xpos should be returned 1-based
         return [self._get_ypos_and_xpos_from_index(index + 1) for index in indices]

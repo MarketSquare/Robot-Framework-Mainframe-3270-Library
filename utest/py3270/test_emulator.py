@@ -372,7 +372,7 @@ def test_find_string(mocker: MockerFixture, model, index, expected):
         "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "abc", index)
     )
 
-    assert under_test.find_string("abc") == expected
+    assert under_test.get_string_positions("abc") == expected
 
 
 def test_find_string_ignore_case(mocker: MockerFixture):
@@ -381,7 +381,7 @@ def test_find_string_ignore_case(mocker: MockerFixture):
         "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "ABC", 5)
     )
 
-    assert under_test.find_string("aBc", True) == [(1, 6)]
+    assert under_test.get_string_positions("aBc", True) == [(1, 6)]
 
 
 def test_find_string_without_result(mocker: MockerFixture):
@@ -390,7 +390,7 @@ def test_find_string_without_result(mocker: MockerFixture):
         "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "abc", 1)
     )
 
-    assert under_test.find_string("does not exist") == []
+    assert under_test.get_string_positions("does not exist") == []
 
 
 def _mock_return_all_screen(emulator: Emulator, insert_string: str, at_index: int):
