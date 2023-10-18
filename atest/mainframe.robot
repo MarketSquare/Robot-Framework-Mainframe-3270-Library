@@ -253,6 +253,8 @@ Test Get String Positions As Dict
 Test Get String Positions Without Result
     ${position}    Get String Positions    ${STRING_NON_EXISTENT}
     Should Be Equal    ${{ [] }}    ${position}
+    ${position}    Get String Positions    ${STRING_NON_EXISTENT}    As Dict
+    Should Be Equal    ${{ [] }}    ${position}
 
 
 *** Keywords ***

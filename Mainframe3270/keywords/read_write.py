@@ -1,9 +1,11 @@
 import time
 from typing import Any, Optional
 
+from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
+from Mainframe3270.utils import coordinate_tuple_to_dict
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -48,7 +50,14 @@ class ReadWriteKeywords(LibraryComponent):
         Example:
             | ${indices} | Find String | Abc | # Returns something like [(1, 8)]
         """
-        return self.mf.get_string_positions(string, ignore_case)
+        results = self.mf.get_string_positions(string, ignore_case)
+        if mode.lower() == "as dict":
+            return [coordinate_tuple_to_dict(r) for r in results]
+        elif mode.lower() == "as tuple":
+            return results
+        else:
+            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+            return results
 
     @keyword("Write")
     def write(self, txt: str) -> None:
