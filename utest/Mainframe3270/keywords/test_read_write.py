@@ -1,5 +1,6 @@
 import pytest
 from pytest_mock import MockerFixture
+from robot.api import logger
 
 from Mainframe3270.keywords.read_write import ReadWriteKeywords
 from Mainframe3270.py3270 import Emulator
@@ -87,6 +88,16 @@ def test_get_string_positions_as_dict(mocker: MockerFixture, under_test: ReadWri
 
     assert under_test.get_string_positions("abc", "aS diCt") == [{"ypos": 5, "xpos": 10}, {"ypos": 6, "xpos": 11}]
 
+    Emulator.get_string_positions.assert_called_once_with("abc", False)
+
+
+def test_get_string_positions_invalid_mode(mocker: MockerFixture, under_test: ReadWriteKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(5, 10)])
+    mocker.patch("robot.api.logger.warn")
+
+    assert under_test.get_string_positions("abc", "this is wrong") == [(5, 10)]
+
+    logger.warn.assert_called_with('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
     Emulator.get_string_positions.assert_called_once_with("abc", False)
 
 
