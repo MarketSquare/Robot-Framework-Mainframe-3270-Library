@@ -225,7 +225,7 @@ Test Send PF
     Send PF    1
     Page Should Contain String    Function key not allowed.
 
-Test Get Cursor Possition
+Test Get Cursor Position
     Move Next Field
     ${position}    Get Cursor Position
     Should Be Equal    ${{ (6, 25) }}    ${position}
@@ -236,6 +236,25 @@ Test Get Cursor Possition
     Should Be Equal    ${{ (6, 27) }}    ${position}
     ${position_as_dict}    Get Cursor Position    As Dict
     Should Be Equal    ${{ {"xpos": 27, "ypos": 6} }}    ${position_as_dict}
+
+Test Get String Positions
+    ${position}    Get String Positions    Welcome
+    Should Be Equal    ${{ [(1, 10)] }}    ${position}
+
+Test Get String Positions Case-Insensitive
+    ${position}    Get String Positions    Welcome    ignore_case=True
+    Should Be Equal    ${{ [(1, 10), (9, 5)] }}    ${position}
+
+Test Get String Positions As Dict
+    ${position}    Get String Positions    Welcome    As Dict
+    Should Be Equal    ${{ [{"ypos": 1, "xpos": 10}] }}
+    ...    ${position}
+
+Test Get String Positions Without Result
+    ${position}    Get String Positions    ${STRING_NON_EXISTENT}
+    Should Be Equal    ${{ [] }}    ${position}
+    ${position}    Get String Positions    ${STRING_NON_EXISTENT}    As Dict
+    Should Be Equal    ${{ [] }}    ${position}
 
 
 *** Keywords ***

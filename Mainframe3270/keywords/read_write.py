@@ -1,9 +1,11 @@
 import time
 from typing import Any, Optional
 
+from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
+from Mainframe3270.utils import coordinate_tuple_to_dict
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -34,6 +36,28 @@ class ReadWriteKeywords(LibraryComponent):
             | END | |
         """
         return self.mf.read_all_screen()
+
+    @keyword("Get String Positions")
+    def get_string_positions(self, string: str, mode: str = "As Tuple", ignore_case: bool = False):
+        """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+        or an empty list if it was not found.
+
+        If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+        a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+        If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+        Example:
+            | ${indices} | Find String | Abc | # Returns something like [(1, 8)]
+        """
+        results = self.mf.get_string_positions(string, ignore_case)
+        if mode.lower() == "as dict":
+            return [coordinate_tuple_to_dict(r) for r in results]
+        elif mode.lower() == "as tuple":
+            return results
+        else:
+            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+            return results
 
     @keyword("Write")
     def write(self, txt: str) -> None:

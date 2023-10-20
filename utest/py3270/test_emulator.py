@@ -268,7 +268,7 @@ def test_search_string_ignoring_case(mocker: MockerFixture):
     mocker.patch("Mainframe3270.py3270.Emulator.string_get", return_value="ABC")
     under_test = Emulator()
 
-    assert under_test.search_string("abc", True)
+    assert under_test.search_string("aBc", True)
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -353,3 +353,46 @@ def test_get_current_cursor_position_returns_unexpected_value(mocker: MockerFixt
 
     with pytest.raises(Exception, match="Cursor position returned an unexpected value"):
         under_test.get_cursor_position()
+
+
+@pytest.mark.usefixtures("mock_windows")
+@pytest.mark.parametrize(
+    ("model", "index", "expected"),
+    [
+        ("2", 1, [(1, 2)]),
+        ("2", 79, [(1, 80)]),
+        ("2", 80, [(2, 1)]),
+        ("2", 139, [(2, 60)]),
+        ("5", 131, [(1, 132)]),
+    ],
+)
+def test_find_string(mocker: MockerFixture, model, index, expected):
+    under_test = Emulator(model=model)
+    mocker.patch(
+        "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "abc", index)
+    )
+
+    assert under_test.get_string_positions("abc") == expected
+
+
+def test_find_string_ignore_case(mocker: MockerFixture):
+    under_test = Emulator()
+    mocker.patch(
+        "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "ABC", 5)
+    )
+
+    assert under_test.get_string_positions("aBc", True) == [(1, 6)]
+
+
+def test_find_string_without_result(mocker: MockerFixture):
+    under_test = Emulator()
+    mocker.patch(
+        "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "abc", 1)
+    )
+
+    assert under_test.get_string_positions("does not exist") == []
+
+
+def _mock_return_all_screen(emulator: Emulator, insert_string: str, at_index: int):
+    base_str = "a" * (emulator.model_dimensions["rows"] * emulator.model_dimensions["columns"])
+    return base_str[:at_index] + insert_string + base_str[at_index : -len(insert_string)]
