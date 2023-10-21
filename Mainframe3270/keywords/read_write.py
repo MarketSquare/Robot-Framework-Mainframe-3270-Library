@@ -20,6 +20,13 @@ class ReadWriteKeywords(LibraryComponent):
         """
         return self.mf.string_get(ypos, xpos, length)
 
+    @keyword("Read From Current Position")
+    def read_from_current_position(self, length: int):
+        """Similar to `Read`, however this keyword only takes `length` as an argument
+        to get a string of length from the current cursor position."""
+        position = self.library.get_current_position()
+        return self.mf.string_get(position[0], position[1], length)
+
     @keyword("Read All Screen")
     def read_all_screen(self) -> str:
         """Read the current screen and returns all content in one string.

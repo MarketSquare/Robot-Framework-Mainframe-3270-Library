@@ -85,8 +85,8 @@ class CommandKeywords(LibraryComponent):
         self.mf.exec_command("PF({0})".format(pf).encode("utf-8"))
         time.sleep(self.wait_time)
 
-    @keyword("Get Cursor Position")
-    def get_cursor_position(self, mode: str = "As Tuple") -> Union[tuple, dict]:
+    @keyword("Get Current Position")
+    def get_current_position(self, mode: str = "As Tuple") -> Union[tuple, dict]:
         """Returns the current cursor position. The coordinates are 1 based.
 
         By default, this keyword returns a tuple of integers. However, if you specify the `mode` with the value
@@ -97,7 +97,7 @@ class CommandKeywords(LibraryComponent):
             | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |
 
         """
-        result = self.mf.get_cursor_position()
+        result = self.mf.get_current_position()
         if mode.lower() == "as dict":
             return coordinate_tuple_to_dict(result)
         elif mode.lower() == "as tuple":

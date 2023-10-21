@@ -535,9 +535,9 @@ class Emulator(object):
     def save_screen(self, file_path):
         self.exec_command("PrintText(html,file,{0})".format(file_path).encode("utf-8"))
 
-    def get_cursor_position(self):
+    def get_current_position(self):
         """Returns the current cursor position as a tuple of 1 indexed integers."""
-        command = self.exec_command("Query(Cursor)")
+        command = self.exec_command(b"Query(Cursor)")
         if len(command.data) != 1:
             raise Exception(f'Cursor position returned an unexpected value: "{command.data}"')
         list_of_strings = command.data[0].decode("utf-8").split(" ")

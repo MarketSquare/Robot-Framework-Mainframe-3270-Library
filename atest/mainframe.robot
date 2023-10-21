@@ -24,6 +24,10 @@ Exception Test Read
     Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    4    81    1
     Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Read    25    48    34
 
+Exception Test Read From Current Position
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Read From Current Position
+    ...    81
+
 Exception Test Write In Position
     Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Write In Position    ${WRITE_TEXT}    10    81
     Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Write In Position    ${WRITE_TEXT}    25    10
@@ -163,6 +167,11 @@ Test Read
     ${read_text}    Read    1    10    48
     Should Be Equal As Strings    ${WELCOME_TITLE}    ${read_text}
 
+Test Read From Current Position
+    Move Cursor To    4    48
+    ${read_text}    Read From Current Position    12
+    Should Be Equal As Strings    Display name    ${read_text}
+
 Test Read All Screen
     ${screen_content}    Read All Screen
     Should Contain    ${screen_content}    i
@@ -170,6 +179,7 @@ Test Read All Screen
     Should Not Contain    ${screen_content}    xyz
 
 Test Write Bare
+    Move Cursor To    5    25
     Write Bare    ${WRITE_TEXT}
     ${read_text}    Read    5    25    4
     Take Screenshot
@@ -225,16 +235,16 @@ Test Send PF
     Send PF    1
     Page Should Contain String    Function key not allowed.
 
-Test Get Cursor Position
+Test Get Current Position
     Move Next Field
-    ${position}    Get Cursor Position
+    ${position}    Get Current Position
     Should Be Equal    ${{ (6, 25) }}    ${position}
-    ${position_as_dict}    Get Cursor Position    As Dict
+    ${position_as_dict}    Get Current Position    As Dict
     Should Be Equal    ${{ {"xpos": 25, "ypos": 6} }}    ${position_as_dict}
     Write Bare    AB
-    ${position}    Get Cursor Position
+    ${position}    Get Current Position
     Should Be Equal    ${{ (6, 27) }}    ${position}
-    ${position_as_dict}    Get Cursor Position    As Dict
+    ${position_as_dict}    Get Current Position    As Dict
     Should Be Equal    ${{ {"xpos": 27, "ypos": 6} }}    ${position_as_dict}
 
 Test Get String Positions

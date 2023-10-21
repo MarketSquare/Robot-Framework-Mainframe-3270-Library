@@ -98,22 +98,22 @@ def test_send_pf(mocker: MockerFixture, under_test: CommandKeywords):
     Emulator.exec_command.assert_called_with("PF(5)".encode("utf-8"))
 
 
-def test_get_current_cursor_position(mocker: MockerFixture, under_test: CommandKeywords):
-    mocker.patch("Mainframe3270.py3270.Emulator.get_cursor_position", return_value=(6, 6))
+def test_get_current_position(mocker: MockerFixture, under_test: CommandKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.get_current_position", return_value=(6, 6))
 
-    assert under_test.get_cursor_position() == (6, 6)
-
-
-def test_get_current_cursor_position_as_dict(mocker: MockerFixture, under_test: CommandKeywords):
-    mocker.patch("Mainframe3270.py3270.Emulator.get_cursor_position", return_value=(6, 6))
-
-    assert under_test.get_cursor_position("as DiCt") == {"xpos": 6, "ypos": 6}
+    assert under_test.get_current_position() == (6, 6)
 
 
-def test_get_current_cursor_position_invalid_mode(mocker: MockerFixture, under_test: CommandKeywords):
-    mocker.patch("Mainframe3270.py3270.Emulator.get_cursor_position", return_value=(6, 6))
+def test_get_current_position_as_dict(mocker: MockerFixture, under_test: CommandKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.get_current_position", return_value=(6, 6))
+
+    assert under_test.get_current_position("as DiCt") == {"xpos": 6, "ypos": 6}
+
+
+def test_get_current_position_invalid_mode(mocker: MockerFixture, under_test: CommandKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.get_current_position", return_value=(6, 6))
     mocker.patch("robot.api.logger.warn")
 
-    assert under_test.get_cursor_position("this is wrong") == (6, 6)
+    assert under_test.get_current_position("this is wrong") == (6, 6)
 
     logger.warn.assert_called_with('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
