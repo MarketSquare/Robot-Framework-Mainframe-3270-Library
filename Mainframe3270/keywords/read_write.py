@@ -55,7 +55,8 @@ class ReadWriteKeywords(LibraryComponent):
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
         Example:
-            | ${indices} | Find String | Abc | # Returns something like [(1, 8)]
+            | ${positions} | Get String Positions | Abc | # Returns something like [(1, 8)]
+            | ${positions} | Get String Positions | Abc | As Dict | # Returns something like [{"ypos": 1, "xpos": 8}]
         """
         results = self.mf.get_string_positions(string, ignore_case)
         if mode.lower() == "as dict":
