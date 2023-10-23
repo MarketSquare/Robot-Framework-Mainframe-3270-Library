@@ -5,7 +5,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinate_tuple_to_dict
+from Mainframe3270.utils import coordinates_to_dict
 
 
 class CommandKeywords(LibraryComponent):
@@ -99,7 +99,7 @@ class CommandKeywords(LibraryComponent):
         """
         result = self.mf.get_current_position()
         if mode.lower() == "as dict":
-            return coordinate_tuple_to_dict(result)
+            return coordinates_to_dict(*result)
         elif mode.lower() == "as tuple":
             return result
         else:

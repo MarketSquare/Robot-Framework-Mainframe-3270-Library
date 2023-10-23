@@ -5,7 +5,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinate_tuple_to_dict
+from Mainframe3270.utils import coordinates_to_dict
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -59,7 +59,7 @@ class ReadWriteKeywords(LibraryComponent):
         """
         results = self.mf.get_string_positions(string, ignore_case)
         if mode.lower() == "as dict":
-            return [coordinate_tuple_to_dict(r) for r in results]
+            return [coordinates_to_dict(*result) for result in results]
         elif mode.lower() == "as tuple":
             return results
         else:
