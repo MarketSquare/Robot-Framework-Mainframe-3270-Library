@@ -117,3 +117,29 @@ def test_get_current_position_invalid_mode(mocker: MockerFixture, under_test: Co
     assert under_test.get_current_position("this is wrong") == (6, 6)
 
     logger.warn.assert_called_with('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+
+
+def test_move_cursor_to(mocker: MockerFixture, under_test: CommandKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.move_to")
+
+    under_test.move_cursor_to(5, 5)
+
+    Emulator.move_to.assert_called_with(5, 5)
+
+
+@pytest.mark.parametrize(
+    ("ypos", "xpos", "expected_error"),
+    [
+        (25, 1, "You have exceeded the y-axis limit of the mainframe screen"),
+        (1, 81, "You have exceeded the x-axis limit of the mainframe screen"),
+    ],
+)
+def test_move_cursor_to_exceeds_ypos(
+    mocker: MockerFixture, under_test: CommandKeywords, ypos: int, xpos: int, expected_error: str
+):
+    mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
+
+    with pytest.raises(Exception, match=expected_error):
+        under_test.move_cursor_to(ypos, xpos)
+
+    Emulator.exec_command.assert_not_called()

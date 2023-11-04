@@ -116,6 +116,12 @@ Exception Test Wait Until String
 Exception Test Wait Until String With Timeout
     Verify Wait Until String With Timeout    Wait Until String    ${STRING_NON_EXISTENT}    timeout=2
 
+Exception Test Move Cursor To
+    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}
+    ...    Move Cursor To    25    1
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}
+    ...    Move Cursor To    1    81
+
 Test Wait Until String
     Wait Until String    ${WELCOME_TITLE}    timeout=4
 
@@ -265,6 +271,11 @@ Test Get String Positions Without Result
     Should Be Equal    ${{ [] }}    ${position}
     ${position}    Get String Positions    ${STRING_NON_EXISTENT}    As Dict
     Should Be Equal    ${{ [] }}    ${position}
+
+Test Move Cursor To
+    Move Cursor To    5    5
+    ${position}    Get Cursor Position
+    Should Be Equal    ${{ (5, 5) }}    ${position}
 
 
 *** Keywords ***

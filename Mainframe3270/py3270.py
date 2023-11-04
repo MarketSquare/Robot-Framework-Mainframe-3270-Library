@@ -431,6 +431,7 @@ class Emulator(object):
         move the cursor to the given coordinates.  Coordinates are 1
         based, as listed in the status area of the terminal.
         """
+        self._check_limits(ypos, xpos)
         # the screen's coordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
@@ -445,7 +446,6 @@ class Emulator(object):
         terminal.
         """
         if xpos and ypos:
-            self._check_limits(ypos, xpos)
             self.move_to(ypos, xpos)
         # escape double quotes in the data to send
         tosend = tosend.decode("utf-8").replace('"', '"')

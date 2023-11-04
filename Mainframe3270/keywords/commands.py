@@ -105,3 +105,13 @@ class CommandKeywords(LibraryComponent):
         else:
             logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
             return result
+
+    @keyword("Move Cursor To")
+    def move_cursor_to(self, ypos: int, xpos: int):
+        """Moves the cursor to the specified ypos/xpos position. The coordinates are 1 based.
+        This keyword raises an error if the specified values exceed the Mainframe screen dimension.
+
+        Example:
+            | Move Cursor To | 1 | 5 |
+        """
+        self.mf.move_to(ypos, xpos)
