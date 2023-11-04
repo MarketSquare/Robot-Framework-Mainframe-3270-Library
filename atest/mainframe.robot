@@ -169,6 +169,11 @@ Test Page Should Not Contain String
     Page Should Not Contain String    ${WELCOME_WRONG_CASE}
     Page Should Not Contain String    ${STRING_NON_EXISTENT}    ignore_case=${True}
 
+Test Move Cursor To
+    Move Cursor To    5    5
+    ${position}    Get Current Position
+    Should Be Equal    ${{ (5, 5) }}    ${position}
+
 Test Read
     ${read_text}    Read    1    10    48
     Should Be Equal As Strings    ${WELCOME_TITLE}    ${read_text}
@@ -271,11 +276,6 @@ Test Get String Positions Without Result
     Should Be Equal    ${{ [] }}    ${position}
     ${position}    Get String Positions    ${STRING_NON_EXISTENT}    As Dict
     Should Be Equal    ${{ [] }}    ${position}
-
-Test Move Cursor To
-    Move Cursor To    5    5
-    ${position}    Get Cursor Position
-    Should Be Equal    ${{ (5, 5) }}    ${position}
 
 
 *** Keywords ***

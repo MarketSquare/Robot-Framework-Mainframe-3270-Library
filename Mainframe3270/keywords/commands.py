@@ -97,19 +97,19 @@ class CommandKeywords(LibraryComponent):
             | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |
 
         """
-        result = self.mf.get_current_position()
+        ypos, xpos = self.mf.get_current_position()
         if mode.lower() == "as dict":
-            return coordinates_to_dict(*result)
+            return coordinates_to_dict(ypos, xpos)
         elif mode.lower() == "as tuple":
-            return result
+            return ypos, xpos
         else:
             logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return result
+            return ypos, xpos
 
     @keyword("Move Cursor To")
     def move_cursor_to(self, ypos: int, xpos: int):
         """Moves the cursor to the specified ypos/xpos position. The coordinates are 1 based.
-        This keyword raises an error if the specified values exceed the Mainframe screen dimension.
+        This keyword raises an error if the specified values exceed the Mainframe screen dimensions.
 
         Example:
             | Move Cursor To | 1 | 5 |

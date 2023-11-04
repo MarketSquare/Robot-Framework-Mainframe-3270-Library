@@ -24,8 +24,8 @@ class ReadWriteKeywords(LibraryComponent):
     def read_from_current_position(self, length: int):
         """Similar to `Read`, however this keyword only takes `length` as an argument
         to get a string of length from the current cursor position."""
-        position = self.library.get_current_position()
-        return self.mf.string_get(position[0], position[1], length)
+        ypos, xpos = self.library.get_current_position()
+        return self.mf.string_get(ypos, xpos, length)
 
     @keyword("Read All Screen")
     def read_all_screen(self) -> str:
@@ -60,7 +60,7 @@ class ReadWriteKeywords(LibraryComponent):
         """
         results = self.mf.get_string_positions(string, ignore_case)
         if mode.lower() == "as dict":
-            return [coordinates_to_dict(*result) for result in results]
+            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in results]
         elif mode.lower() == "as tuple":
             return results
         else:

@@ -33,9 +33,6 @@ class HelperLibrary:
         error_message = f'Emulator model should have been "{model}", but was "{self.library.mf.model}"'
         self.built_in.should_be_equal_as_strings(model, self.library.mf.model, error_message, False)
 
-    def move_cursor_to(self, ypos, xpos):
-        self.library.mf.move_to(int(ypos), int(xpos))
-
     def _end_keyword(self, name, attributes):
         if attributes["kwname"] in [
             "Open Connection",
