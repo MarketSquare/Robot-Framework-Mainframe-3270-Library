@@ -341,7 +341,7 @@ def test_get_current_cursor_position(mocker: MockerFixture):
     under_test = Emulator()
 
     # result is 1 based, that is why we expect (6, 6)
-    assert under_test.get_cursor_position() == (6, 6)
+    assert under_test.get_current_position() == (6, 6)
 
 
 def test_get_current_cursor_position_returns_unexpected_value(mocker: MockerFixture):
@@ -352,7 +352,7 @@ def test_get_current_cursor_position_returns_unexpected_value(mocker: MockerFixt
     under_test = Emulator()
 
     with pytest.raises(Exception, match="Cursor position returned an unexpected value"):
-        under_test.get_cursor_position()
+        under_test.get_current_position()
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -366,7 +366,7 @@ def test_get_current_cursor_position_returns_unexpected_value(mocker: MockerFixt
         ("5", 131, [(1, 132)]),
     ],
 )
-def test_find_string(mocker: MockerFixture, model, index, expected):
+def test_get_string_positions(mocker: MockerFixture, model, index, expected):
     under_test = Emulator(model=model)
     mocker.patch(
         "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "abc", index)
@@ -375,7 +375,7 @@ def test_find_string(mocker: MockerFixture, model, index, expected):
     assert under_test.get_string_positions("abc") == expected
 
 
-def test_find_string_ignore_case(mocker: MockerFixture):
+def test_get_string_positions_ignore_case(mocker: MockerFixture):
     under_test = Emulator()
     mocker.patch(
         "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "ABC", 5)
@@ -384,7 +384,7 @@ def test_find_string_ignore_case(mocker: MockerFixture):
     assert under_test.get_string_positions("aBc", True) == [(1, 6)]
 
 
-def test_find_string_without_result(mocker: MockerFixture):
+def test_get_string_positions_without_result(mocker: MockerFixture):
     under_test = Emulator()
     mocker.patch(
         "Mainframe3270.py3270.Emulator.read_all_screen", return_value=_mock_return_all_screen(under_test, "abc", 1)

@@ -5,7 +5,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinate_tuple_to_dict
+from Mainframe3270.utils import coordinates_to_dict
 
 
 class CommandKeywords(LibraryComponent):
@@ -85,8 +85,8 @@ class CommandKeywords(LibraryComponent):
         self.mf.exec_command("PF({0})".format(pf).encode("utf-8"))
         time.sleep(self.wait_time)
 
-    @keyword("Get Cursor Position")
-    def get_cursor_position(self, mode: str = "As Tuple") -> Union[tuple, dict]:
+    @keyword("Get Current Position")
+    def get_current_position(self, mode: str = "As Tuple") -> Union[tuple, dict]:
         """Returns the current cursor position. The coordinates are 1 based.
 
         By default, this keyword returns a tuple of integers. However, if you specify the `mode` with the value
@@ -97,11 +97,21 @@ class CommandKeywords(LibraryComponent):
             | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |
 
         """
-        result = self.mf.get_cursor_position()
+        ypos, xpos = self.mf.get_current_position()
         if mode.lower() == "as dict":
-            return coordinate_tuple_to_dict(result)
+            return coordinates_to_dict(ypos, xpos)
         elif mode.lower() == "as tuple":
-            return result
+            return ypos, xpos
         else:
             logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return result
+            return ypos, xpos
+
+    @keyword("Move Cursor To")
+    def move_cursor_to(self, ypos: int, xpos: int):
+        """Moves the cursor to the specified ypos/xpos position. The coordinates are 1 based.
+        This keyword raises an error if the specified values exceed the Mainframe screen dimensions.
+
+        Example:
+            | Move Cursor To | 1 | 5 |
+        """
+        self.mf.move_to(ypos, xpos)

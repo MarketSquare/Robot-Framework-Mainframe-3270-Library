@@ -5,7 +5,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinate_tuple_to_dict
+from Mainframe3270.utils import coordinates_to_dict
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -18,6 +18,13 @@ class ReadWriteKeywords(LibraryComponent):
         Example for read a string in the position y=8 / x=10 of a length 15:
             | ${value} | Read | 8 | 10 | 15 |
         """
+        return self.mf.string_get(ypos, xpos, length)
+
+    @keyword("Read From Current Position")
+    def read_from_current_position(self, length: int):
+        """Similar to `Read`, however this keyword only takes `length` as an argument
+        to get a string of length from the current cursor position."""
+        ypos, xpos = self.library.get_current_position()
         return self.mf.string_get(ypos, xpos, length)
 
     @keyword("Read All Screen")
@@ -48,11 +55,12 @@ class ReadWriteKeywords(LibraryComponent):
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
         Example:
-            | ${indices} | Find String | Abc | # Returns something like [(1, 8)]
+            | ${positions} | Get String Positions | Abc | # Returns something like [(1, 8)]
+            | ${positions} | Get String Positions | Abc | As Dict | # Returns something like [{"ypos": 1, "xpos": 8}]
         """
         results = self.mf.get_string_positions(string, ignore_case)
         if mode.lower() == "as dict":
-            return [coordinate_tuple_to_dict(r) for r in results]
+            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in results]
         elif mode.lower() == "as tuple":
             return results
         else:
