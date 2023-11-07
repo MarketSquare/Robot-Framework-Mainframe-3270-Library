@@ -90,8 +90,41 @@ class ReadWriteKeywords(LibraryComponent):
             | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         | # Returns a list like [(5, 5)] |
             | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |
         """
+        self.mf._check_limits(ypos, xpos)
         results = self.mf.get_string_positions(string, ignore_case)
         filtered = [result for result in results if result > (ypos, xpos)]
+        if mode == SearchResultMode.As_Dict:
+            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in filtered]
+        elif mode == SearchResultMode.As_Tuple:
+            return filtered
+        else:
+            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+            return filtered
+
+    @keyword("Get String Positions Only Before")
+    def get_string_positions_only_before(
+        self,
+        ypos: int,
+        xpos: int,
+        string: str,
+        mode: SearchResultMode = SearchResultMode.As_Tuple,
+        ignore_case: bool = False,
+    ):
+        """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+        but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.
+
+        If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+        a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+        If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+        Example:
+            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         | # Returns a list like [(11, 19)] |
+            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |
+        """
+        self.mf._check_limits(ypos, xpos)
+        results = self.mf.get_string_positions(string, ignore_case)
+        filtered = [result for result in results if result < (ypos, xpos)]
         if mode == SearchResultMode.As_Dict:
             return [coordinates_to_dict(ypos, xpos) for ypos, xpos in filtered]
         elif mode == SearchResultMode.As_Tuple:

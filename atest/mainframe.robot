@@ -122,6 +122,18 @@ Exception Test Move Cursor To
     Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}
     ...    Move Cursor To    1    81
 
+Exception Test Get String Positions Only After
+    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Get String Positions Only After
+    ...    25    1    my search string
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Get String Positions Only After
+    ...    1    81    my search string
+
+Exception Test Get String Positions Only Before
+    Run Keyword And Expect Error    ${Y_AXIS_EXCEEDED_EXPECTED_ERROR}    Get String Positions Only Before
+    ...    25    1    my search string
+    Run Keyword And Expect Error    ${X_AXIS_EXCEEDED_EXPECTED_ERROR}    Get String Positions Only Before
+    ...    1    81    my search string
+
 Test Wait Until String
     Wait Until String    ${WELCOME_TITLE}    timeout=4
 
@@ -291,6 +303,22 @@ Test Get String Positions Only After Case-Insensitive
 
 Test Get String Positions Only After Without Results
     ${positions}    Get String Positions Only After    9    5    Welcome    ignore_case=True
+    Should Be Empty    ${positions}
+
+Test Get String Positions Only Before
+    ${positions}    Get String Positions Only Before    5    11    name
+    Should Be Equal    ${{ [(2, 55), (4, 56)] }}    ${positions}
+
+Test Get String Positions Only Before As Dict
+    ${positions}    Get String Positions Only Before    5    11    name    As Dict
+    Should Be Equal    ${{ [{'ypos': 2, 'xpos': 55}, {'ypos': 4, 'xpos': 56}] }}    ${positions}
+
+Test Get String Positions Only Before Case-Insensitive
+    ${positions}    Get String Positions Only Before    1    11    Welcome    ignore_case=True
+    Should Be Equal    ${{ [(1, 10)] }}    ${positions}
+
+Test Get String Positions Only Before Without Results
+    ${positions}    Get String Positions Only Before    1    10    Welcome    ignore_case=True
     Should Be Empty    ${positions}
 
 
