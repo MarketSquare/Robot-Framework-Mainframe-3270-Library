@@ -431,7 +431,7 @@ class Emulator(object):
         move the cursor to the given coordinates.  Coordinates are 1
         based, as listed in the status area of the terminal.
         """
-        self._check_limits(ypos, xpos)
+        self.check_limits(ypos, xpos)
         # the screen's coordinates are 1 based, but the command is 0 based
         xpos -= 1
         ypos -= 1
@@ -461,7 +461,7 @@ class Emulator(object):
         Coordinates are 1 based, as listed in the status area of the
         terminal.
         """
-        self._check_limits(ypos, xpos)
+        self.check_limits(ypos, xpos)
         if (xpos + length) > (self.model_dimensions["columns"] + 1):
             raise Exception("You have exceeded the x-axis limit of the mainframe screen")
         # the screen's coordinates are 1 based, but the command is 0 based
@@ -542,7 +542,7 @@ class Emulator(object):
         list_of_strings = command.data[0].decode("utf-8").split(" ")
         return tuple([int(i) + 1 for i in list_of_strings])
 
-    def _check_limits(self, ypos, xpos):
+    def check_limits(self, ypos, xpos):
         if ypos > self.model_dimensions["rows"]:
             raise Exception("You have exceeded the y-axis limit of the mainframe screen")
         if xpos > self.model_dimensions["columns"]:

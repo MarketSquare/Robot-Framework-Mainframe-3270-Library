@@ -90,7 +90,7 @@ class ReadWriteKeywords(LibraryComponent):
             | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         | # Returns a list like [(5, 5)] |
             | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |
         """
-        self.mf._check_limits(ypos, xpos)
+        self.mf.check_limits(ypos, xpos)
         results = self.mf.get_string_positions(string, ignore_case)
         filtered = [result for result in results if result > (ypos, xpos)]
         if mode == SearchResultMode.As_Dict:
@@ -122,7 +122,7 @@ class ReadWriteKeywords(LibraryComponent):
             | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         | # Returns a list like [(11, 19)] |
             | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |
         """
-        self.mf._check_limits(ypos, xpos)
+        self.mf.check_limits(ypos, xpos)
         results = self.mf.get_string_positions(string, ignore_case)
         filtered = [result for result in results if result < (ypos, xpos)]
         if mode == SearchResultMode.As_Dict:
