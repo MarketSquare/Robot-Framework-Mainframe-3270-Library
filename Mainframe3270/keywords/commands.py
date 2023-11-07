@@ -5,7 +5,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinates_to_dict
+from Mainframe3270.utils import SearchResultMode, coordinates_to_dict
 
 
 class CommandKeywords(LibraryComponent):
@@ -86,7 +86,7 @@ class CommandKeywords(LibraryComponent):
         time.sleep(self.wait_time)
 
     @keyword("Get Current Position")
-    def get_current_position(self, mode: str = "As Tuple") -> Union[tuple, dict]:
+    def get_current_position(self, mode: SearchResultMode = SearchResultMode.As_Tuple) -> Union[tuple, dict]:
         """Returns the current cursor position. The coordinates are 1 based.
 
         By default, this keyword returns a tuple of integers. However, if you specify the `mode` with the value
@@ -98,9 +98,9 @@ class CommandKeywords(LibraryComponent):
 
         """
         ypos, xpos = self.mf.get_current_position()
-        if mode.lower() == "as dict":
+        if mode == SearchResultMode.As_Dict:
             return coordinates_to_dict(ypos, xpos)
-        elif mode.lower() == "as tuple":
+        elif mode == SearchResultMode.As_Tuple:
             return ypos, xpos
         else:
             logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')

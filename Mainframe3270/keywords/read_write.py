@@ -5,7 +5,7 @@ from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinates_to_dict
+from Mainframe3270.utils import SearchResultMode, coordinates_to_dict
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -45,7 +45,9 @@ class ReadWriteKeywords(LibraryComponent):
         return self.mf.read_all_screen()
 
     @keyword("Get String Positions")
-    def get_string_positions(self, string: str, mode: str = "As Tuple", ignore_case: bool = False):
+    def get_string_positions(
+        self, string: str, mode: SearchResultMode = SearchResultMode.As_Tuple, ignore_case: bool = False
+    ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found.
 
@@ -55,17 +57,48 @@ class ReadWriteKeywords(LibraryComponent):
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
         Example:
-            | ${positions} | Get String Positions | Abc | # Returns something like [(1, 8)]
-            | ${positions} | Get String Positions | Abc | As Dict | # Returns something like [{"ypos": 1, "xpos": 8}]
+            | ${positions} | Get String Positions | Abc |         | # Returns a list like [(1, 8)] |
+            | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |
         """
         results = self.mf.get_string_positions(string, ignore_case)
-        if mode.lower() == "as dict":
+        if mode == SearchResultMode.As_Dict:
             return [coordinates_to_dict(ypos, xpos) for ypos, xpos in results]
-        elif mode.lower() == "as tuple":
+        elif mode == SearchResultMode.As_Tuple:
             return results
         else:
             logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
             return results
+
+    @keyword("Get String Positions Only After")
+    def get_string_positions_only_after(
+        self,
+        ypos: int,
+        xpos: int,
+        string: str,
+        mode: SearchResultMode = SearchResultMode.As_Tuple,
+        ignore_case: bool = False,
+    ):
+        """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+        but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.
+
+        If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+        a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+        If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+        Example:
+            | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         | # Returns a list like [(5, 5)] |
+            | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |
+        """
+        results = self.mf.get_string_positions(string, ignore_case)
+        filtered = [result for result in results if result > (ypos, xpos)]
+        if mode == SearchResultMode.As_Dict:
+            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in filtered]
+        elif mode == SearchResultMode.As_Tuple:
+            return filtered
+        else:
+            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+            return filtered
 
     @keyword("Write")
     def write(self, txt: str) -> None:

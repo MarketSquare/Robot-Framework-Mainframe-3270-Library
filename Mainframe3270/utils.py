@@ -1,6 +1,12 @@
 from datetime import timedelta
+from enum import Enum, auto
 
 from robot.utils import timestr_to_secs
+
+
+class SearchResultMode(Enum):
+    As_Tuple = auto()
+    As_Dict = auto()
 
 
 def convert_timeout(time):
