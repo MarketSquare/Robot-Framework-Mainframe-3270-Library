@@ -1,5 +1,5 @@
 import time
-from typing import Any, Optional
+from typing import Any, List, Optional
 
 from robot.api import logger
 from robot.api.deco import keyword
@@ -61,13 +61,7 @@ class ReadWriteKeywords(LibraryComponent):
             | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |
         """
         results = self.mf.get_string_positions(string, ignore_case)
-        if mode == SearchResultMode.As_Dict:
-            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in results]
-        elif mode == SearchResultMode.As_Tuple:
-            return results
-        else:
-            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return results
+        return ReadWriteKeywords._prepare_result_positions(mode, results)
 
     @keyword("Get String Positions Only After")
     def get_string_positions_only_after(
@@ -93,13 +87,7 @@ class ReadWriteKeywords(LibraryComponent):
         self.mf.check_limits(ypos, xpos)
         results = self.mf.get_string_positions(string, ignore_case)
         filtered = [result for result in results if result > (ypos, xpos)]
-        if mode == SearchResultMode.As_Dict:
-            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in filtered]
-        elif mode == SearchResultMode.As_Tuple:
-            return filtered
-        else:
-            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return filtered
+        return ReadWriteKeywords._prepare_result_positions(mode, filtered)
 
     @keyword("Get String Positions Only Before")
     def get_string_positions_only_before(
@@ -125,13 +113,7 @@ class ReadWriteKeywords(LibraryComponent):
         self.mf.check_limits(ypos, xpos)
         results = self.mf.get_string_positions(string, ignore_case)
         filtered = [result for result in results if result < (ypos, xpos)]
-        if mode == SearchResultMode.As_Dict:
-            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in filtered]
-        elif mode == SearchResultMode.As_Tuple:
-            return filtered
-        else:
-            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return filtered
+        ReadWriteKeywords._prepare_result_positions(mode, filtered)
 
     @keyword("Write")
     def write(self, txt: str) -> None:
@@ -191,3 +173,13 @@ class ReadWriteKeywords(LibraryComponent):
         if enter:
             self.mf.send_enter()
             time.sleep(self.wait_time)
+
+    @staticmethod
+    def _prepare_result_positions(mode: SearchResultMode, results: List[tuple]):
+        if mode == SearchResultMode.As_Dict:
+            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in results]
+        elif mode == SearchResultMode.As_Tuple:
+            return results
+        else:
+            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+            return results
