@@ -113,7 +113,7 @@ class ReadWriteKeywords(LibraryComponent):
         self.mf.check_limits(ypos, xpos)
         results = self.mf.get_string_positions(string, ignore_case)
         filtered = [result for result in results if result < (ypos, xpos)]
-        ReadWriteKeywords._prepare_result_positions(mode, filtered)
+        return ReadWriteKeywords._prepare_result_positions(mode, filtered)
 
     @keyword("Write")
     def write(self, txt: str) -> None:
