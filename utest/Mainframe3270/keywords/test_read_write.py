@@ -100,7 +100,10 @@ def test_get_string_positions_invalid_mode(mocker: MockerFixture, under_test: Re
 
     assert under_test.get_string_positions("abc", "this is wrong") == [(5, 10)]
 
-    logger.warn.assert_called_with('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+    logger.warn.assert_called_with(
+        '"mode" should be either "SearchResultMode.As_Dict" or "SearchResultMode.As_Tuple". '
+        "Returning the result as tuple"
+    )
     Emulator.get_string_positions.assert_called_once_with("abc", False)
 
 
@@ -115,86 +118,62 @@ def test_get_string_positions_ignore_case(mocker: MockerFixture, under_test: Rea
 def test_get_string_positions_only_after(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.check_limits")
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(1, 1), (5, 7)])
-    mocker.patch("Mainframe3270.keywords.ReadWriteKeywords._prepare_result_positions")
 
-    under_test.get_string_positions_only_after(5, 6, "my string")
+    assert under_test.get_string_positions_only_after(5, 6, "my string") == [(5, 7)]
 
     Emulator.check_limits.assert_called_with(5, 6)
     Emulator.get_string_positions.assert_called_with("my string", False)
-    ReadWriteKeywords._prepare_result_positions.assert_called_with(SearchResultMode.As_Tuple, [(5, 7)])
 
 
 def test_get_string_positions_only_after_as_dict(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.check_limits")
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(1, 1), (5, 7)])
-    mocker.patch("Mainframe3270.keywords.ReadWriteKeywords._prepare_result_positions")
 
-    under_test.get_string_positions_only_after(5, 6, "my string", SearchResultMode.As_Dict)
+    assert under_test.get_string_positions_only_after(5, 6, "my string", SearchResultMode.As_Dict) == [
+        {"xpos": 7, "ypos": 5}
+    ]
 
     Emulator.check_limits.assert_called_with(5, 6)
     Emulator.get_string_positions.assert_called_with("my string", False)
-    ReadWriteKeywords._prepare_result_positions.assert_called_with(SearchResultMode.As_Dict, [(5, 7)])
 
 
 def test_get_string_positions_only_after_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.check_limits")
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(1, 1), (5, 7)])
-    mocker.patch("Mainframe3270.keywords.ReadWriteKeywords._prepare_result_positions")
 
-    under_test.get_string_positions_only_after(5, 6, "my string", ignore_case=True)
+    assert under_test.get_string_positions_only_after(5, 6, "my string", ignore_case=True) == [(5, 7)]
 
     Emulator.check_limits.assert_called_with(5, 6)
     Emulator.get_string_positions.assert_called_with("my string", True)
-    ReadWriteKeywords._prepare_result_positions.assert_called_with(SearchResultMode.As_Tuple, [(5, 7)])
 
 
 def test_get_string_positions_only_before(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.check_limits")
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(1, 1), (5, 7)])
-    mocker.patch("Mainframe3270.keywords.ReadWriteKeywords._prepare_result_positions")
 
-    under_test.get_string_positions_only_before(5, 7, "my string")
+    assert under_test.get_string_positions_only_before(5, 7, "my string") == [(1, 1)]
 
     Emulator.check_limits.assert_called_with(5, 7)
     Emulator.get_string_positions.assert_called_with("my string", False)
-    ReadWriteKeywords._prepare_result_positions.assert_called_with(SearchResultMode.As_Tuple, [(1, 1)])
 
 
 def test_get_string_positions_only_before_as_dict(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.check_limits")
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(1, 1), (5, 7)])
-    mocker.patch("Mainframe3270.keywords.ReadWriteKeywords._prepare_result_positions")
 
-    under_test.get_string_positions_only_before(5, 7, "my string", SearchResultMode.As_Dict)
+    assert under_test.get_string_positions_only_before(5, 7, "my string", SearchResultMode.As_Dict) == [
+        {"xpos": 1, "ypos": 1}
+    ]
 
     Emulator.check_limits.assert_called_with(5, 7)
     Emulator.get_string_positions.assert_called_with("my string", False)
-    ReadWriteKeywords._prepare_result_positions.assert_called_with(SearchResultMode.As_Dict, [(1, 1)])
 
 
 def test_get_string_positions_only_before_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.check_limits")
     mocker.patch("Mainframe3270.py3270.Emulator.get_string_positions", return_value=[(1, 1), (5, 7)])
-    mocker.patch("Mainframe3270.keywords.ReadWriteKeywords._prepare_result_positions")
 
-    under_test.get_string_positions_only_before(5, 7, "my string", ignore_case=True)
+    assert under_test.get_string_positions_only_before(5, 7, "my string", ignore_case=True) == [(1, 1)]
 
     Emulator.check_limits.assert_called_with(5, 7)
     Emulator.get_string_positions.assert_called_with("my string", True)
-    ReadWriteKeywords._prepare_result_positions.assert_called_with(SearchResultMode.As_Tuple, [(1, 1)])
-
-
-def test__prepare_result_positions(under_test: ReadWriteKeywords):
-    assert under_test._prepare_result_positions(SearchResultMode.As_Tuple, [(5, 5)]) == [(5, 5)]
-
-
-def test__prepare_result_positions_as_dict(under_test: ReadWriteKeywords):
-    assert under_test._prepare_result_positions(SearchResultMode.As_Dict, [(5, 6)]) == [{"ypos": 5, "xpos": 6}]
-
-
-def test__prepare_result_positions_invalid_mode(mocker: MockerFixture, under_test: ReadWriteKeywords):
-    mocker.patch("robot.api.logger.warn")
-
-    assert under_test._prepare_result_positions("abc", [(5, 10)]) == [(5, 10)]
-
-    logger.warn.assert_called_with('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')

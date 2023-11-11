@@ -1,11 +1,10 @@
 import time
-from typing import Any, List, Optional
+from typing import Any, Optional
 
-from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import SearchResultMode, coordinates_to_dict
+from Mainframe3270.utils import SearchResultMode, prepare_positions_as
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -24,7 +23,7 @@ class ReadWriteKeywords(LibraryComponent):
     def read_from_current_position(self, length: int):
         """Similar to `Read`, however this keyword only takes `length` as an argument
         to get a string of length from the current cursor position."""
-        ypos, xpos = self.library.get_current_position()
+        ypos, xpos = self.mf.get_current_position()
         return self.mf.string_get(ypos, xpos, length)
 
     @keyword("Read All Screen")
@@ -60,8 +59,8 @@ class ReadWriteKeywords(LibraryComponent):
             | ${positions} | Get String Positions | Abc |         | # Returns a list like [(1, 8)] |
             | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |
         """
-        results = self.mf.get_string_positions(string, ignore_case)
-        return ReadWriteKeywords._prepare_result_positions(mode, results)
+        positions = self.mf.get_string_positions(string, ignore_case)
+        return prepare_positions_as(positions, mode)
 
     @keyword("Get String Positions Only After")
     def get_string_positions_only_after(
@@ -85,9 +84,9 @@ class ReadWriteKeywords(LibraryComponent):
             | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |
         """
         self.mf.check_limits(ypos, xpos)
-        results = self.mf.get_string_positions(string, ignore_case)
-        filtered = [result for result in results if result > (ypos, xpos)]
-        return ReadWriteKeywords._prepare_result_positions(mode, filtered)
+        positions = self.mf.get_string_positions(string, ignore_case)
+        filtered_positions = [position for position in positions if position > (ypos, xpos)]
+        return prepare_positions_as(filtered_positions, mode)
 
     @keyword("Get String Positions Only Before")
     def get_string_positions_only_before(
@@ -111,9 +110,9 @@ class ReadWriteKeywords(LibraryComponent):
             | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |
         """
         self.mf.check_limits(ypos, xpos)
-        results = self.mf.get_string_positions(string, ignore_case)
-        filtered = [result for result in results if result < (ypos, xpos)]
-        return ReadWriteKeywords._prepare_result_positions(mode, filtered)
+        positions = self.mf.get_string_positions(string, ignore_case)
+        filtered_positions = [position for position in positions if position < (ypos, xpos)]
+        return prepare_positions_as(filtered_positions, mode)
 
     @keyword("Write")
     def write(self, txt: str) -> None:
@@ -173,13 +172,3 @@ class ReadWriteKeywords(LibraryComponent):
         if enter:
             self.mf.send_enter()
             time.sleep(self.wait_time)
-
-    @staticmethod
-    def _prepare_result_positions(mode: SearchResultMode, results: List[tuple]):
-        if mode == SearchResultMode.As_Dict:
-            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in results]
-        elif mode == SearchResultMode.As_Tuple:
-            return results
-        else:
-            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return results

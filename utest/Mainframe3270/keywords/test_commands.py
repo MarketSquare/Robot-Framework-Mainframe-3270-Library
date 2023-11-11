@@ -117,7 +117,10 @@ def test_get_current_position_invalid_mode(mocker: MockerFixture, under_test: Co
 
     assert under_test.get_current_position("this is wrong") == (6, 6)
 
-    logger.warn.assert_called_with('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
+    logger.warn.assert_called_with(
+        '"mode" should be either "SearchResultMode.As_Dict" or "SearchResultMode.As_Tuple". '
+        "Returning the result as tuple"
+    )
 
 
 def test_move_cursor_to(mocker: MockerFixture, under_test: CommandKeywords):
