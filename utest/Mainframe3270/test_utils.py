@@ -4,7 +4,7 @@ from pytest_mock import MockerFixture
 from robot.api import logger
 
 from Mainframe3270.utils import (
-    SearchResultMode,
+    ResultMode,
     convert_timeout,
     coordinates_to_dict,
     prepare_position_as,
@@ -24,19 +24,19 @@ def test_convert_timeout_with_timestring():
 
 
 def test_prepare_position_as():
-    assert prepare_position_as((5, 5), SearchResultMode.As_Tuple) == (5, 5)
+    assert prepare_position_as((5, 5), ResultMode.As_Tuple) == (5, 5)
 
 
 def test_prepare_position_as_dict():
-    assert prepare_position_as((5, 6), SearchResultMode.As_Dict) == {"ypos": 5, "xpos": 6}
+    assert prepare_position_as((5, 6), ResultMode.As_Dict) == {"ypos": 5, "xpos": 6}
 
 
 def test_prepare_positions_as():
-    assert prepare_positions_as([(5, 5)], SearchResultMode.As_Tuple) == [(5, 5)]
+    assert prepare_positions_as([(5, 5)], ResultMode.As_Tuple) == [(5, 5)]
 
 
 def test_prepare_positions_as_dict():
-    assert prepare_positions_as([(5, 6)], SearchResultMode.As_Dict) == [{"ypos": 5, "xpos": 6}]
+    assert prepare_positions_as([(5, 6)], ResultMode.As_Dict) == [{"ypos": 5, "xpos": 6}]
 
 
 def test_prepare_positions_as_invalid_mode(mocker: MockerFixture):
@@ -45,8 +45,7 @@ def test_prepare_positions_as_invalid_mode(mocker: MockerFixture):
     assert prepare_positions_as([(5, 10)], "abc") == [(5, 10)]
 
     logger.warn.assert_called_with(
-        '"mode" should be either "SearchResultMode.As_Dict" or "SearchResultMode.As_Tuple". '
-        "Returning the result as tuple"
+        '"mode" should be either "ResultMode.As_Dict" or "ResultMode.As_Tuple". ' "Returning the result as tuple"
     )
 
 

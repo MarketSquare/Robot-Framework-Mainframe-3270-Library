@@ -4,7 +4,7 @@ from typing import Optional, Union
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import SearchResultMode, prepare_position_as
+from Mainframe3270.utils import ResultMode, prepare_position_as
 
 
 class CommandKeywords(LibraryComponent):
@@ -85,7 +85,7 @@ class CommandKeywords(LibraryComponent):
         time.sleep(self.wait_time)
 
     @keyword("Get Current Position")
-    def get_current_position(self, mode: SearchResultMode = SearchResultMode.As_Tuple) -> Union[tuple, dict]:
+    def get_current_position(self, mode: ResultMode = ResultMode.As_Tuple) -> Union[tuple, dict]:
         """Returns the current cursor position. The coordinates are 1 based.
 
         By default, this keyword returns a tuple of integers. However, if you specify the `mode` with the value

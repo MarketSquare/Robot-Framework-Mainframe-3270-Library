@@ -4,7 +4,7 @@ from typing import Any, Optional
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import SearchResultMode, prepare_positions_as
+from Mainframe3270.utils import ResultMode, prepare_positions_as
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -44,9 +44,7 @@ class ReadWriteKeywords(LibraryComponent):
         return self.mf.read_all_screen()
 
     @keyword("Get String Positions")
-    def get_string_positions(
-        self, string: str, mode: SearchResultMode = SearchResultMode.As_Tuple, ignore_case: bool = False
-    ):
+    def get_string_positions(self, string: str, mode: ResultMode = ResultMode.As_Tuple, ignore_case: bool = False):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found.
 
@@ -68,7 +66,7 @@ class ReadWriteKeywords(LibraryComponent):
         ypos: int,
         xpos: int,
         string: str,
-        mode: SearchResultMode = SearchResultMode.As_Tuple,
+        mode: ResultMode = ResultMode.As_Tuple,
         ignore_case: bool = False,
     ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
@@ -94,7 +92,7 @@ class ReadWriteKeywords(LibraryComponent):
         ypos: int,
         xpos: int,
         string: str,
-        mode: SearchResultMode = SearchResultMode.As_Tuple,
+        mode: ResultMode = ResultMode.As_Tuple,
         ignore_case: bool = False,
     ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,

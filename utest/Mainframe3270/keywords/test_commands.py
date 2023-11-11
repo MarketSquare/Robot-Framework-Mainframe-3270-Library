@@ -6,7 +6,7 @@ from robot.api import logger
 
 from Mainframe3270.keywords import CommandKeywords
 from Mainframe3270.py3270 import Emulator
-from Mainframe3270.utils import SearchResultMode
+from Mainframe3270.utils import ResultMode
 
 from .utils import create_test_object_for
 
@@ -108,7 +108,7 @@ def test_get_current_position(mocker: MockerFixture, under_test: CommandKeywords
 def test_get_current_position_as_dict(mocker: MockerFixture, under_test: CommandKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.get_current_position", return_value=(6, 6))
 
-    assert under_test.get_current_position(SearchResultMode.As_Dict) == {"xpos": 6, "ypos": 6}
+    assert under_test.get_current_position(ResultMode.As_Dict) == {"xpos": 6, "ypos": 6}
 
 
 def test_get_current_position_invalid_mode(mocker: MockerFixture, under_test: CommandKeywords):
@@ -118,8 +118,7 @@ def test_get_current_position_invalid_mode(mocker: MockerFixture, under_test: Co
     assert under_test.get_current_position("this is wrong") == (6, 6)
 
     logger.warn.assert_called_with(
-        '"mode" should be either "SearchResultMode.As_Dict" or "SearchResultMode.As_Tuple". '
-        "Returning the result as tuple"
+        '"mode" should be either "ResultMode.As_Dict" or "ResultMode.As_Tuple". ' "Returning the result as tuple"
     )
 
 
