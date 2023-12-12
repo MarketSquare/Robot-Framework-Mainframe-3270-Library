@@ -1,11 +1,10 @@
 import time
 from typing import Optional, Union
 
-from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinates_to_dict
+from Mainframe3270.utils import ResultMode, prepare_position_as
 
 
 class CommandKeywords(LibraryComponent):
@@ -86,7 +85,7 @@ class CommandKeywords(LibraryComponent):
         time.sleep(self.wait_time)
 
     @keyword("Get Current Position")
-    def get_current_position(self, mode: str = "As Tuple") -> Union[tuple, dict]:
+    def get_current_position(self, mode: ResultMode = ResultMode.As_Tuple) -> Union[tuple, dict]:
         """Returns the current cursor position. The coordinates are 1 based.
 
         By default, this keyword returns a tuple of integers. However, if you specify the `mode` with the value
@@ -97,14 +96,8 @@ class CommandKeywords(LibraryComponent):
             | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |
 
         """
-        ypos, xpos = self.mf.get_current_position()
-        if mode.lower() == "as dict":
-            return coordinates_to_dict(ypos, xpos)
-        elif mode.lower() == "as tuple":
-            return ypos, xpos
-        else:
-            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return ypos, xpos
+        position = self.mf.get_current_position()
+        return prepare_position_as(position, mode)
 
     @keyword("Move Cursor To")
     def move_cursor_to(self, ypos: int, xpos: int):

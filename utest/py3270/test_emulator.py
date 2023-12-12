@@ -211,8 +211,8 @@ def test_string_get(mocker: MockerFixture):
 
 
 @pytest.mark.usefixtures("mock_windows")
-def test_string_get_calls__check_limits(mocker: MockerFixture):
-    mocker.patch("Mainframe3270.py3270.Emulator._check_limits")
+def test_string_get_calls_check_limits(mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.check_limits")
     mocker.patch("Mainframe3270.py3270.wc3270App.write")
     mocker.patch(
         "Mainframe3270.py3270.wc3270App.readline",
@@ -226,7 +226,7 @@ def test_string_get_calls__check_limits(mocker: MockerFixture):
 
     under_test.string_get(1, 10, 48)
 
-    Emulator._check_limits.assert_called_with(1, 10)
+    Emulator.check_limits.assert_called_with(1, 10)
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -309,7 +309,7 @@ def test_read_all_screen_with_different_model_dimensions(mocker: MockerFixture, 
 def test_check_limits():
     under_test = Emulator()
 
-    under_test._check_limits(24, 80)
+    under_test.check_limits(24, 80)
 
 
 @pytest.mark.usefixtures("mock_windows")
@@ -330,7 +330,7 @@ def test_check_limits_raises_Exception(model, ypos, xpos, expected_error):
     under_test = Emulator(model=model)
 
     with pytest.raises(Exception, match=expected_error):
-        under_test._check_limits(ypos, xpos)
+        under_test.check_limits(ypos, xpos)
 
 
 def test_get_current_cursor_position(mocker: MockerFixture):

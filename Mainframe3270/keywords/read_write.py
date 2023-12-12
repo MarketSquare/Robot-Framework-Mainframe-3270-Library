@@ -1,11 +1,10 @@
 import time
 from typing import Any, Optional
 
-from robot.api import logger
 from robot.api.deco import keyword
 
 from Mainframe3270.librarycomponent import LibraryComponent
-from Mainframe3270.utils import coordinates_to_dict
+from Mainframe3270.utils import ResultMode, prepare_positions_as
 
 
 class ReadWriteKeywords(LibraryComponent):
@@ -24,7 +23,7 @@ class ReadWriteKeywords(LibraryComponent):
     def read_from_current_position(self, length: int):
         """Similar to `Read`, however this keyword only takes `length` as an argument
         to get a string of length from the current cursor position."""
-        ypos, xpos = self.library.get_current_position()
+        ypos, xpos = self.mf.get_current_position()
         return self.mf.string_get(ypos, xpos, length)
 
     @keyword("Read All Screen")
@@ -45,7 +44,7 @@ class ReadWriteKeywords(LibraryComponent):
         return self.mf.read_all_screen()
 
     @keyword("Get String Positions")
-    def get_string_positions(self, string: str, mode: str = "As Tuple", ignore_case: bool = False):
+    def get_string_positions(self, string: str, mode: ResultMode = ResultMode.As_Tuple, ignore_case: bool = False):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found.
 
@@ -55,17 +54,63 @@ class ReadWriteKeywords(LibraryComponent):
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
         Example:
-            | ${positions} | Get String Positions | Abc | # Returns something like [(1, 8)]
-            | ${positions} | Get String Positions | Abc | As Dict | # Returns something like [{"ypos": 1, "xpos": 8}]
+            | ${positions} | Get String Positions | Abc |         | # Returns a list like [(1, 8)] |
+            | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |
         """
-        results = self.mf.get_string_positions(string, ignore_case)
-        if mode.lower() == "as dict":
-            return [coordinates_to_dict(ypos, xpos) for ypos, xpos in results]
-        elif mode.lower() == "as tuple":
-            return results
-        else:
-            logger.warn('"mode" should be either "as dict" or "as tuple". Returning the result as tuple')
-            return results
+        positions = self.mf.get_string_positions(string, ignore_case)
+        return prepare_positions_as(positions, mode)
+
+    @keyword("Get String Positions Only After")
+    def get_string_positions_only_after(
+        self,
+        ypos: int,
+        xpos: int,
+        string: str,
+        mode: ResultMode = ResultMode.As_Tuple,
+        ignore_case: bool = False,
+    ):
+        """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+        but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.
+
+        If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+        a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+        If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+        Example:
+            | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         | # Returns a list like [(5, 5)] |
+            | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |
+        """
+        self.mf.check_limits(ypos, xpos)
+        positions = self.mf.get_string_positions(string, ignore_case)
+        filtered_positions = [position for position in positions if position > (ypos, xpos)]
+        return prepare_positions_as(filtered_positions, mode)
+
+    @keyword("Get String Positions Only Before")
+    def get_string_positions_only_before(
+        self,
+        ypos: int,
+        xpos: int,
+        string: str,
+        mode: ResultMode = ResultMode.As_Tuple,
+        ignore_case: bool = False,
+    ):
+        """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+        but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.
+
+        If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+        a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+        If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+        Example:
+            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         | # Returns a list like [(11, 19)] |
+            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |
+        """
+        self.mf.check_limits(ypos, xpos)
+        positions = self.mf.get_string_positions(string, ignore_case)
+        filtered_positions = [position for position in positions if position < (ypos, xpos)]
+        return prepare_positions_as(filtered_positions, mode)
 
     @keyword("Write")
     def write(self, txt: str) -> None:
