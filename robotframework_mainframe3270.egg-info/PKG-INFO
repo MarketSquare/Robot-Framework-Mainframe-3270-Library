@@ -1,6 +1,6 @@
 Metadata-Version: 2.1
 Name: robotframework-mainframe3270
-Version: 4.0
+Version: 4.1
 Summary: Mainframe Test library for Robot Framework
 Home-page: https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library
 Author: Altran Portugal
@@ -19,6 +19,8 @@ Classifier: Topic :: Software Development :: Testing :: Acceptance
 Description-Content-Type: text/markdown
 License-File: LICENSE.md
 License-File: THIRD-PARTY-NOTICES.txt
+Requires-Dist: robotframework
+Requires-Dist: robotframework-pythonlibcore
 
 [![PyPi downloads](https://img.shields.io/pypi/dm/robotframework-mainframe3270.svg)](https://pypi.org/project/robotframework-mainframe3270/)
 [![Total downloads](https://static.pepy.tech/personalized-badge/robotframework-mainframe3270?period=total&units=international_system&left_color=lightgrey&right_color=yellow&left_text=total)](https://pypi.org/project/robotframework-mainframe3270/)
@@ -33,7 +35,7 @@ License-File: THIRD-PARTY-NOTICES.txt
 Mainframe3270 is a library for Robot Framework based on the [py3270 project](https://pypi.org/project/py3270/), a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
 ## Compatibility
-Mainframe3270 requires Python 3. It is tested with Python 3.7 and 3.10, but should support all versions in between these.
+Mainframe3270 requires Python 3. It is tested with Python 3.8 and 3.12, but should support all versions in between these.
 
 ## Installation
 
