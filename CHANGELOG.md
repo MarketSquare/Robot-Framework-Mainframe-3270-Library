@@ -4,6 +4,15 @@
 * [#114](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/114): #112 Implement find string keyword
 * [#115](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/115): #111 Read From Current Position keyword
 * [#118](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/118): #117 Create Get String Positions Only Before / After keywords
+* [#124](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/124): Release version 4.1
+
+
+# Version: 4.1
+
+* [#113](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/113): #110 Get Cursor Position 
+* [#114](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/114): #112 Implement find string keyword
+* [#115](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/115): #111 Read From Current Position keyword
+* [#118](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/pull/118): #117 Create Get String Positions Only Before / After keywords
 
 
 # Version: 4.0
