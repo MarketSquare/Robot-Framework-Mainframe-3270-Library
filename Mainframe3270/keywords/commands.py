@@ -1,8 +1,6 @@
 import time
 from typing import Optional, Union
-
 from robot.api.deco import keyword
-
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.utils import ResultMode, prepare_position_as
 
@@ -10,13 +8,15 @@ from Mainframe3270.utils import ResultMode, prepare_position_as
 class CommandKeywords(LibraryComponent):
     @keyword("Execute Command")
     def execute_command(self, cmd: str) -> None:
-        """Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
+        """Execute a [https://x3270.miraheze.org/wiki/Category:Wc3270_actions|x3270 command].
 
         Example:
             | Execute Command | Enter |
             | Execute Command | Home |
             | Execute Command | Tab |
             | Execute Command | PF(1) |
+            | Execute Command | Scroll(backward) | # To send Page Up |
+            | Execute Command | Scroll(forward) | # To send Page Down |
         """
         self.mf.exec_command(cmd.encode("utf-8"))
         time.sleep(self.wait_time)

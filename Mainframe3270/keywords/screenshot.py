@@ -1,9 +1,7 @@
 import os
 import time
-
 from robot.api import logger
 from robot.api.deco import keyword
-
 from Mainframe3270.librarycomponent import LibraryComponent
 
 

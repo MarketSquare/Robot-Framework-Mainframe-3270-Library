@@ -9,7 +9,6 @@ import warnings
 from abc import ABC, abstractmethod
 from contextlib import closing
 from os import name as os_name
-
 from robot.utils import seq2str
 
 log = logging.getLogger(__name__)

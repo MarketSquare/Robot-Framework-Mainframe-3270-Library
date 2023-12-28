@@ -1,14 +1,12 @@
 *** Settings ***
 Documentation       These tests verify that all keywords are working correctly and displaying the expected exception messages.
-
 Library             OperatingSystem
 Library             String
 Library             ../Mainframe3270/    run_on_failure_keyword=None
 Library             HelperLibrary.py
 Resource            pub400_variables.robot
-
-Suite Setup         Suite Setup
-Suite Teardown      Suite Teardown
+Suite Setup         Suite Mainframe Setup
+Suite Teardown      Suite Mainframe Teardown
 
 
 *** Test Cases ***
@@ -323,7 +321,7 @@ Test Get String Positions Only Before Without Results
 
 
 *** Keywords ***
-Suite Setup
+Suite Mainframe Setup
     Open Connection    ${HOST}
     Create Directory    ${FOLDER}
     Empty Directory    ${FOLDER}
@@ -331,7 +329,7 @@ Suite Setup
     Change Wait Time    0.4
     Change Wait Time After Write    0.4
 
-Suite Teardown
+Suite Mainframe Teardown
     Run Keyword And Ignore Error    Close Connection
 
 Verify String Not Found
@@ -364,19 +362,10 @@ Verify Pattern Not Found
     END
 
 Verify String Does Not Appear X Times
-    [Arguments]
-    ...    ${keyword}
-    ...    ${string}
-    ...    ${wrong_number_of_times}
-    ...    ${right_number_of_times}
-    ...    ${ignore_case}=${False}
+    [Arguments]    ${keyword}    ${string}    ${wrong_number_of_times}    ${right_number_of_times}    ${ignore_case}=${False}
     ${expected_error}    Set Variable
     ...    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
-    Run Keyword And Expect Error
-    ...    ${expected_error}
-    ...    ${keyword}
-    ...    ${string}
-    ...    ${wrong_number_of_times}
+    Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ${wrong_number_of_times}
     ...    ignore_case=${ignore_case}
 
 Verify String Found
