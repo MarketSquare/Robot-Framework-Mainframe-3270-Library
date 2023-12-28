@@ -1,7 +1,6 @@
 from datetime import timedelta
 from enum import Enum, auto
 from typing import List, Tuple
-
 from robot.api import logger
 from robot.utils import timestr_to_secs
 

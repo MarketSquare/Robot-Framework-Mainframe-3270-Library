@@ -3,7 +3,6 @@ Resource            pub400_variables.robot
 Library             OperatingSystem
 Library             ../Mainframe3270/    ${VISIBLE}
 Library             HelperLibrary.py
-
 Test Teardown       Test Teardown
 
 

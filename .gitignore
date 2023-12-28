@@ -33,3 +33,6 @@ env
 # Coverage reports
 .coverage
 htmlcov
+
+# Personal test cases
+atest/test_with_login.robot

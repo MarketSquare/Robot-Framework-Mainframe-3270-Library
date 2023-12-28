@@ -1,8 +1,6 @@
 import time
 from typing import Any, Optional
-
 from robot.api.deco import keyword
-
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.utils import ResultMode, prepare_positions_as
 

@@ -3,10 +3,8 @@ import re
 import shlex
 from os import name as os_name
 from typing import List, Optional, Union
-
 from robot.api import logger
 from robot.api.deco import keyword
-
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.py3270 import Emulator
 

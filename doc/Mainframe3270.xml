@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2023-12-17T06:36:43+00:00" specversion="5" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="24">
-<version>4.0</version>
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2023-12-28T16:44:38+00:00" specversion="5" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\__init__.py" lineno="22">
+<version>4.1</version>
 <doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
@@ -94,7 +94,7 @@ Note that this is an experimental feature, so not all models might work as expec
 <tags>
 </tags>
 <inits>
-<init name="__init__" lineno="121">
+<init name="__init__" lineno="119">
 <arguments repr="visible: bool = True, timeout: timedelta = 0:00:30, wait_time: timedelta = 0:00:00.500000, wait_time_after_write: timedelta = 0:00:00, img_folder: str = ., run_on_failure_keyword: str = Take Screenshot, model: str = 2">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="visible: bool = True">
 <name>visible</name>
@@ -132,7 +132,7 @@ Note that this is an experimental feature, so not all models might work as expec
 <default>2</default>
 </arg>
 </arguments>
-<doc>By default the emulator visibility is set to visible=True.
+<doc>By default, the emulator visibility is set to visible=True.
 In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
 You can change this by setting visible=False.
 Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).
@@ -148,11 +148,11 @@ By default, Mainframe3270 will take a screenshot on failure.
 You can overwrite this to run any other keyword by setting the ``run_on_failure_keyword`` option.
 If you pass ``None`` to this argument, no keyword will be run.
 To change the ``run_on_failure_keyword`` during runtime, see `Register Run On Failure Keyword`.</doc>
-<shortdoc>By default the emulator visibility is set to visible=True. In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX). You can change this by setting visible=False. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS). This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.</shortdoc>
+<shortdoc>By default, the emulator visibility is set to visible=True. In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX). You can change this by setting visible=False. Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS). This is useful when test cases are run in a CI/CD-pipeline and there is no need for a graphical user interface.</shortdoc>
 </init>
 </inits>
 <keywords>
-<kw name="Change Timeout" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="13">
+<kw name="Change Timeout" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="11">
 <arguments repr="seconds: timedelta">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="seconds: timedelta">
 <name>seconds</name>
@@ -165,7 +165,7 @@ Example:
     | Change Timeout | 3 seconds |</doc>
 <shortdoc>Change the timeout for connection in seconds.</shortdoc>
 </kw>
-<kw name="Change Wait Time" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="23">
+<kw name="Change Wait Time" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="21">
 <arguments repr="wait_time: timedelta">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time: timedelta">
 <name>wait_time</name>
@@ -189,7 +189,7 @@ Example:
     | Change Wait Time | 0:00:01.500 |</doc>
 <shortdoc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:</shortdoc>
 </kw>
-<kw name="Change Wait Time After Write" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="43">
+<kw name="Change Wait Time After Write" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="41">
 <arguments repr="wait_time_after_write: timedelta">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="wait_time_after_write: timedelta">
 <name>wait_time_after_write</name>
@@ -215,19 +215,19 @@ Example:
     | Change Wait Time After Write | 0:00:02 |</doc>
 <shortdoc>To give the user time to see what is happening inside the mainframe, a "wait time after write" has been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these keywords:</shortdoc>
 </kw>
-<kw name="Close All Connections" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="208">
+<kw name="Close All Connections" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="206">
 <arguments repr="">
 </arguments>
 <doc>Close all currently opened connections and reset the index counter to 1.</doc>
 <shortdoc>Close all currently opened connections and reset the index counter to 1.</shortdoc>
 </kw>
-<kw name="Close Connection" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="201">
+<kw name="Close Connection" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="199">
 <arguments repr="">
 </arguments>
 <doc>Close the current connection.</doc>
 <shortdoc>Close the current connection.</shortdoc>
 </kw>
-<kw name="Delete Char" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="25">
+<kw name="Delete Char" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="25">
 <arguments repr="ypos: int | None = None, xpos: int | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
@@ -250,7 +250,7 @@ Example:
     | Delete Char | ypos=9 | xpos=25 |</doc>
 <shortdoc>Delete the character under the cursor. If you want to delete a character that is in another position, simply pass the coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Delete Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="40">
+<kw name="Delete Field" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="40">
 <arguments repr="ypos: int | None = None, xpos: int | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
@@ -274,23 +274,25 @@ Example:
     | Delete Field | ypos=12 | xpos=6 |</doc>
 <shortdoc>Delete the entire content of a field at the current cursor location and positions the cursor at beginning of field. If you want to delete a field that is in another position, simply pass the coordinates ``ypos`` / ``xpos`` of any part in the field.</shortdoc>
 </kw>
-<kw name="Execute Command" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="12">
+<kw name="Execute Command" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="10">
 <arguments repr="cmd: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="cmd: str">
 <name>cmd</name>
 <type name="str" typedoc="string">str</type>
 </arg>
 </arguments>
-<doc>Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].
+<doc>Execute a [https://x3270.miraheze.org/wiki/Category:Wc3270_actions|x3270 command].
 
 Example:
     | Execute Command | Enter |
     | Execute Command | Home |
     | Execute Command | Tab |
-    | Execute Command | PF(1) |</doc>
-<shortdoc>Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].</shortdoc>
+    | Execute Command | PF(1) |
+    | Execute Command | Scroll(backward) | # To send Page Up |
+    | Execute Command | Scroll(forward) | # To send Page Down |</doc>
+<shortdoc>Execute a [https://x3270.miraheze.org/wiki/Category:Wc3270_actions|x3270 command].</shortdoc>
 </kw>
-<kw name="Get Current Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="88">
+<kw name="Get Current Position" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="88">
 <arguments repr="mode: ResultMode = As_Tuple">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="mode: ResultMode = As_Tuple">
 <name>mode</name>
@@ -308,7 +310,7 @@ Example:
     | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |</doc>
 <shortdoc>Returns the current cursor position. The coordinates are 1 based.</shortdoc>
 </kw>
-<kw name="Get String Positions" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="47">
+<kw name="Get String Positions" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="45">
 <arguments repr="string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="string: str">
 <name>string</name>
@@ -338,7 +340,7 @@ Example:
     | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, or an empty list if it was not found.</shortdoc>
 </kw>
-<kw name="Get String Positions Only After" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="64">
+<kw name="Get String Positions Only After" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="62">
 <arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
@@ -376,7 +378,7 @@ Example:
     | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.</shortdoc>
 </kw>
-<kw name="Get String Positions Only Before" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="90">
+<kw name="Get String Positions Only Before" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="88">
 <arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
@@ -414,7 +416,7 @@ Example:
     | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.</shortdoc>
 </kw>
-<kw name="Move Cursor To" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="103">
+<kw name="Move Cursor To" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="103">
 <arguments repr="ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
@@ -432,19 +434,19 @@ Example:
     | Move Cursor To | 1 | 5 |</doc>
 <shortdoc>Moves the cursor to the specified ypos/xpos position. The coordinates are 1 based. This keyword raises an error if the specified values exceed the Mainframe screen dimensions.</shortdoc>
 </kw>
-<kw name="Move Next Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="64">
+<kw name="Move Next Field" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="64">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</doc>
 <shortdoc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</shortdoc>
 </kw>
-<kw name="Move Previous Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="71">
+<kw name="Move Previous Field" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="71">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</doc>
 <shortdoc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</shortdoc>
 </kw>
-<kw name="Open Connection" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="16">
+<kw name="Open Connection" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="14">
 <arguments repr="host: str, LU: str | None = None, port: int = 23, extra_args: List[str] | PathLike | None = None, alias: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="host: str">
 <name>host</name>
@@ -514,7 +516,7 @@ Example:
     | Open Connection | Hostname | alias=my_first_connection |</doc>
 <shortdoc>Create a connection to an IBM3270 mainframe with the default port 23. To establish a connection, only the hostname is required. Optional parameters include logical unit name (LU) and port.</shortdoc>
 </kw>
-<kw name="Open Connection From Session File" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="120">
+<kw name="Open Connection From Session File" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="118">
 <arguments repr="session_file: PathLike, alias: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="session_file: PathLike">
 <name>session_file</name>
@@ -553,7 +555,7 @@ where the content of `session.wc3270` is:
 | wc3270.model: 2</doc>
 <shortdoc>Create a connection to an IBM3270 mainframe using a [https://x3270.miraheze.org/wiki/Session_file|session file].</shortdoc>
 </kw>
-<kw name="Page Should Contain All Strings" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="117">
+<kw name="Page Should Contain All Strings" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="115">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
@@ -583,7 +585,7 @@ Example:
     | Page Should Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Assert that all the strings in a given list exist on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Any String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="64">
+<kw name="Page Should Contain Any String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="62">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
@@ -613,7 +615,7 @@ Example:
     | Page Should Contain Any String | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Assert that one of the strings in a given list exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain Match" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="229">
+<kw name="Page Should Contain Match" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="227">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -651,7 +653,7 @@ Example:
     | Page Should Contain Match | **something** | error_message=New error message |</doc>
 <shortdoc>Assert that the text displayed on the mainframe screen matches the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Contain String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="13">
+<kw name="Page Should Contain String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="11">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -681,7 +683,7 @@ Example:
     | Page Should Contain String | something | error_message=New error message |</doc>
 <shortdoc>Assert that a given string exists on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Contain String X Times" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="168">
+<kw name="Page Should Contain String X Times" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="166">
 <arguments repr="txt: str, number: int, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -715,7 +717,7 @@ Example:
        | Page Should Contain String X Times | something | 3 | error_message=New error message |</doc>
 <shortdoc>Asserts that the entered string appears the desired number of times on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Match Regex" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="201">
+<kw name="Page Should Match Regex" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="199">
 <arguments repr="regex_pattern: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern: str">
 <name>regex_pattern</name>
@@ -731,7 +733,7 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does not match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain All Strings" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="138">
+<kw name="Page Should Not Contain All Strings" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="136">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
@@ -762,7 +764,7 @@ Example:
     | Page Should Not Contain All Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Fails if one of the strings in a given list exists on the mainframe screen. If one of the string are found, the keyword will raise an exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Any String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="95">
+<kw name="Page Should Not Contain Any String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="93">
 <arguments repr="list_string: List[str], ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="list_string: List[str]">
 <name>list_string</name>
@@ -793,7 +795,7 @@ Example:
     | Page Should Not Contain Any Strings | ${list_of_string} | error_message=New error message |</doc>
 <shortdoc>Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the string are found, the keyword will raise an exception.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain Match" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="265">
+<kw name="Page Should Not Contain Match" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="263">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -831,7 +833,7 @@ Example:
     | Page Should Not Contain Match | **something** | error_message=New error message |</doc>
 <shortdoc>Assert that the text displayed on the mainframe screen does NOT match the given pattern.</shortdoc>
 </kw>
-<kw name="Page Should Not Contain String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="39">
+<kw name="Page Should Not Contain String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="37">
 <arguments repr="txt: str, ignore_case: bool = False, error_message: str | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -861,7 +863,7 @@ Example:
     | Page Should Not Contain String | something | error_message=New error message |</doc>
 <shortdoc>Assert that a given string does NOT exist on the mainframe screen.</shortdoc>
 </kw>
-<kw name="Page Should Not Match Regex" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\assertions.py" lineno="215">
+<kw name="Page Should Not Match Regex" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\assertions.py" lineno="213">
 <arguments repr="regex_pattern: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="regex_pattern: str">
 <name>regex_pattern</name>
@@ -877,7 +879,7 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Read" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="12">
+<kw name="Read" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="10">
 <arguments repr="ypos: int, xpos: int, length: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
@@ -900,7 +902,7 @@ Example for read a string in the position y=8 / x=10 of a length 15:
     | ${value} | Read | 8 | 10 | 15 |</doc>
 <shortdoc>Get a string of ``length`` at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Read All Screen" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="30">
+<kw name="Read All Screen" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="28">
 <arguments repr="">
 </arguments>
 <doc>Read the current screen and returns all content in one string.
@@ -917,7 +919,7 @@ Example:
     | END | |</doc>
 <shortdoc>Read the current screen and returns all content in one string.</shortdoc>
 </kw>
-<kw name="Read From Current Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="23">
+<kw name="Read From Current Position" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="21">
 <arguments repr="length: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="length: int">
 <name>length</name>
@@ -928,7 +930,7 @@ Example:
 to get a string of length from the current cursor position.</doc>
 <shortdoc>Similar to `Read`, however this keyword only takes `length` as an argument to get a string of length from the current cursor position.</shortdoc>
 </kw>
-<kw name="Register Run On Failure Keyword" lineno="179">
+<kw name="Register Run On Failure Keyword" lineno="177">
 <arguments repr="keyword: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="keyword: str">
 <name>keyword</name>
@@ -945,13 +947,13 @@ Example:
     | Register Run On Failure Keyword | Custom Keyword | # Custom Keyword is run on failure |</doc>
 <shortdoc>This keyword lets you change the keyword that runs on failure during test execution. The default is `Take Screenshot`, which is set on library import.</shortdoc>
 </kw>
-<kw name="Send Enter" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="56">
+<kw name="Send Enter" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="56">
 <arguments repr="">
 </arguments>
 <doc>Send an Enter to the screen.</doc>
 <shortdoc>Send an Enter to the screen.</shortdoc>
 </kw>
-<kw name="Send PF" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="78">
+<kw name="Send PF" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\commands.py" lineno="78">
 <arguments repr="pf: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="pf: str">
 <name>pf</name>
@@ -964,7 +966,7 @@ Example:
     | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="12">
+<kw name="Set Screenshot Folder" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\screenshot.py" lineno="10">
 <arguments repr="path: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="path: str">
 <name>path</name>
@@ -980,7 +982,7 @@ Example:
     | Set Screenshot Folder | C:\\Temp\\Images |</doc>
 <shortdoc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.</shortdoc>
 </kw>
-<kw name="Switch Connection" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="185">
+<kw name="Switch Connection" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\connection.py" lineno="183">
 <arguments repr="alias_or_index: str | int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="alias_or_index: str | int">
 <name>alias_or_index</name>
@@ -1000,7 +1002,7 @@ Examples:
 | Switch Connection | first | | # first is now the current connection  |</doc>
 <shortdoc>Switch the current connection to the one identified by index or alias. Indices are returned from and aliases can be optionally provided to the `Open Connection` and `Open Connection From Session File` keywords.</shortdoc>
 </kw>
-<kw name="Take Screenshot" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="28">
+<kw name="Take Screenshot" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\screenshot.py" lineno="26">
 <arguments repr="height: int = 410, width: int = 670, filename_prefix: str = screenshot">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="height: int = 410">
 <name>height</name>
@@ -1035,7 +1037,7 @@ Example:
     | Take Screenshot | filename_prefix=MyScreenshot |</doc>
 <shortdoc>Generate a screenshot of the IBM 3270 Mainframe in a html format. The default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.</shortdoc>
 </kw>
-<kw name="Wait Field Detected" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="65">
+<kw name="Wait Field Detected" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="63">
 <arguments repr="">
 </arguments>
 <doc>Wait until the screen is ready, the cursor has been positioned
@@ -1050,7 +1052,7 @@ Using this method tells the client to wait until a field is
 detected and the cursor has been positioned on it.</doc>
 <shortdoc>Wait until the screen is ready, the cursor has been positioned on a modifiable field, and the keyboard is unlocked.</shortdoc>
 </kw>
-<kw name="Wait Until String" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="80">
+<kw name="Wait Until String" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\wait_and_timeout.py" lineno="78">
 <arguments repr="txt: str, timeout: timedelta = 0:00:05">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1072,7 +1074,7 @@ Example:
     | Wait Until String | something | 0:00:15 |</doc>
 <shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in 5 seconds, the keyword will raise an exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="116">
+<kw name="Write" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="114">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1085,7 +1087,7 @@ Example:
     | Write | something |</doc>
 <shortdoc>Send a string *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="125">
+<kw name="Write Bare" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="123">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1098,7 +1100,7 @@ Example:
     | Write Bare | something |</doc>
 <shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="146">
+<kw name="Write Bare In Position" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="144">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1122,7 +1124,7 @@ Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
 <shortdoc>Send only the string to the screen at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="134">
+<kw name="Write In Position" source="C:\Repos\Robot-Framework-Mainframe-3270\Mainframe3270\keywords\read_write.py" lineno="132">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>

@@ -1,13 +1,11 @@
 import os
 from datetime import timedelta
 from typing import Any
-
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 from robot.utils import ConnectionCache
 from robotlibcore import DynamicCore
-
 from Mainframe3270.keywords import (
     AssertionKeywords,
     CommandKeywords,
@@ -129,7 +127,7 @@ class Mainframe3270(DynamicCore):
         model: str = "2",
     ) -> None:
         """
-        By default the emulator visibility is set to visible=True.
+        By default, the emulator visibility is set to visible=True.
         In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
         You can change this by setting visible=False.
         Then test cases are run using ws3720 (Windows) or s3270 (Linux/MacOS).

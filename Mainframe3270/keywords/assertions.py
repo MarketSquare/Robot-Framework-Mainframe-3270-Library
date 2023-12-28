@@ -1,10 +1,8 @@
 import re
 from typing import List, Optional
-
 from robot.api import logger
 from robot.api.deco import keyword
 from robot.utils import Matcher
-
 from Mainframe3270.librarycomponent import LibraryComponent
 
 
