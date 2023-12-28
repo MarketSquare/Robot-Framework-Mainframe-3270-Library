@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2023-06-15T16:58:00+00:00" specversion="5" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="24">
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2023-12-17T06:36:43+00:00" specversion="5" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="24">
 <version>4.0</version>
 <doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
@@ -227,7 +227,7 @@ Example:
 <doc>Close the current connection.</doc>
 <shortdoc>Close the current connection.</shortdoc>
 </kw>
-<kw name="Delete Char" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="24">
+<kw name="Delete Char" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="25">
 <arguments repr="ypos: int | None = None, xpos: int | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
@@ -250,7 +250,7 @@ Example:
     | Delete Char | ypos=9 | xpos=25 |</doc>
 <shortdoc>Delete the character under the cursor. If you want to delete a character that is in another position, simply pass the coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Delete Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="39">
+<kw name="Delete Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="40">
 <arguments repr="ypos: int | None = None, xpos: int | None = None">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="ypos: int | None = None">
 <name>ypos</name>
@@ -274,7 +274,7 @@ Example:
     | Delete Field | ypos=12 | xpos=6 |</doc>
 <shortdoc>Delete the entire content of a field at the current cursor location and positions the cursor at beginning of field. If you want to delete a field that is in another position, simply pass the coordinates ``ypos`` / ``xpos`` of any part in the field.</shortdoc>
 </kw>
-<kw name="Execute Command" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="11">
+<kw name="Execute Command" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="12">
 <arguments repr="cmd: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="cmd: str">
 <name>cmd</name>
@@ -290,13 +290,155 @@ Example:
     | Execute Command | PF(1) |</doc>
 <shortdoc>Execute a [http://x3270.bgp.nu/wc3270-man.html#Actions|x3270 command].</shortdoc>
 </kw>
-<kw name="Move Next Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="63">
+<kw name="Get Current Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="88">
+<arguments repr="mode: ResultMode = As_Tuple">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="mode: ResultMode = As_Tuple">
+<name>mode</name>
+<type name="ResultMode" typedoc="ResultMode">ResultMode</type>
+<default>As_Tuple</default>
+</arg>
+</arguments>
+<doc>Returns the current cursor position. The coordinates are 1 based.
+
+By default, this keyword returns a tuple of integers. However, if you specify the `mode` with the value
+``"As Dict"`` (case-insensitive), a dictionary in the form of ``{"xpos": int, "ypos": int}`` is returned.
+
+Example:
+    | Get Cursor Position |         | # Returns a position like (1, 1) |
+    | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |</doc>
+<shortdoc>Returns the current cursor position. The coordinates are 1 based.</shortdoc>
+</kw>
+<kw name="Get String Positions" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="47">
+<arguments repr="string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="string: str">
+<name>string</name>
+<type name="str" typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="mode: ResultMode = As_Tuple">
+<name>mode</name>
+<type name="ResultMode" typedoc="ResultMode">ResultMode</type>
+<default>As_Tuple</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
+<name>ignore_case</name>
+<type name="bool" typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+or an empty list if it was not found.
+
+If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+Example:
+    | ${positions} | Get String Positions | Abc |         | # Returns a list like [(1, 8)] |
+    | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |</doc>
+<shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, or an empty list if it was not found.</shortdoc>
+</kw>
+<kw name="Get String Positions Only After" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="64">
+<arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
+<name>ypos</name>
+<type name="int" typedoc="integer">int</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
+<name>xpos</name>
+<type name="int" typedoc="integer">int</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="string: str">
+<name>string</name>
+<type name="str" typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="mode: ResultMode = As_Tuple">
+<name>mode</name>
+<type name="ResultMode" typedoc="ResultMode">ResultMode</type>
+<default>As_Tuple</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
+<name>ignore_case</name>
+<type name="bool" typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.
+
+If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+Example:
+    | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         | # Returns a list like [(5, 5)] |
+    | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |</doc>
+<shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.</shortdoc>
+</kw>
+<kw name="Get String Positions Only Before" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="90">
+<arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
+<name>ypos</name>
+<type name="int" typedoc="integer">int</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
+<name>xpos</name>
+<type name="int" typedoc="integer">int</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="string: str">
+<name>string</name>
+<type name="str" typedoc="string">str</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="mode: ResultMode = As_Tuple">
+<name>mode</name>
+<type name="ResultMode" typedoc="ResultMode">ResultMode</type>
+<default>As_Tuple</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="ignore_case: bool = False">
+<name>ignore_case</name>
+<type name="bool" typedoc="boolean">bool</type>
+<default>False</default>
+</arg>
+</arguments>
+<doc>Returns a list of tuples of ypos and xpos for the position where the `string` was found,
+but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.
+
+If you specify the `mode` with the value `"As Dict"` (case-insensitive),
+a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is returned.
+
+If `ignore_case` is set to `True`, then the search is done case-insensitively.
+
+Example:
+    | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         | # Returns a list like [(11, 19)] |
+    | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |</doc>
+<shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.</shortdoc>
+</kw>
+<kw name="Move Cursor To" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="103">
+<arguments repr="ypos: int, xpos: int">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
+<name>ypos</name>
+<type name="int" typedoc="integer">int</type>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="xpos: int">
+<name>xpos</name>
+<type name="int" typedoc="integer">int</type>
+</arg>
+</arguments>
+<doc>Moves the cursor to the specified ypos/xpos position. The coordinates are 1 based.
+This keyword raises an error if the specified values exceed the Mainframe screen dimensions.
+
+Example:
+    | Move Cursor To | 1 | 5 |</doc>
+<shortdoc>Moves the cursor to the specified ypos/xpos position. The coordinates are 1 based. This keyword raises an error if the specified values exceed the Mainframe screen dimensions.</shortdoc>
+</kw>
+<kw name="Move Next Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="64">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</doc>
 <shortdoc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</shortdoc>
 </kw>
-<kw name="Move Previous Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="70">
+<kw name="Move Previous Field" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="71">
 <arguments repr="">
 </arguments>
 <doc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</doc>
@@ -735,7 +877,7 @@ Backslash is an escape character in the test data, and possible backslashes in t
 thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <shortdoc>Fails if string does match pattern as a regular expression. Regular expression check is implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used, for example, in Java, Ruby and .NET.</shortdoc>
 </kw>
-<kw name="Read" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="11">
+<kw name="Read" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="12">
 <arguments repr="ypos: int, xpos: int, length: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
@@ -758,7 +900,7 @@ Example for read a string in the position y=8 / x=10 of a length 15:
     | ${value} | Read | 8 | 10 | 15 |</doc>
 <shortdoc>Get a string of ``length`` at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Read All Screen" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="22">
+<kw name="Read All Screen" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="30">
 <arguments repr="">
 </arguments>
 <doc>Read the current screen and returns all content in one string.
@@ -774,6 +916,17 @@ Example:
     | | Do Something Else |
     | END | |</doc>
 <shortdoc>Read the current screen and returns all content in one string.</shortdoc>
+</kw>
+<kw name="Read From Current Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="23">
+<arguments repr="length: int">
+<arg kind="POSITIONAL_OR_NAMED" required="true" repr="length: int">
+<name>length</name>
+<type name="int" typedoc="integer">int</type>
+</arg>
+</arguments>
+<doc>Similar to `Read`, however this keyword only takes `length` as an argument
+to get a string of length from the current cursor position.</doc>
+<shortdoc>Similar to `Read`, however this keyword only takes `length` as an argument to get a string of length from the current cursor position.</shortdoc>
 </kw>
 <kw name="Register Run On Failure Keyword" lineno="179">
 <arguments repr="keyword: str">
@@ -792,13 +945,13 @@ Example:
     | Register Run On Failure Keyword | Custom Keyword | # Custom Keyword is run on failure |</doc>
 <shortdoc>This keyword lets you change the keyword that runs on failure during test execution. The default is `Take Screenshot`, which is set on library import.</shortdoc>
 </kw>
-<kw name="Send Enter" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="55">
+<kw name="Send Enter" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="56">
 <arguments repr="">
 </arguments>
 <doc>Send an Enter to the screen.</doc>
 <shortdoc>Send an Enter to the screen.</shortdoc>
 </kw>
-<kw name="Send PF" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="77">
+<kw name="Send PF" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="78">
 <arguments repr="pf: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="pf: str">
 <name>pf</name>
@@ -808,7 +961,7 @@ Example:
 <doc>Send a Program Function to the screen.
 
 Example:
-       | Send PF | 3 |</doc>
+    | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
 <kw name="Set Screenshot Folder" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="12">
@@ -919,7 +1072,7 @@ Example:
     | Wait Until String | something | 0:00:15 |</doc>
 <shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in 5 seconds, the keyword will raise an exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="39">
+<kw name="Write" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="116">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -932,7 +1085,7 @@ Example:
     | Write | something |</doc>
 <shortdoc>Send a string *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="48">
+<kw name="Write Bare" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="125">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -945,7 +1098,7 @@ Example:
     | Write Bare | something |</doc>
 <shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="69">
+<kw name="Write Bare In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="146">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -969,7 +1122,7 @@ Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
 <shortdoc>Send only the string to the screen at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="57">
+<kw name="Write In Position" source="C:\Robot\Robot-Framework-Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="134">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -995,6 +1148,15 @@ Example:
 </kw>
 </keywords>
 <datatypes>
+<enums>
+<enum name="ResultMode">
+<doc>An enumeration.</doc>
+<members>
+<member name="As_Tuple" value="1"/>
+<member name="As_Dict" value="2"/>
+</members>
+</enum>
+</enums>
 </datatypes>
 <typedocs>
 <type name="boolean" type="Standard">
@@ -1016,6 +1178,9 @@ Examples: ``TRUE`` (converted to ``True``), ``off`` (converted to ``False``),
 </accepts>
 <usages>
 <usage>__init__</usage>
+<usage>Get String Positions</usage>
+<usage>Get String Positions Only After</usage>
+<usage>Get String Positions Only Before</usage>
 <usage>Page Should Contain All Strings</usage>
 <usage>Page Should Contain Any String</usage>
 <usage>Page Should Contain Match</usage>
@@ -1048,9 +1213,13 @@ Examples: ``42``, ``-1``, ``0b1010``, ``10 000 000``, ``0xBAD_C0FFEE``
 <usages>
 <usage>Delete Char</usage>
 <usage>Delete Field</usage>
+<usage>Get String Positions Only After</usage>
+<usage>Get String Positions Only Before</usage>
+<usage>Move Cursor To</usage>
 <usage>Open Connection</usage>
 <usage>Page Should Contain String X Times</usage>
 <usage>Read</usage>
+<usage>Read From Current Position</usage>
 <usage>Switch Connection</usage>
 <usage>Take Screenshot</usage>
 <usage>Write Bare In Position</usage>
@@ -1119,6 +1288,22 @@ Examples: ``/tmp/absolute/path``, ``relative/path/to/file.ext``, ``name.txt``
 <usage>Open Connection From Session File</usage>
 </usages>
 </type>
+<type name="ResultMode" type="Enum">
+<doc>An enumeration.</doc>
+<accepts>
+<type>string</type>
+</accepts>
+<usages>
+<usage>Get Current Position</usage>
+<usage>Get String Positions</usage>
+<usage>Get String Positions Only After</usage>
+<usage>Get String Positions Only Before</usage>
+</usages>
+<members>
+<member name="As_Tuple" value="1"/>
+<member name="As_Dict" value="2"/>
+</members>
+</type>
 <type name="string" type="Standard">
 <doc>All arguments are converted to Unicode strings.</doc>
 <accepts>
@@ -1127,6 +1312,9 @@ Examples: ``/tmp/absolute/path``, ``relative/path/to/file.ext``, ``name.txt``
 <usages>
 <usage>__init__</usage>
 <usage>Execute Command</usage>
+<usage>Get String Positions</usage>
+<usage>Get String Positions Only After</usage>
+<usage>Get String Positions Only Before</usage>
 <usage>Open Connection</usage>
 <usage>Open Connection From Session File</usage>
 <usage>Page Should Contain All Strings</usage>
