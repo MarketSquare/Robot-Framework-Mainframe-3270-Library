@@ -102,7 +102,7 @@ For more information visit the repository [Wiki](https://github.com/Altran-PT-GD
 For an overview of the (latest) changes see [CHANGELOG](https://github.com/Altran-PT-GDC/Robot-Framework-Mainframe-3270-Library/blob/master/CHANGELOG.md).
 
 ## Authors
-   - **Altran -** [Altran Web Site](https://www.altran.com/us/en/)
+Initial development was sponsored by [Capgemini Engineering](https://www.capgemini.com/about-us/who-we-are/our-brands/capgemini-engineering/)
    - **Samuel Cabral**
    - **Joao Gomes**
    - **Bruno Calado**
