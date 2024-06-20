@@ -1,7 +1,9 @@
 import time
 from datetime import timedelta
+
 from robot.api.deco import keyword
 from robot.utils import secs_to_timestr
+
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.utils import convert_timeout
 
