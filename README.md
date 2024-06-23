@@ -44,7 +44,7 @@ or
 brew install x3270
 ```
 
-More information can be found on the [Wiki page](https://github.com/MarketSquare/Robot-Framework-Mainframe-3270-Library/wiki/Installation) of this project.
+More information can be found on the [Wiki page](https://github.com/MarketSquare/Robot-Framework-Mainframe-3270-Library/wiki/Instalation) of this project.
 
 ## Example
 ```RobotFramework
