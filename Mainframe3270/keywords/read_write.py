@@ -1,6 +1,9 @@
 import time
 from typing import Any, Optional
+
 from robot.api.deco import keyword
+from robot.libraries.BuiltIn import BuiltIn
+
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.utils import ResultMode, prepare_positions_as
 
@@ -119,6 +122,17 @@ class ReadWriteKeywords(LibraryComponent):
         """
         self._write(txt, enter=True)
 
+    @keyword("Write Unicode")
+    def write_unicode(self, txt: str) -> None:
+        """Send a string *and Enter* to the screen at the current cursor location.
+
+        Example:
+            | Write Unicode | something |
+        """
+        self.mf.exec_command(f'String("{txt}")'.encode('utf-8'))
+        time.sleep(self.wait_time_after_write)
+        self.mf.send_enter()
+
     @keyword("Write Bare")
     def write_bare(self, txt: str) -> None:
         """Send only the string to the screen at the current cursor location.
@@ -127,6 +141,16 @@ class ReadWriteKeywords(LibraryComponent):
             | Write Bare | something |
         """
         self._write(txt)
+
+    @keyword("Write Unicode Bare")
+    def write_unicode_bare(self, txt: str) -> None:
+        """Send only the string to the screen at the current cursor location.
+
+        Example:
+            | Write Unicode Bare | something |
+        """
+        self.mf.exec_command(f'String("{txt}")'.encode('utf-8'))
+        time.sleep(self.wait_time_after_write)
 
     @keyword("Write In Position")
     def write_in_position(self, txt: str, ypos: int, xpos: int) -> None:
