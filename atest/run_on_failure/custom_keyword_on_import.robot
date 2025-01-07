@@ -4,7 +4,7 @@ Library             ../../Mainframe3270/    run_on_failure_keyword=Custom Run On
 Library             ../HelperLibrary.py
 Resource            ../pub400_variables.robot
 
-Suite Setup         Open Connection    ${HOST}
+Suite Setup         Open Connection    ${HOST}    extra_args=["-utf8"]
 Suite Teardown      Run Keyword And Ignore Error    Close Connection
 
 

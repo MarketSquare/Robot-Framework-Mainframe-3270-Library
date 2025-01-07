@@ -324,7 +324,7 @@ Test Get String Positions Only Before Without Results
 
 *** Keywords ***
 Suite Mainframe Setup
-    Open Connection    ${HOST}
+    Open Connection    ${HOST}    extra_args=["-utf8"]
     Create Directory    ${FOLDER}
     Empty Directory    ${FOLDER}
     Set Screenshot Folder    ${FOLDER}
