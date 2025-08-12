@@ -4,6 +4,7 @@ import math
 import re
 import socket
 import subprocess
+import sys
 import time
 import warnings
 from abc import ABC, abstractmethod
@@ -206,11 +207,16 @@ class wc3270App(ExecutableApp):
         self.socket.close()
 
     def spawn_app(self, host):
-        args = ["start", "/wait", self.executable] + self.args
+        # check if we need to run a different start command when running in Windows 11
+        is_win10 = sys.getwindowsversion().build < 22000
+        if is_win10:
+            args = ["start", "/wait", self.executable] + self.args
+        else:
+            args = ["cmd.exe", "/c", "start", "/wait", "conhost", self.executable] + self.args
         args.extend(["-scriptport", str(self.script_port), host])
         self.sp = subprocess.Popen(
             args,
-            shell=True,
+            shell=is_win10,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
