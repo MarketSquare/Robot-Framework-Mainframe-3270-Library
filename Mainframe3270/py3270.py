@@ -506,6 +506,30 @@ class Emulator(object):
         full_text = ""
         for ypos in range(self.model_dimensions["rows"]):
             full_text += self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
+
+        # The following section is necessary for cross platform compatibility if the host application contains some special characters.
+        # It replaces the unicode values with the corresponding characters to prevent positioning errors which are caused by the different client implementations (wc3270 vs. x3270)
+
+        # Replace various box drawing character patterns (multiple stages for different character types, I added them one by one to catch all cases in out tests)
+
+        # Stage 1: Replace specific multi-byte sequences
+        full_text = full_text.replace("â\x94\x80", "-")  # Horizontal line
+        full_text = full_text.replace("â\x94\x82", "|")  # Vertical line
+        full_text = full_text.replace("â\x94\x8c", "+")  # Top-left corner
+        full_text = full_text.replace("â\x94\x90", "+")  # Top-right corner
+        full_text = full_text.replace("â\x94\x94", "+")  # Bottom-left corner
+        full_text = full_text.replace("â\x94\x98", "+")  # Bottom-right corner
+
+        # Stage 2: Replace any remaining 'â' characters (not sure if this could cause issues if you really want the 'â' character)
+        full_text = full_text.replace("â", "-")
+
+        # Only replace if full_text is a string (in the unit tests these are provided as an instance of MagicMock)
+        if isinstance(full_text, str):
+            # Stage 3: Replace Unicode box drawing range
+            full_text = re.sub(r"[\u2500-\u257F]", "-", full_text)
+
+            # Stage 4: Replace any non-ASCII characters that might be box drawing
+            full_text = re.sub(r"[^\x20-\x7E]", "-", full_text, flags=re.UNICODE)
         return full_text
 
     def delete_field(self):

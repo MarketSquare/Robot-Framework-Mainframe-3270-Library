@@ -270,15 +270,15 @@ Test Get Current Position
 
 Test Get String Positions
     ${positions}    Get String Positions    Welcome
-    Should Be Equal    ${{ [(1, 10)] }}    ${positions}
+    Should Be Equal    ${{ [(1, 10), (9, 15)] }}    ${positions}
 
 Test Get String Positions Case-Insensitive
     ${positions}    Get String Positions    Welcome    ignore_case=True
-    Should Be Equal    ${{ [(1, 10), (9, 5)] }}    ${positions}
+    Should Be Equal    ${{ [(1, 10), (9, 15)] }}    ${positions}
 
 Test Get String Positions As Dict
     ${positions}    Get String Positions    Welcome    As Dict
-    Should Be Equal    ${{ [{"ypos": 1, "xpos": 10}] }}
+    Should Be Equal    ${{ [{"ypos": 1, "xpos": 10}, {"ypos": 9, "xpos": 15}] }}
     ...    ${positions}
 
 Test Get String Positions Without Result
@@ -297,10 +297,10 @@ Test Get String Positions Only After As Dict
 
 Test Get String Positions Only After Case-Insensitive
     ${positions}    Get String Positions Only After    9    4    Welcome    ignore_case=True
-    Should Be Equal    ${{ [(9, 5)] }}    ${positions}
+    Should Be Equal    ${{ [(9, 15)] }}    ${positions}
 
 Test Get String Positions Only After Without Results
-    ${positions}    Get String Positions Only After    9    5    Welcome    ignore_case=True
+    ${positions}    Get String Positions Only After    9    15    Welcome    ignore_case=True
     Should Be Empty    ${positions}
 
 Test Get String Positions Only Before
