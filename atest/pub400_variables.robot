@@ -1,7 +1,7 @@
 *** Variables ***
 ${VISIBLE}                                          True
 ${HOST}                                             pub400.com
-${FOLDER}                                           ${CURDIR}${/}screenshots
+${FOLDER}                                           ${OUTPUT_DIR}${/}screenshots
 # Text to write
 ${WRITE_TEXT}                                       TEST
 ${WRITE_TEXT_UTF8}                                  _ëçá
