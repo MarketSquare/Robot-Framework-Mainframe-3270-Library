@@ -1,10 +1,12 @@
 *** Settings ***
 Documentation       These tests verify that all keywords are working correctly and displaying the expected exception messages.
+
 Library             OperatingSystem
 Library             String
 Library             ../Mainframe3270/    run_on_failure_keyword=None
 Library             HelperLibrary.py
 Resource            pub400_variables.robot
+
 Suite Setup         Suite Mainframe Setup
 Suite Teardown      Suite Mainframe Teardown
 
@@ -322,7 +324,7 @@ Test Get String Positions Only Before Without Results
 
 *** Keywords ***
 Suite Mainframe Setup
-    Open Connection    ${HOST}
+    Open Connection    ${HOST}    extra_args=["-utf8"]
     Create Directory    ${FOLDER}
     Empty Directory    ${FOLDER}
     Set Screenshot Folder    ${FOLDER}
@@ -362,7 +364,12 @@ Verify Pattern Not Found
     END
 
 Verify String Does Not Appear X Times
-    [Arguments]    ${keyword}    ${string}    ${wrong_number_of_times}    ${right_number_of_times}    ${ignore_case}=${False}
+    [Arguments]
+    ...    ${keyword}
+    ...    ${string}
+    ...    ${wrong_number_of_times}
+    ...    ${right_number_of_times}
+    ...    ${ignore_case}=${False}
     ${expected_error}    Set Variable
     ...    The string "${string}" was not found "${wrong_number_of_times}" times, it appears "${right_number_of_times}" times
     Run Keyword And Expect Error    ${expected_error}    ${keyword}    ${string}    ${wrong_number_of_times}

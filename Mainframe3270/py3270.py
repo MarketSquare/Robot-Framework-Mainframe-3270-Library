@@ -10,6 +10,7 @@ import warnings
 from abc import ABC, abstractmethod
 from contextlib import closing
 from os import name as os_name
+
 from robot.utils import seq2str
 
 log = logging.getLogger(__name__)
@@ -475,7 +476,7 @@ class Emulator(object):
         cmd = self.exec_command("ascii({0},{1},{2})".format(ypos, xpos, length).encode("utf-8"))
         # this usage of utf-8 should only return a single line of data
         assert len(cmd.data) == 1, cmd.data
-        return cmd.data[0].decode("unicode_escape")
+        return cmd.data[0].decode("utf-8")
 
     def search_string(self, string, ignore_case=False):
         """
