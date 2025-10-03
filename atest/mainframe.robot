@@ -269,17 +269,16 @@ Test Get Current Position
     Should Be Equal    ${{ {"xpos": 27, "ypos": 6} }}    ${position_as_dict}
 
 Test Get String Positions
-    ${positions}    Get String Positions    Welcome
-    Should Be Equal    ${{ [(1, 10)] }}    ${positions}
+    ${positions}    Get String Positions    Subsystem
+    Should Be Equal    ${{ [(3, 48)] }}    ${positions}
 
 Test Get String Positions Case-Insensitive
-    ${positions}    Get String Positions    Welcome    ignore_case=True
-    Should Be Equal    ${{ [(1, 10), (9, 5)] }}    ${positions}
+    ${positions}    Get String Positions    subsystem    ignore_case=True
+    Should Be Equal    ${{ [(3, 48)] }}    ${positions}
 
 Test Get String Positions As Dict
-    ${positions}    Get String Positions    Welcome    As Dict
-    Should Be Equal    ${{ [{"ypos": 1, "xpos": 10}] }}
-    ...    ${positions}
+    ${positions}    Get String Positions    Subsystem    As Dict
+    Should Be Equal    ${{ [{"ypos": 3, "xpos": 48}] }}    ${positions}
 
 Test Get String Positions Without Result
     ${positions}    Get String Positions    ${STRING_NON_EXISTENT}
@@ -296,11 +295,11 @@ Test Get String Positions Only After As Dict
     Should Be Equal    ${{ [{'ypos': 5, 'xpos': 11}, {'ypos': 21, 'xpos': 38}] }}    ${positions}
 
 Test Get String Positions Only After Case-Insensitive
-    ${positions}    Get String Positions Only After    9    4    Welcome    ignore_case=True
-    Should Be Equal    ${{ [(9, 5)] }}    ${positions}
+    ${positions}    Get String Positions Only After    9    4    welcome    ignore_case=True
+    Should Be Equal    ${{ [(9, 15)] }}    ${positions}
 
 Test Get String Positions Only After Without Results
-    ${positions}    Get String Positions Only After    9    5    Welcome    ignore_case=True
+    ${positions}    Get String Positions Only After    10    5    Welcome    ignore_case=True
     Should Be Empty    ${positions}
 
 Test Get String Positions Only Before
