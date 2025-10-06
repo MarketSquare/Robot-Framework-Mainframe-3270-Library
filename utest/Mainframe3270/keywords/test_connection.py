@@ -95,7 +95,7 @@ def test_open_connection_with_default_model(mocker: MockerFixture, under_test: C
 
     under_test.open_connection("myhost")
 
-    Emulator.__init__.assert_called_with(True, 30.0, [], "2")
+    Emulator.__init__.assert_called_with(True, 30.0, ['-utf8'], "2")
 
 
 def test_open_connection_with_model_from_extra_args(mocker: MockerFixture, under_test: ConnectionKeywords):
