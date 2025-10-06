@@ -1,6 +1,5 @@
 import os
 import time
-
 from robot.libraries.BuiltIn import BuiltIn, RobotNotRunningError
 
 

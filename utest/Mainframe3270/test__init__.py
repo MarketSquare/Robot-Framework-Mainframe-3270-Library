@@ -1,7 +1,5 @@
 import os
-
 from pytest_mock import MockerFixture
-
 from Mainframe3270 import Mainframe3270
 
 

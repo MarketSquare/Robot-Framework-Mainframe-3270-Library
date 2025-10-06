@@ -38,3 +38,5 @@ htmlcov
 atest/test_with_login.robot
 utest/
 .hypothesis/
+.robotcode_cache/
+*.isorted

@@ -1,13 +1,10 @@
 import time
-
 import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
-
 from Mainframe3270.keywords import CommandKeywords
 from Mainframe3270.py3270 import Emulator
 from Mainframe3270.utils import ResultMode
-
 from .utils import create_test_object_for
 
 

@@ -1,14 +1,11 @@
 import os
 from unittest.mock import mock_open, patch
-
 import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
 from robot.utils import ConnectionCache
-
 from Mainframe3270.keywords import ConnectionKeywords
 from Mainframe3270.py3270 import Emulator
-
 from .utils import create_test_object_for
 
 CURDIR = os.path.dirname(os.path.realpath(__file__))

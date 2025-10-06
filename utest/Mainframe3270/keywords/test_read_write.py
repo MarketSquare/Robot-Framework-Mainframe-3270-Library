@@ -1,10 +1,8 @@
 import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
-
 from Mainframe3270.keywords.read_write import ReadWriteKeywords, ResultMode
 from Mainframe3270.py3270 import Emulator
-
 from .utils import create_test_object_for
 
 
