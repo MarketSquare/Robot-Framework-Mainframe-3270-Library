@@ -1,4 +1,5 @@
 from os.path import abspath, dirname, join
+
 try:
     from setuptools import setup
 except ImportError:

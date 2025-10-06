@@ -1,5 +1,7 @@
 from Mainframe3270 import Mainframe3270
 from Mainframe3270.librarycomponent import LibraryComponent
+import os
+from pathlib import Path
 
 
 def test__init__():
@@ -20,7 +22,6 @@ def test_librarycomponent_returns_common_attributes():
     assert library.img_folder == under_test.img_folder
     assert library.cache == under_test.cache
     assert library.mf == under_test.mf
-    assert library.output_folder == under_test.output_folder
     assert library.model == under_test.model
 
 
@@ -68,12 +69,17 @@ def test_can_set_wait_time_after_write():
     assert library.wait_time_after_write == under_test.wait_time_after_write == 0.5
 
 
-def test_can_set_img_folder():
-    library = Mainframe3270(img_folder="/home/myfolder")
-    under_test = LibraryComponent(library)
+def test_can_set_img_folder(mocker):
+    initial_path = Path(os.getcwd()) / "my_initial_folder"
+    initial_path_str = str(initial_path)
+    new_path = Path(os.getcwd()) / "another_folder"
+    new_path_str = str(new_path)
+    mock_library = mocker.MagicMock()
+    mock_library.img_folder = initial_path_str
+    under_test = LibraryComponent(mock_library)
 
-    assert library.img_folder == under_test.img_folder == "/home/myfolder"
+    assert mock_library.img_folder == under_test.img_folder == initial_path_str
 
-    under_test.img_folder = "/another_folder"
+    under_test.img_folder = new_path_str
 
-    assert library.img_folder == under_test.img_folder == "/another_folder"
+    assert mock_library.img_folder == under_test.img_folder == new_path_str

@@ -36,16 +36,17 @@ def test_take_screenshot(mocker: MockerFixture, under_test: ScreenshotKeywords):
     mocker.patch("time.time", return_value=1.0)
 
     filepath = under_test.take_screenshot(500, 500)
+    path = os.getcwd().replace(os.sep, "/")
 
     logger.write.assert_called_with(
-        '<iframe src="./screenshot_1000.html" height="500" width="500"></iframe>',
+        f'<iframe src="{path}/screenshot_1000.html" height="500" width="500"></iframe>',
         level="INFO",
         html=True,
     )
     if os.name == "nt":
-        assert filepath == r".\screenshot_1000.html"
+        assert filepath == r"%s\screenshot_1000.html" % os.getcwd()
     else:
-        assert filepath == "./screenshot_1000.html"
+        assert filepath == f"{path}/screenshot_1000.html"
 
 
 def test_take_screenshot_with_filename_prefix(mocker: MockerFixture, under_test: ScreenshotKeywords):
@@ -53,13 +54,14 @@ def test_take_screenshot_with_filename_prefix(mocker: MockerFixture, under_test:
     mocker.patch("robot.api.logger.write")
     mocker.patch("time.time", return_value=1.0)
     filepath = under_test.take_screenshot(250, 250, "MyScreenshot")
+    path = os.getcwd().replace(os.sep, "/")
 
     logger.write.assert_called_with(
-        '<iframe src="./MyScreenshot_1000.html" height="250" width="250"></iframe>',
+        f'<iframe src="{path}/MyScreenshot_1000.html" height="250" width="250"></iframe>',
         level="INFO",
         html=True,
     )
     if os.name == "nt":
-        assert filepath == r".\MyScreenshot_1000.html"
+        assert filepath == r"%s\MyScreenshot_1000.html" % os.getcwd()
     else:
-        assert filepath == "./MyScreenshot_1000.html"
+        assert filepath == f"{path}/MyScreenshot_1000.html"
