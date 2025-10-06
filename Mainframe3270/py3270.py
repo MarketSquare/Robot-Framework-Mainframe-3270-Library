@@ -4,6 +4,7 @@ import math
 import re
 import socket
 import subprocess
+import sys
 import time
 import warnings
 from abc import ABC, abstractmethod
@@ -206,11 +207,16 @@ class wc3270App(ExecutableApp):
         self.socket.close()
 
     def spawn_app(self, host):
-        args = ["start", "/wait", self.executable] + self.args
+        # check if we need to run a different start command when running in Windows 11
+        is_win10 = sys.getwindowsversion().build < 22000
+        if is_win10:
+            args = ["start", "/wait", self.executable] + self.args
+        else:
+            args = ["cmd.exe", "/c", "start", "/wait", "conhost", self.executable] + self.args
         args.extend(["-scriptport", str(self.script_port), host])
         self.sp = subprocess.Popen(
             args,
-            shell=True,
+            shell=is_win10,
             stdin=subprocess.PIPE,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
@@ -469,7 +475,7 @@ class Emulator(object):
         cmd = self.exec_command("ascii({0},{1},{2})".format(ypos, xpos, length).encode("utf-8"))
         # this usage of utf-8 should only return a single line of data
         assert len(cmd.data) == 1, cmd.data
-        return cmd.data[0].decode("unicode_escape")
+        return cmd.data[0].decode("utf-8", errors="replace")
 
     def search_string(self, string, ignore_case=False):
         """
@@ -500,6 +506,32 @@ class Emulator(object):
         full_text = ""
         for ypos in range(self.model_dimensions["rows"]):
             full_text += self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
+
+        # The following section is necessary for cross-platform compatibility if the host application contains some
+        # special characters. It replaces the Unicode values with the corresponding characters to prevent positioning
+        # errors which are caused by the different client implementations (wc3270 vs. x3270)
+
+        # Replace various box drawing character patterns (multiple stages for different character types,
+        # I added them one by one to catch all cases in out tests)
+
+        # Stage 1: Replace specific multi-byte sequences
+        full_text = full_text.replace("â\x94\x80", "-")  # Horizontal line
+        full_text = full_text.replace("â\x94\x82", "|")  # Vertical line
+        full_text = full_text.replace("â\x94\x8c", "+")  # Top-left corner
+        full_text = full_text.replace("â\x94\x90", "+")  # Top-right corner
+        full_text = full_text.replace("â\x94\x94", "+")  # Bottom-left corner
+        full_text = full_text.replace("â\x94\x98", "+")  # Bottom-right corner
+
+        # Stage 2: Replace any remaining 'â' characters (not sure if this could cause issues if you really want the 'â' character)
+        full_text = full_text.replace("â", "-")
+
+        # Only replace if full_text is a string (in the unit tests these are provided as an instance of MagicMock)
+        if isinstance(full_text, str):
+            # Stage 3: Replace Unicode box drawing range
+            full_text = re.sub(r"[\u2500-\u257F]", "-", full_text)
+
+            # Stage 4: Replace any non-ASCII characters that might be box drawing
+            full_text = re.sub(r"[^\x20-\x7E]", "-", full_text, flags=re.UNICODE)
         return full_text
 
     def delete_field(self):

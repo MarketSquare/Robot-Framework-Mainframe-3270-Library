@@ -221,6 +221,14 @@ Test Delete Char
     Should Be Equal As Strings    ${TEXT_AFTER_DELETE_CHAR}    ${read_text}
     Sleep    1s
 
+Test Write Unicode Bare
+    Move Cursor To    5    25
+    Write Unicode Bare    ${WRITE_TEXT_UNICODE}
+    ${read_text}    Read    5    25    6
+    Take Screenshot
+    Should Be Equal As Strings    ${WRITE_TEXT_UNICODE}    ${read_text}
+    Sleep    1s
+
 Test Delete Field
     Delete Field
     ${read_text}    Read    5    25    8

@@ -14,10 +14,11 @@ class ConnectionKeywords(LibraryComponent):
     def open_connection(
         self,
         host: str,
-        LU: Optional[str] = None,
+        lu: Optional[str] = None,
         port: int = 23,
         extra_args: Optional[Union[List[str], os.PathLike]] = None,
         alias: Optional[str] = None,
+        utf8: bool = True,
     ) -> int:
         """Create a connection to an IBM3270 mainframe with the default port 23.
         To establish a connection, only the hostname is required.
@@ -39,6 +40,9 @@ class ConnectionKeywords(LibraryComponent):
         | -charset french
         | -port 992
 
+        By default, the `utf8` argument is set to `True`, which will add the `-utf8` option to the `extra_args` list.
+        If you want to disable UTF-8 encoding, you can set the `utf8` argument to `False`.
+
         Please ensure that the arguments provided are available for your specific x3270 application and version.
         Refer to the [https://x3270.miraheze.org/wiki/Wc3270/Command-line_options|wc3270 command line options]
         for a subset of available options.
@@ -51,20 +55,26 @@ class ConnectionKeywords(LibraryComponent):
         when switching between connections using the `Switch Connection` keyword. For more information on opening
         and switching between multiple connections, please refer to the `Concurrent Connections` section.
 
-        Example:
+        Examples:
             | Open Connection | Hostname |
             | Open Connection | Hostname | LU=LUname |
             | Open Connection | Hostname | port=992 |
+            | Open Connection | Hostname | utf8=${False} |
             | @{extra_args}   | Create List | -accepthostname | myhost.com | -cafile | ${CURDIR}/cafile.crt |
             | Append To List  | ${extra_args} | -port | 992 |
             | Open Connection | Hostname | extra_args=${extra_args} |
             | Open Connection | Hostname | extra_args=${CURDIR}/argfile.txt |
             | Open Connection | Hostname | alias=my_first_connection |
         """
+        if utf8:
+            if extra_args is None:
+                extra_args = ["-utf8"]
+            else:
+                extra_args.append("-utf8")
         extra_args = self._process_args(extra_args)
         model = self._get_model_from_list_or_file(extra_args)
         connection = Emulator(self.visible, self.timeout, extra_args, model or self.model)
-        host_string = f"{LU}@{host}" if LU else host
+        host_string = f"{lu}@{host}" if lu else host
         if self._port_in_extra_args(extra_args):
             if port != 23:
                 logger.warn(

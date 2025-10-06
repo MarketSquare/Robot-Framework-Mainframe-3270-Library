@@ -31,6 +31,15 @@ def test_read_all_screen(under_test: ReadWriteKeywords, mocker: MockerFixture):
     assert content == "all screen"
 
 
+def test_read_all_screen_unicode(under_test: ReadWriteKeywords, mocker: MockerFixture):
+    mocker.patch("Mainframe3270.py3270.Emulator.read_all_screen", return_value="all screen กขค")
+
+    content = under_test.read_all_screen()
+
+    Emulator.read_all_screen.assert_called_once()
+    assert content == "all screen กขค"
+
+
 def test_write(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
     mocker.patch("Mainframe3270.py3270.Emulator.send_enter")
@@ -41,6 +50,16 @@ def test_write(mocker: MockerFixture, under_test: ReadWriteKeywords):
     Emulator.send_enter.assert_called_once()
 
 
+def test_write_unicode(mocker: MockerFixture, under_test: ReadWriteKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
+    mocker.patch("Mainframe3270.py3270.Emulator.send_enter")
+
+    under_test.write_unicode("กขค")
+
+    Emulator.exec_command.assert_called_once_with('String("กขค")'.encode("utf-8"))
+    Emulator.send_enter.assert_called_once()
+
+
 def test_write_bare(mocker: MockerFixture, under_test: ReadWriteKeywords):
     mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
     mocker.patch("Mainframe3270.py3270.Emulator.send_enter")
@@ -48,6 +67,16 @@ def test_write_bare(mocker: MockerFixture, under_test: ReadWriteKeywords):
     under_test.write_bare("abc")
 
     Emulator.exec_command.assert_called_once_with(b'String("abc")')
+    Emulator.send_enter.assert_not_called()
+
+
+def test_write_unicode_bare(mocker: MockerFixture, under_test: ReadWriteKeywords):
+    mocker.patch("Mainframe3270.py3270.Emulator.exec_command")
+    mocker.patch("Mainframe3270.py3270.Emulator.send_enter")
+
+    under_test.write_unicode_bare("กขค")
+
+    Emulator.exec_command.assert_called_once_with('String("กขค")'.encode("utf-8"))
     Emulator.send_enter.assert_not_called()
 
 
