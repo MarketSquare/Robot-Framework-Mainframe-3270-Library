@@ -7,5 +7,6 @@ isort
 mypy
 pytest
 pytest-mock
+html2image
 robotframework-tidy >= 3.0
 -r requirements.txt

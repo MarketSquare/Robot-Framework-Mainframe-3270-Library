@@ -148,17 +148,16 @@ class Mainframe3270(DynamicCore):
         self.timeout = convert_timeout(timeout)
         self.wait_time = convert_timeout(wait_time)
         self.wait_time_after_write = convert_timeout(wait_time_after_write)
-        self.img_folder = img_folder
+        # When generating the library documentation with libdoc, BuiltIn.get_variable_value throws
+        # a RobotNotRunningError. Therefore, we catch it here to be able to generate the documentation.
+        try:
+            self.img_folder = BuiltIn().get_variable_value("${OUTPUT_DIR}")
+        except RobotNotRunningError:
+            self.img_folder = os.getcwd()
         self._running_on_failure_keyword = False
         self.register_run_on_failure_keyword(run_on_failure_keyword)
         self.model = model
         self.cache = ConnectionCache()
-        # When generating the library documentation with libdoc, BuiltIn.get_variable_value throws
-        # a RobotNotRunningError. Therefore, we catch it here to be able to generate the documentation.
-        try:
-            self.output_folder = BuiltIn().get_variable_value("${OUTPUT DIR}")
-        except RobotNotRunningError:
-            self.output_folder = os.getcwd()
         libraries = [
             AssertionKeywords(self),
             CommandKeywords(self),

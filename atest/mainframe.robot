@@ -199,6 +199,12 @@ Test Read All Screen
     Should Contain    ${screen_content}    c I
     Should Not Contain    ${screen_content}    xyz
 
+Take Take Screenshot
+    ${html_file}    Take Screenshot
+    File Should Exist    ${html_file}
+    ${png_file}    Take Screenshot    img=${True}
+    File Should Exist    ${png_file}
+
 Test Write Bare
     Move Cursor To    5    25
     Write Bare    ${WRITE_TEXT}
