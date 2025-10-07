@@ -7,7 +7,8 @@ from Mainframe3270.librarycomponent import LibraryComponent
 try:
     from html2image import Html2Image
     hti = Html2Image(size=(600, 500))
-except:
+except Exception as exception:
+    logger.info('\n' + str(exception), also_console=True)
     logger.info("Chrome not found. Take Screenshot will work only in html format.", also_console=True)
 
 
@@ -58,8 +59,9 @@ class ScreenshotKeywords(LibraryComponent):
         if img:
             try:
                 hti.output_path = self.img_folder
-            except:
-                raise EnvironmentError("Chrome not found, please use argument img=False")
+            except Exception as exception:
+                logger.info('\n' + str(exception), also_console=True)
+                raise EnvironmentError("Chrome not found, please use argument ${img}=False")
             img_name = f"{filename_prefix}_{filename_suffix}.png"
             img_path = os.path.join(self.img_folder, img_name)
             hti.screenshot(html_file=filepath, save_as=img_name)
