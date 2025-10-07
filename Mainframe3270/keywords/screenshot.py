@@ -6,9 +6,8 @@ from Mainframe3270.librarycomponent import LibraryComponent
 
 try:
     from html2image import Html2Image
-
     hti = Html2Image(size=(600, 500))
-except ImportError:
+except:
     logger.info("Chrome not found. Take Screenshot will work only in html format.", also_console=True)
 
 
