@@ -69,7 +69,7 @@ class ConnectionKeywords(LibraryComponent):
         if utf8:
             if extra_args is None:
                 extra_args = ["-utf8"]
-            else:
+            elif isinstance(extra_args, list):
                 extra_args.append("-utf8")
         extra_args = self._process_args(extra_args)
         model = self._get_model_from_list_or_file(extra_args)

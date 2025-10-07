@@ -1,7 +1,7 @@
-from Mainframe3270 import Mainframe3270
-from Mainframe3270.librarycomponent import LibraryComponent
 import os
 from pathlib import Path
+from Mainframe3270 import Mainframe3270
+from Mainframe3270.librarycomponent import LibraryComponent
 
 
 def test__init__():

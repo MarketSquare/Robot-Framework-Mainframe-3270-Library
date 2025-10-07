@@ -200,6 +200,7 @@ Test Read All Screen
     Should Not Contain    ${screen_content}    xyz
 
 Take Take Screenshot
+    [Tags]    no-ci
     ${html_file}    Take Screenshot
     File Should Exist    ${html_file}
     ${png_file}    Take Screenshot    img=${True}

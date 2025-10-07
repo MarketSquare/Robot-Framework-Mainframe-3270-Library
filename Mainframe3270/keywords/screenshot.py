@@ -3,12 +3,13 @@ import time
 from robot.api import logger
 from robot.api.deco import keyword
 from Mainframe3270.librarycomponent import LibraryComponent
+
 try:
     from html2image import Html2Image
-except ImportError:
-    logger.info("Chrome not found. Take Screenshot will work only in html format.")
 
-hti = Html2Image(size=(600, 500))
+    hti = Html2Image(size=(600, 500))
+except ImportError:
+    logger.info("Chrome not found. Take Screenshot will work only in html format.", also_console=True)
 
 
 class ScreenshotKeywords(LibraryComponent):
@@ -55,7 +56,10 @@ class ScreenshotKeywords(LibraryComponent):
         filepath = os.path.join(self.img_folder, f"{filename_prefix}_{filename_suffix}.html")
         self.mf.save_screen(filepath)
         if img:
-            hti.output_path = self.img_folder
+            try:
+                hti.output_path = self.img_folder
+            except:
+                raise EnvironmentError("Chrome not found, please use argument img=False")
             img_name = f"{filename_prefix}_{filename_suffix}.png"
             img_path = os.path.join(self.img_folder, img_name)
             hti.screenshot(html_file=filepath, save_as=img_name)
