@@ -201,7 +201,7 @@ Test Read All Screen
     Should Contain    ${screen_content}    c I
     Should Not Contain    ${screen_content}    xyz
 
-Take Take Screenshot
+Test Take Screenshot
     [Tags]    no-ci
     ${html_file}    Take Screenshot
     File Should Exist    ${html_file}
