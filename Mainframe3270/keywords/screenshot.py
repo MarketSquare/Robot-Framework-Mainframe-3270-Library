@@ -38,7 +38,8 @@ class ScreenshotKeywords(LibraryComponent):
         The Screenshot is printed in an iframe log, with the values of height=400 and width=600, you
         can change these values by passing them to the keyword.
 
-        Default format is html, but you can change it to png by passing img=${True} to the keyword.
+        Default format is html, but you can change it to png by passing img=${True} to the keyword. Because the html2image
+        module this option only works if chrome is installed in your system.
 
         The file name prefix can be set, the default is "screenshot".
 

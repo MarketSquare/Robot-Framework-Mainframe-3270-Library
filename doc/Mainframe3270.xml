@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2025-10-06T21:34:18+00:00" specversion="6" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2025-10-07T14:19:33+00:00" specversion="6" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
 <version>4.2</version>
 <doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
@@ -1045,7 +1045,7 @@ Example:
     | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="13">
+<kw name="Set Screenshot Folder" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="16">
 <arguments repr="path: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="path: str">
 <name>path</name>
@@ -1084,7 +1084,7 @@ Examples:
 | Switch Connection | first | | # first is now the current connection  |</doc>
 <shortdoc>Switch the current connection to the one identified by index or alias. Indices are returned from and aliases can be optionally provided to the `Open Connection` and `Open Connection From Session File` keywords.</shortdoc>
 </kw>
-<kw name="Take Screenshot" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="29">
+<kw name="Take Screenshot" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="32">
 <arguments repr="height: int = 400, width: int = 600, filename_prefix: str = screenshot, img: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="height: int = 400">
 <name>height</name>
@@ -1114,7 +1114,8 @@ default folder is the log folder of RobotFramework, if you want change see the `
 The Screenshot is printed in an iframe log, with the values of height=400 and width=600, you
 can change these values by passing them to the keyword.
 
-Default format is html, but you can change it to png by passing img=${True} to the keyword.
+Default format is html, but you can change it to png by passing img=${True} to the keyword. Because the html2image
+module this option only works if chrome is installed in your system.
 
 The file name prefix can be set, the default is "screenshot".
 
