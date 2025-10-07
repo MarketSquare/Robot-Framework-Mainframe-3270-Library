@@ -1,8 +1,9 @@
 name: Changelog CI
 
-on:
-  pull_request:
-    types: [ opened ]
+#on:
+#  pull_request:
+#    types: [ opened ]
+# Not working for now...
 
 jobs:
   build:
