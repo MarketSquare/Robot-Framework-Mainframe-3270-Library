@@ -1,9 +1,12 @@
 import os
 import time
-from html2image import Html2Image
 from robot.api import logger
 from robot.api.deco import keyword
 from Mainframe3270.librarycomponent import LibraryComponent
+try:
+    from html2image import Html2Image
+except ImportError:
+    logger.info("Chrome not found. Take Screenshot will work only in html format.")
 
 hti = Html2Image(size=(600, 500))
 
