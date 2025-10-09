@@ -1,9 +1,6 @@
 import time
 from typing import Any, Optional
-
 from robot.api.deco import keyword
-from robot.libraries.BuiltIn import BuiltIn
-
 from Mainframe3270.librarycomponent import LibraryComponent
 from Mainframe3270.utils import ResultMode, prepare_positions_as
 
@@ -124,12 +121,13 @@ class ReadWriteKeywords(LibraryComponent):
 
     @keyword("Write Unicode")
     def write_unicode(self, txt: str) -> None:
-        """Send a string *and Enter* to the screen at the current cursor location.
+        """Send a Unicode string using the execute command String("") *and Enter* to the screen at the current
+        cursor location.
 
         Example:
-            | Write Unicode | something |
+            | Write Unicode | ß |
         """
-        self.mf.exec_command(f'String("{txt}")'.encode('utf-8'))
+        self.mf.exec_command(f'String("{txt}")'.encode("utf-8"))
         time.sleep(self.wait_time_after_write)
         self.mf.send_enter()
 
@@ -144,12 +142,12 @@ class ReadWriteKeywords(LibraryComponent):
 
     @keyword("Write Unicode Bare")
     def write_unicode_bare(self, txt: str) -> None:
-        """Send only the string to the screen at the current cursor location.
+        """Send only the Unicode string using the execute command String("") to the screen at the current cursor location.
 
         Example:
-            | Write Unicode Bare | something |
+            | Write Unicode Bare | Æ |
         """
-        self.mf.exec_command(f'String("{txt}")'.encode('utf-8'))
+        self.mf.exec_command(f'String("{txt}")'.encode("utf-8"))
         time.sleep(self.wait_time_after_write)
 
     @keyword("Write In Position")

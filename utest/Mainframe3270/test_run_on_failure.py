@@ -1,7 +1,6 @@
 import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
-
 from Mainframe3270 import Mainframe3270
 
 

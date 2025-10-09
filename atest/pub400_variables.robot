@@ -5,6 +5,7 @@ ${FOLDER}                                           ${CURDIR}${/}screenshots
 # Text to write
 ${WRITE_TEXT}                                       TEST
 ${WRITE_TEXT_UTF8}                                  _ëçá
+${WRITE_TEXT_UNICODE}                               ÆæßÆæß
 # Texts in the Mainframe
 ${WELCOME}                                          Welcome to PUB400.COM
 ${WELCOME_TITLE}                                    Welcome to PUB400.COM * your public IBM i server

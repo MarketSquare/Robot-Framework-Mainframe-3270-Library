@@ -1,8 +1,6 @@
 import errno
-
 import pytest
 from pytest_mock import MockerFixture
-
 from Mainframe3270 import py3270
 from Mainframe3270.py3270 import Command, Emulator, TerminatedError
 

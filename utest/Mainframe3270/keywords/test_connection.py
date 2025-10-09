@@ -1,14 +1,11 @@
 import os
 from unittest.mock import mock_open, patch
-
 import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
 from robot.utils import ConnectionCache
-
 from Mainframe3270.keywords import ConnectionKeywords
 from Mainframe3270.py3270 import Emulator
-
 from .utils import create_test_object_for
 
 CURDIR = os.path.dirname(os.path.realpath(__file__))
@@ -98,7 +95,7 @@ def test_open_connection_with_default_model(mocker: MockerFixture, under_test: C
 
     under_test.open_connection("myhost")
 
-    Emulator.__init__.assert_called_with(True, 30.0, [], "2")
+    Emulator.__init__.assert_called_with(True, 30.0, ['-utf8'], "2")
 
 
 def test_open_connection_with_model_from_extra_args(mocker: MockerFixture, under_test: ConnectionKeywords):

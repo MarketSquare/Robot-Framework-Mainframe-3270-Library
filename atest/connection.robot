@@ -30,10 +30,10 @@ Test Connection From Session File
     Page Should Contain String    ${WELCOME}
 
 Test Concurrent Connections
-    Open Connection    ${HOST}    alias=first    extra_args=["-utf8"]
+    Open Connection    ${HOST}    alias=first
     Write Bare    ABCD
     Page Should Contain String    ABCD
-    Open Connection    ${HOST}    alias=second    extra_args=["-utf8"]
+    Open Connection    ${HOST}    alias=second
     Write Bare    DEFG
     Page Should Contain String    DEFG
     Page Should Not Contain String    ABCD

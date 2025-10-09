@@ -1,5 +1,4 @@
 import pytest
-
 from Mainframe3270.py3270 import Status
 
 

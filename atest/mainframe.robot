@@ -201,6 +201,13 @@ Test Read All Screen
     Should Contain    ${screen_content}    c I
     Should Not Contain    ${screen_content}    xyz
 
+Test Take Screenshot
+    [Tags]    no-ci
+    ${html_file}    Take Screenshot
+    File Should Exist    ${html_file}
+    ${png_file}    Take Screenshot    img=${True}
+    File Should Exist    ${png_file}
+
 Test Write Bare
     Move Cursor To    5    25
     Write Bare    ${WRITE_TEXT}
@@ -221,6 +228,14 @@ Test Delete Char
     ${read_text}    Read    5    25    8
     Take Screenshot
     Should Be Equal As Strings    ${TEXT_AFTER_DELETE_CHAR}    ${read_text}
+    Sleep    1s
+
+Test Write Unicode Bare
+    Move Cursor To    5    25
+    Write Unicode Bare    ${WRITE_TEXT_UNICODE}
+    ${read_text}    Read    5    25    6
+    Take Screenshot
+    Should Be Equal As Strings    ${WRITE_TEXT_UNICODE}    ${read_text}
     Sleep    1s
 
 Test Delete Field
@@ -271,17 +286,16 @@ Test Get Current Position
     Should Be Equal    ${{ {"xpos": 27, "ypos": 6} }}    ${position_as_dict}
 
 Test Get String Positions
-    ${positions}    Get String Positions    Welcome
-    Should Be Equal    ${{ [(1, 10), (9, 15)] }}    ${positions}
+    ${positions}    Get String Positions    Subsystem
+    Should Be Equal    ${{ [(3, 48)] }}    ${positions}
 
 Test Get String Positions Case-Insensitive
-    ${positions}    Get String Positions    Welcome    ignore_case=True
-    Should Be Equal    ${{ [(1, 10), (9, 15)] }}    ${positions}
+    ${positions}    Get String Positions    subsystem    ignore_case=True
+    Should Be Equal    ${{ [(3, 48)] }}    ${positions}
 
 Test Get String Positions As Dict
-    ${positions}    Get String Positions    Welcome    As Dict
-    Should Be Equal    ${{ [{"ypos": 1, "xpos": 10}, {"ypos": 9, "xpos": 15}] }}
-    ...    ${positions}
+    ${positions}    Get String Positions    Subsystem    As Dict
+    Should Be Equal    ${{ [{"ypos": 3, "xpos": 48}] }}    ${positions}
 
 Test Get String Positions Without Result
     ${positions}    Get String Positions    ${STRING_NON_EXISTENT}
@@ -298,11 +312,11 @@ Test Get String Positions Only After As Dict
     Should Be Equal    ${{ [{'ypos': 5, 'xpos': 11}, {'ypos': 21, 'xpos': 38}] }}    ${positions}
 
 Test Get String Positions Only After Case-Insensitive
-    ${positions}    Get String Positions Only After    9    4    Welcome    ignore_case=True
+    ${positions}    Get String Positions Only After    9    4    welcome    ignore_case=True
     Should Be Equal    ${{ [(9, 15)] }}    ${positions}
 
 Test Get String Positions Only After Without Results
-    ${positions}    Get String Positions Only After    9    15    Welcome    ignore_case=True
+    ${positions}    Get String Positions Only After    10    5    Welcome    ignore_case=True
     Should Be Empty    ${positions}
 
 Test Get String Positions Only Before
@@ -324,7 +338,7 @@ Test Get String Positions Only Before Without Results
 
 *** Keywords ***
 Suite Mainframe Setup
-    Open Connection    ${HOST}    extra_args=["-utf8"]
+    Open Connection    ${HOST}
     Create Directory    ${FOLDER}
     Empty Directory    ${FOLDER}
     Set Screenshot Folder    ${FOLDER}

@@ -1,11 +1,8 @@
 import re
-
 import pytest
 from pytest_mock import MockerFixture
 from robot.api import logger
-
 from Mainframe3270.keywords import AssertionKeywords
-
 from .utils import create_test_object_for
 
 

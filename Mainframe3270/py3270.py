@@ -10,7 +10,6 @@ import warnings
 from abc import ABC, abstractmethod
 from contextlib import closing
 from os import name as os_name
-
 from robot.utils import seq2str
 
 log = logging.getLogger(__name__)
@@ -476,7 +475,7 @@ class Emulator(object):
         cmd = self.exec_command("ascii({0},{1},{2})".format(ypos, xpos, length).encode("utf-8"))
         # this usage of utf-8 should only return a single line of data
         assert len(cmd.data) == 1, cmd.data
-        return cmd.data[0].decode("utf-8")
+        return cmd.data[0].decode("utf-8", errors="replace")
 
     def search_string(self, string, ignore_case=False):
         """
@@ -508,10 +507,12 @@ class Emulator(object):
         for ypos in range(self.model_dimensions["rows"]):
             full_text += self.string_get(ypos + 1, 1, self.model_dimensions["columns"])
 
-        # The following section is necessary for cross platform compatibility if the host application contains some special characters.
-        # It replaces the unicode values with the corresponding characters to prevent positioning errors which are caused by the different client implementations (wc3270 vs. x3270)
+        # The following section is necessary for cross-platform compatibility if the host application contains some
+        # special characters. It replaces the Unicode values with the corresponding characters to prevent positioning
+        # errors which are caused by the different client implementations (wc3270 vs. x3270)
 
-        # Replace various box drawing character patterns (multiple stages for different character types, I added them one by one to catch all cases in out tests)
+        # Replace various box drawing character patterns (multiple stages for different character types,
+        # I added them one by one to catch all cases in out tests)
 
         # Stage 1: Replace specific multi-byte sequences
         full_text = full_text.replace("â\x94\x80", "-")  # Horizontal line

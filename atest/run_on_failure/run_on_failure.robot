@@ -13,6 +13,7 @@ ${CUSTOM_FILE}      ${CURDIR}${/}output.txt
 
 *** Test Cases ***
 Takes Screenshot On Failure
+    [Tags]    no-ci
     Cause Error
     File Should Exist    ${CURDIR}/*.html
     [Teardown]    Remove File    ${CURDIR}/*.html

@@ -1,9 +1,7 @@
 import pytest
 from pytest_mock import MockerFixture
-
 from Mainframe3270.keywords import WaitAndTimeoutKeywords
 from Mainframe3270.py3270 import Emulator
-
 from .utils import create_test_object_for
 
 

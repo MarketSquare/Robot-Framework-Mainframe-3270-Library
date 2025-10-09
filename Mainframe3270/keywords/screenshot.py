@@ -1,10 +1,16 @@
 import os
 import time
-
 from robot.api import logger
 from robot.api.deco import keyword
-
 from Mainframe3270.librarycomponent import LibraryComponent
+
+try:
+    from html2image import Html2Image
+
+    hti = Html2Image(size=(600, 500))
+except Exception as exception:
+    logger.info("\n" + str(exception), also_console=True)
+    logger.info("Chrome not found. Take Screenshot will work only in html format.", also_console=True)
 
 
 class ScreenshotKeywords(LibraryComponent):
@@ -18,37 +24,54 @@ class ScreenshotKeywords(LibraryComponent):
         Example:
             | Set Screenshot Folder | C:\\Temp\\Images |
         """
-        if os.path.exists(os.path.normpath(os.path.join(self.output_folder, path))):
+        if os.path.exists(os.path.normpath(os.path.join(self.img_folder, path))):
             self.img_folder = path
         else:
             logger.error(f'Given screenshots path "{path}" does not exist')
             logger.warn(f'Screenshots will be saved in "{self.img_folder}"')
 
     @keyword("Take Screenshot")
-    def take_screenshot(self, height: int = 410, width: int = 670, filename_prefix: str = "screenshot") -> str:
-        """Generate a screenshot of the IBM 3270 Mainframe in a html format. The
+    def take_screenshot(
+        self, height: int = 400, width: int = 600, filename_prefix: str = "screenshot", img: bool = False
+    ) -> str:
+        """Generate a screenshot of the IBM 3270 Mainframe in a html or png format. The
         default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
 
-        The Screenshot is printed in an iframe log, with the values of height=410 and width=670, you
+        The Screenshot is printed in an iframe log, with the values of height=400 and width=600, you
         can change these values by passing them to the keyword.
+
+        Default format is html, but you can change it to png by passing img=${True} to the keyword. Because the html2image
+        module this option only works if chrome is installed in your system.
 
         The file name prefix can be set, the default is "screenshot".
 
-        The full file path is returned.
+        The file path is returned.
 
         Example:
             | ${filepath} | Take Screenshot |
+            | ${filepath} | Take Screenshot | img=${True} |
             | ${filepath} | Take Screenshot | height=500 | width=700 |
             | Take Screenshot | height=500 | width=700 |
             | Take Screenshot | filename_prefix=MyScreenshot |
         """
-        extension = "html"
-        filename_sufix = round(time.time() * 1000)
-        filepath = os.path.join(self.img_folder, "%s_%s.%s" % (filename_prefix, filename_sufix, extension))
-        self.mf.save_screen(os.path.join(self.output_folder, filepath))
-        logger.write(
-            '<iframe src="%s" height="%s" width="%s"></iframe>' % (filepath.replace("\\", "/"), height, width),
-            level="INFO",
-            html=True,
-        )
+        filename_suffix = str(round(time.time() * 1000))
+        filepath = os.path.join(self.img_folder, f"{filename_prefix}_{filename_suffix}.html")
+        self.mf.save_screen(filepath)
+        if img:
+            try:
+                hti.output_path = self.img_folder
+            except Exception as exception:
+                logger.info("\n" + str(exception), also_console=True)
+                raise EnvironmentError("Chrome not found, please use argument ${img}=False")
+            img_name = f"{filename_prefix}_{filename_suffix}.png"
+            img_path = os.path.join(self.img_folder, img_name)
+            hti.screenshot(html_file=filepath, save_as=img_name)
+            logger.info(f"<img src='{img_path}'>", html=True)
+            return img_path
+        else:
+            logger.write(
+                '<iframe src="%s" height="%s" width="%s"></iframe>' % (filepath.replace("\\", "/"), height, width),
+                level="INFO",
+                html=True,
+            )
         return filepath
