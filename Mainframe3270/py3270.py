@@ -530,8 +530,6 @@ class Emulator(object):
             # Stage 3: Replace Unicode box drawing range
             full_text = re.sub(r"[\u2500-\u257F]", "-", full_text)
 
-            # Stage 4: Replace any non-ASCII characters that might be box drawing
-            full_text = re.sub(r"[^\x20-\x7E]", "-", full_text, flags=re.UNICODE)
         return full_text
 
     def delete_field(self):
