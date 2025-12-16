@@ -4,13 +4,6 @@ from robot.api import logger
 from robot.api.deco import keyword
 from Mainframe3270.librarycomponent import LibraryComponent
 
-try:
-    from html2image import Html2Image
-
-    hti = Html2Image(size=(600, 500))
-except Exception as exception:
-    logger.info("\n" + str(exception), also_console=True)
-    logger.info("Chrome not found. Take Screenshot will work only in html format.", also_console=True)
 
 
 class ScreenshotKeywords(LibraryComponent):
@@ -32,7 +25,7 @@ class ScreenshotKeywords(LibraryComponent):
 
     @keyword("Take Screenshot")
     def take_screenshot(
-        self, height: int = 400, width: int = 600, filename_prefix: str = "screenshot", img: bool = False
+            self, height: int = 400, width: int = 600, filename_prefix: str = "screenshot", img: bool = False, browser: str = "chrome"
     ) -> str:
         """Generate a screenshot of the IBM 3270 Mainframe in a html or png format. The
         default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.
@@ -44,6 +37,8 @@ class ScreenshotKeywords(LibraryComponent):
         module this option only works if chrome is installed in your system.
 
         The file name prefix can be set, the default is "screenshot".
+        
+        The Html2Image compatible browser that should be used for creating a png screenshot can be selected with the `browser` parameter, the default is "chrome".
 
         The file path is returned.
 
@@ -51,9 +46,17 @@ class ScreenshotKeywords(LibraryComponent):
             | ${filepath} | Take Screenshot |
             | ${filepath} | Take Screenshot | img=${True} |
             | ${filepath} | Take Screenshot | height=500 | width=700 |
+            | ${filepath} | Take Screenshot | browser=edge |
             | Take Screenshot | height=500 | width=700 |
             | Take Screenshot | filename_prefix=MyScreenshot |
         """
+        try:
+            from html2image import Html2Image
+
+            hti = Html2Image(size=(600, 500), browser=browser)
+        except Exception as exception:
+            logger.info("\n" + str(exception), also_console=True)
+            logger.info(f"Browser {browser} not found. Take Screenshot will work only in html format.", also_console=True)
         filename_suffix = str(round(time.time() * 1000))
         filepath = os.path.join(self.img_folder, f"{filename_prefix}_{filename_suffix}.html")
         self.mf.save_screen(filepath)
