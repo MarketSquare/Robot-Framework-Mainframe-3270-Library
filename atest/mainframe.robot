@@ -180,10 +180,16 @@ Test Take Screenshot
 
 Test Take Screenshot With Edge Browser
     [Tags]    no-ci
-    ${html_file}    Take Screenshot  browser=edge
-    File Should Exist    ${html_file}
-    ${png_file}    Take Screenshot    img=${True}  browser=edge
-    File Should Exist    ${png_file}
+    ${system}=    Evaluate    platform.system()    platform
+    IF    '${system}' != 'Windows'
+        Log    Not running on Windows, skipping test
+        Pass Execution
+    ELSE
+        ${html_file}    Take Screenshot  browser=edge
+        File Should Exist    ${html_file}
+        ${png_file}    Take Screenshot    img=${True}  browser=edge
+        File Should Exist    ${png_file}
+    END
 
 Test Write Bare
     Move Cursor To    5    25
@@ -322,7 +328,7 @@ Test Get String Positions Only Before Without Results
 
 *** Keywords ***
 Suite Mainframe Setup
-    Open Connection    ${HOST}
+    Open Connection    ${HOST}  port=3270
     Create Directory    ${FOLDER}
     Empty Directory    ${FOLDER}
     Set Screenshot Folder    ${FOLDER}
