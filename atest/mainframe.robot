@@ -43,7 +43,10 @@ Exception Test Page Should Contain String
 
 Exception Test Page Should Contain All Strings
     Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_FIRST}    1
-    Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_SECONDS}    2
+    Verify String Not Found In List
+    ...    Page Should Contain All Strings
+    ...    ${LIST_STRINGS_WRONG_CASE_IN_THE_SECONDS}
+    ...    2
     Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_CASE_IN_THE_THIRD}    3
     Verify String Not Found In List    Page Should Contain All Strings    ${LIST_STRINGS_WRONG_IN_THE_FIRST}
     ...    1    ignore_case=${True}
@@ -54,7 +57,10 @@ Exception Test Page Should Contain All Strings
 
 Exception Test Page Should Contain Any String
     Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_ALL_WRONG_CASE}
-    Verify List Not Found    Page Should Contain Any String    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}    ignore_case=${True}
+    Verify List Not Found
+    ...    Page Should Contain Any String
+    ...    ${LIST_STRINGS_NON_EXITENT_IGNORE_CASE}
+    ...    ignore_case=${True}
 
 Exception Test Page Should Contain Match
     Verify Pattern Not Found    Page Should Contain Match    ${TEXT_NOT_MATCH_WRONG_CASE}
