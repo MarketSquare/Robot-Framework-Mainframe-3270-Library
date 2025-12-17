@@ -12,12 +12,6 @@ ${CUSTOM_FILE}      ${CURDIR}${/}output.txt
 
 
 *** Test Cases ***
-Takes Screenshot On Failure
-    [Tags]    no-ci
-    Cause Error
-    File Should Exist    ${CURDIR}/*.html
-    [Teardown]    Remove File    ${CURDIR}/*.html
-
 Register Custom Keyword To Run On Failure
     Register Run On Failure Keyword    Custom Run On Failure Keyword
     Cause Error

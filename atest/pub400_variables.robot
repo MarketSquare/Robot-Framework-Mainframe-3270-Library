@@ -14,6 +14,8 @@ ${USER_TASK}                                        User Tasks
 ${TEXT_MATCH}                                       *PUB???.COM*
 ${TEXT_TO_COUNT}                                    Server
 ${TEXT_NOT_MATCH}                                   *PUB???400.COM*
+${TEXT_REPLACE_TRUE}                                Your user name:${SPACE * 9}------
+${TEXT_REPLACE_FALSE}                               Your user name:${SPACE * 9}ÆæßÆæß
 # Texts after write
 ${TEXT_AFTER_DELETE_CHAR}                           EST _ëçá
 ${TEXT_AFTER_DELETE_FIELD}                          ${SPACE * 8}

@@ -8,4 +8,5 @@ mypy
 pytest
 pytest-mock
 robotframework-tidy >= 3.0
+robotframework-debuglibrary
 -r requirements.txt

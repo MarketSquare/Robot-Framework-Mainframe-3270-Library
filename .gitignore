@@ -41,3 +41,5 @@ utest/
 .hypothesis/
 .robotcode_cache/
 *.isorted
+Mainframe3270/__pycache__/
+Mainframe3270/keywords/__pycache__/

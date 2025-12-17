@@ -16,7 +16,6 @@ ${CUSTOM_FILE}      ${CURDIR}${/}output.txt
 Should Run Custom Keyword
     Cause Error
     File Should Exist    ${CUSTOM_FILE}
-    [Teardown]    Remove File    ${CUSTOM_FILE}
 
 
 *** Keywords ***

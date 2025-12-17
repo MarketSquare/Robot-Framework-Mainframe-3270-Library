@@ -25,21 +25,28 @@ class ReadWriteKeywords(LibraryComponent):
         return self.mf.string_get(ypos, xpos, length)
 
     @keyword("Read All Screen")
-    def read_all_screen(self) -> str:
+    def read_all_screen(self, replace_unicode: bool = True) -> str:
         """Read the current screen and returns all content in one string.
 
-        This is useful if your automation scripts should take different routes depending
-        on a message shown on the screen.
+        For cross-platform compatibility if the host application contains some special characters, this Keyword will
+        replace the Unicode values with the corresponding characters to prevent positioning errors
+        which are caused by the different client implementations (wc3270 vs. x3270)
+
+        NEW in version 4.3: The `replace_unicode` argument was added to control whether Unicode values should be
+        replaced with their corresponding characters.
+
+        This could be useful if your automation script should take different routes depending on a message shown
+        on the screen.
 
         Example:
-            | ${screen} | Read All Screen |
+            | ${screen} | Read All Screen | replace_unicode=${False} |
             | IF | 'certain text' in '''${screen}''' |
             | | Do Something |
             | ELSE | |
             | | Do Something Else |
             | END | |
         """
-        return self.mf.read_all_screen()
+        return self.mf.read_all_screen(replace_unicode)
 
     @keyword("Get String Positions")
     def get_string_positions(self, string: str, mode: ResultMode = ResultMode.As_Tuple, ignore_case: bool = False):
