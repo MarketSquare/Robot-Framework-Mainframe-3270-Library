@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2025-10-07T14:19:33+00:00" specversion="6" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
-<version>4.2</version>
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2025-12-17T00:46:35+00:00" specversion="6" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
+<version>4.3</version>
 <doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 
@@ -326,7 +326,7 @@ Example:
     | Get Cursor Position | As Dict | # Returns a position like {"xpos": 1, "ypos": 1} |</doc>
 <shortdoc>Returns the current cursor position. The coordinates are 1 based.</shortdoc>
 </kw>
-<kw name="Get String Positions" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="45">
+<kw name="Get String Positions" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="52">
 <arguments repr="string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="string: str">
 <name>string</name>
@@ -356,7 +356,7 @@ Example:
     | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, or an empty list if it was not found.</shortdoc>
 </kw>
-<kw name="Get String Positions Only After" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="62">
+<kw name="Get String Positions Only After" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="69">
 <arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
@@ -394,7 +394,7 @@ Example:
     | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.</shortdoc>
 </kw>
-<kw name="Get String Positions Only Before" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="88">
+<kw name="Get String Positions Only Before" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="95">
 <arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
@@ -981,16 +981,28 @@ Example for read a string in the position y=8 / x=10 of a length 15:
 <shortdoc>Get a string of ``length`` at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
 <kw name="Read All Screen" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="28">
-<arguments repr="">
+<arguments repr="replace_unicode: bool = True">
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="replace_unicode: bool = True">
+<name>replace_unicode</name>
+<type name="bool" typedoc="boolean"/>
+<default>True</default>
+</arg>
 </arguments>
 <returntype name="str" typedoc="string"/>
 <doc>Read the current screen and returns all content in one string.
 
-This is useful if your automation scripts should take different routes depending
-on a message shown on the screen.
+For cross-platform compatibility if the host application contains some special characters, this Keyword will
+replace the Unicode values with the corresponding characters to prevent positioning errors
+which are caused by the different client implementations (wc3270 vs. x3270)
+
+NEW in version 4.3: The `replace_unicode` argument was added to control whether Unicode values should be
+replaced with their corresponding characters.
+
+This could be useful if your automation script should take different routes depending on a message shown
+on the screen.
 
 Example:
-    | ${screen} | Read All Screen |
+    | ${screen} | Read All Screen | replace_unicode=${False} |
     | IF | 'certain text' in '''${screen}''' |
     | | Do Something |
     | ELSE | |
@@ -1045,7 +1057,7 @@ Example:
     | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="16">
+<kw name="Set Screenshot Folder" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="18">
 <arguments repr="path: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="path: str">
 <name>path</name>
@@ -1084,7 +1096,7 @@ Examples:
 | Switch Connection | first | | # first is now the current connection  |</doc>
 <shortdoc>Switch the current connection to the one identified by index or alias. Indices are returned from and aliases can be optionally provided to the `Open Connection` and `Open Connection From Session File` keywords.</shortdoc>
 </kw>
-<kw name="Take Screenshot" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="32">
+<kw name="Take Screenshot" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="34">
 <arguments repr="height: int = 400, width: int = 600, filename_prefix: str = screenshot, img: bool = False">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="height: int = 400">
 <name>height</name>
@@ -1167,7 +1179,7 @@ Example:
     | Wait Until String | something | 0:00:15 |</doc>
 <shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in 5 seconds, the keyword will raise an exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="114">
+<kw name="Write" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="121">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1180,7 +1192,7 @@ Example:
     | Write | something |</doc>
 <shortdoc>Send a string *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="135">
+<kw name="Write Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="142">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1193,7 +1205,7 @@ Example:
     | Write Bare | something |</doc>
 <shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="166">
+<kw name="Write Bare In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="173">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1217,7 +1229,7 @@ Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
 <shortdoc>Send only the string to the screen at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="154">
+<kw name="Write In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="161">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1241,7 +1253,7 @@ Example:
     | Write in Position | something | 9 | 11 |</doc>
 <shortdoc>Send a string *and Enter* to the screen at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write Unicode" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="123">
+<kw name="Write Unicode" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="130">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1255,7 +1267,7 @@ Example:
     | Write Unicode | ß |</doc>
 <shortdoc>Send a Unicode string using the execute command String("") *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Unicode Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="144">
+<kw name="Write Unicode Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="151">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1271,12 +1283,13 @@ Example:
 </keywords>
 <typedocs>
 <type name="boolean" type="Standard">
-<doc>Strings ``TRUE``, ``YES``, ``ON`` and ``1`` are converted to Boolean ``True``,
-the empty string as well as strings ``FALSE``, ``NO``, ``OFF`` and ``0``
-are converted to Boolean ``False``, and the string ``NONE`` is converted
-to the Python ``None`` object. Other strings and other accepted values are
-passed as-is, allowing keywords to handle them specially if
-needed. All string comparisons are case-insensitive.
+<doc>Strings ``TRUE``, ``YES``, ``ON``, ``1`` and possible localization specific "true
+strings" are converted to Boolean ``True``, the empty string, strings ``FALSE``,
+``NO``, ``OFF`` and ``0`` and possibly localization specific "false strings"
+are converted to Boolean ``False``, and the string ``NONE`` is converted to
+the Python ``None`` object. Other strings and all other values are passed as-is,
+allowing keywords to handle them specially if needed. All string comparisons are
+case-insensitive.
 
 Examples: ``TRUE`` (converted to ``True``), ``off`` (converted to ``False``),
 ``example`` (used as-is)
@@ -1302,6 +1315,7 @@ Examples: ``TRUE`` (converted to ``True``), ``off`` (converted to ``False``),
 <usage>Page Should Not Contain Any String</usage>
 <usage>Page Should Not Contain Match</usage>
 <usage>Page Should Not Contain String</usage>
+<usage>Read All Screen</usage>
 <usage>Take Screenshot</usage>
 </usages>
 </type>
@@ -1310,7 +1324,9 @@ Examples: ``TRUE`` (converted to ``True``), ``off`` (converted to ``False``),
 literals. They are converted to actual dictionaries using the
 [https://docs.python.org/library/ast.html#ast.literal_eval|ast.literal_eval]
 function. They can contain any values ``ast.literal_eval`` supports, including
-dictionaries and other containers.
+dictionaries and other collections.
+
+Any mapping is accepted and converted to a ``dict``.
 
 If the type has nested types like ``dict[str, int]``, items are converted
 to those types automatically. This in new in Robot Framework 6.0.
@@ -1331,11 +1347,9 @@ built-in function. Floating point
 numbers are accepted only if they can be represented as integers exactly.
 For example, ``1.0`` is accepted and ``1.1`` is not.
 
-Starting from RF 4.1, it is possible to use hexadecimal, octal and binary
-numbers by prefixing values with ``0x``, ``0o`` and ``0b``, respectively.
-
-Starting from RF 4.1, spaces and underscores can be used as visual separators
-for digit grouping purposes.
+It is possible to use hexadecimal, octal and binary numbers by prefixing values
+with ``0x``, ``0o`` and ``0b``, respectively. Spaces and underscores can be used
+as visual separators for digit grouping purposes.
 
 Examples: ``42``, ``-1``, ``0b1010``, ``10 000 000``, ``0xBAD_C0FFEE``
 </doc>
@@ -1362,15 +1376,22 @@ Examples: ``42``, ``-1``, ``0b1010``, ``10 000 000``, ``0xBAD_C0FFEE``
 </type>
 <type name="list" type="Standard">
 <doc>Strings must be Python [https://docs.python.org/library/stdtypes.html#list|list]
-literals. They are converted to actual lists using the
+or [https://docs.python.org/library/stdtypes.html#tuple|tuple] literals.
+They are converted using the
 [https://docs.python.org/library/ast.html#ast.literal_eval|ast.literal_eval]
-function. They can contain any values ``ast.literal_eval`` supports, including
-lists and other containers.
+function and possible tuples converted further to lists. They can contain any
+values ``ast.literal_eval`` supports, including lists and other collections.
+
+If the argument is a list, it is used without conversion.
+Tuples and other sequences are converted to lists.
 
 If the type has nested types like ``list[int]``, items are converted
-to those types automatically. This in new in Robot Framework 6.0.
+to those types automatically.
 
 Examples: ``['one', 'two']``, ``[('one', 1), ('two', 2)]``
+
+Support to convert nested types is new in Robot Framework 6.0.
+Support for tuple literals is new in Robot Framework 7.4.
 </doc>
 <accepts>
 <type>string</type>
@@ -1385,8 +1406,10 @@ Examples: ``['one', 'two']``, ``[('one', 1), ('two', 2)]``
 </usages>
 </type>
 <type name="None" type="Standard">
-<doc>String ``NONE`` (case-insensitive) is converted to Python ``None`` object.
-Other values cause an error.
+<doc>String ``NONE`` (case-insensitive) and the empty string are converted to
+the Python ``None`` object. Other values cause an error.
+
+Converting the empty string is new in Robot Framework 7.4.
 </doc>
 <accepts>
 <type>string</type>
@@ -1474,7 +1497,14 @@ attributes -- see the documentation for details.</doc>
 </members>
 </type>
 <type name="string" type="Standard">
-<doc>All arguments are converted to Unicode strings.</doc>
+<doc>All arguments are converted to Unicode strings.
+
+Most values are converted simply by using ``str(value)``. An exception is that
+bytes are mapped directly to Unicode code points with same ordinals. This means
+that, for example, ``b"hyv\xe4"`` becomes ``"hyvä"``.
+
+Converting bytes specially is new Robot Framework 7.4.
+</doc>
 <accepts>
 <type>Any</type>
 </accepts>
@@ -1540,15 +1570,22 @@ for more details about the supported time formats.
 </type>
 <type name="tuple" type="Standard">
 <doc>Strings must be Python [https://docs.python.org/library/stdtypes.html#tuple|tuple]
-literals. They are converted to actual tuples using the
+or [https://docs.python.org/library/stdtypes.html#list|list] literals.
+They are converted using the
 [https://docs.python.org/library/ast.html#ast.literal_eval|ast.literal_eval]
-function. They can contain any values ``ast.literal_eval`` supports, including
-tuples and other containers.
+function and possible lists converted further to tuples. They can contain any
+values ``ast.literal_eval`` supports, including tuples and other collections.
+
+If the argument is a tuple, it is used without conversion.
+Lists and other sequences are converted to tuples.
 
 If the type has nested types like ``tuple[str, int, int]``, items are converted
-to those types automatically. This in new in Robot Framework 6.0.
+to those types automatically.
 
 Examples: ``('one', 'two')``, ``(('one', 1), ('two', 2))``
+
+Support to convert nested types is new in Robot Framework 6.0.
+Support for list literals is new in Robot Framework 7.4.
 </doc>
 <accepts>
 <type>string</type>
