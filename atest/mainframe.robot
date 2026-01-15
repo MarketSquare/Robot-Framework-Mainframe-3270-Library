@@ -178,6 +178,13 @@ Test Take Screenshot
     ${png_file}    Take Screenshot    img=${True}
     File Should Exist    ${png_file}
 
+Test Take Screenshot With Edge Browser
+    [Tags]    no-ci
+    ${html_file}    Take Screenshot    browser=edge
+    File Should Exist    ${html_file}
+    ${png_file}    Take Screenshot    img=${True}    browser=edge
+    File Should Exist    ${png_file}
+
 Test Write Bare
     Move Cursor To    5    25
     Write Bare    ${WRITE_TEXT}
