@@ -49,7 +49,7 @@ class ReadWriteKeywords(LibraryComponent):
         return self.mf.read_all_screen(replace_unicode)
 
     @keyword("Get String Positions")
-    def get_string_positions(self, string: str, mode: ResultMode = ResultMode.As_Tuple, ignore_case: bool = False):
+    def get_string_positions(self, string: str, mode: ResultMode = ResultMode.As_Tuple, ignore_case: bool = False, replace_unicode: bool = True):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found.
 
@@ -58,11 +58,16 @@ class ReadWriteKeywords(LibraryComponent):
 
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
+        NEW in version 4.4: The `replace_unicode` argument was added to control whether Unicode values should be
+        replaced with their corresponding characters. This is useful if you need to get the string positions for strings with unicode symbols like umlauts.
+
+
         Example:
-            | ${positions} | Get String Positions | Abc |         | # Returns a list like [(1, 8)] |
-            | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |
+            | ${positions} | Get String Positions | Abc |         |                       | # Returns a list like [(1, 8)] |
+            | ${positions} | Get String Positions | Abc | As Dict |                       | # Returns a list like [{"ypos": 1, "xpos": 8}] |
+            | ${positions} | Get String Positions | Üab | As Dict | replace_unicode=False | # Returns a list like [{"ypos": 1, "xpos": 8}] |
         """
-        positions = self.mf.get_string_positions(string, ignore_case)
+        positions = self.mf.get_string_positions(string, ignore_case, replace_unicode)
         return prepare_positions_as(positions, mode)
 
     @keyword("Get String Positions Only After")
@@ -73,6 +78,7 @@ class ReadWriteKeywords(LibraryComponent):
         string: str,
         mode: ResultMode = ResultMode.As_Tuple,
         ignore_case: bool = False,
+        replace_unicode: bool = True
     ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.
@@ -82,12 +88,16 @@ class ReadWriteKeywords(LibraryComponent):
 
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
+        NEW in version 4.4: The `replace_unicode` argument was added to control whether Unicode values should be
+        replaced with their corresponding characters. This is useful if you need to get the string positions for strings with unicode symbols like umlauts.
+
         Example:
-            | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         | # Returns a list like [(5, 5)] |
-            | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |
+            | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         |                       | # Returns a list like [(5, 5)] |
+            | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict |                       | # Returns a list like [{"ypos": 5, "xpos": 5}] |
+            | ${positions} | Get String Positions Only After | 5 | 4 | Übc | As Dict | replace_unicode=False | # Returns a list like [{"ypos": 5, "xpos": 5}] |
         """
         self.mf.check_limits(ypos, xpos)
-        positions = self.mf.get_string_positions(string, ignore_case)
+        positions = self.mf.get_string_positions(string, ignore_case, replace_unicode)
         filtered_positions = [position for position in positions if position > (ypos, xpos)]
         return prepare_positions_as(filtered_positions, mode)
 
@@ -99,6 +109,7 @@ class ReadWriteKeywords(LibraryComponent):
         string: str,
         mode: ResultMode = ResultMode.As_Tuple,
         ignore_case: bool = False,
+        replace_unicode: bool = True
     ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.
@@ -108,12 +119,16 @@ class ReadWriteKeywords(LibraryComponent):
 
         If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
+        NEW in version 4.4: The `replace_unicode` argument was added to control whether Unicode values should be
+        replaced with their corresponding characters. This is useful if you need to get the string positions for strings with unicode symbols like umlauts.
+
         Example:
-            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         | # Returns a list like [(11, 19)] |
-            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |
+            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         |                       | # Returns a list like [(11, 19)] |
+            | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict |                       | # Returns a list like [{"ypos": 11, "xpos": 19}] |
+            | ${positions} | Get String Positions Only Before | 11 | 20 | Übc | As Dict | replace_unicode=False | # Returns a list like [{"ypos": 11, "xpos": 19}] |
         """
         self.mf.check_limits(ypos, xpos)
-        positions = self.mf.get_string_positions(string, ignore_case)
+        positions = self.mf.get_string_positions(string, ignore_case, replace_unicode)
         filtered_positions = [position for position in positions if position < (ypos, xpos)]
         return prepare_positions_as(filtered_positions, mode)
 
