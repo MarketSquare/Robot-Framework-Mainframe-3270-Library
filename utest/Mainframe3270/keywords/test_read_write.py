@@ -107,7 +107,7 @@ def test_get_string_positions(mocker: MockerFixture, under_test: ReadWriteKeywor
 
     assert under_test.get_string_positions("abc") == [(5, 10)]
 
-    Emulator.get_string_positions.assert_called_once_with("abc", False)
+    Emulator.get_string_positions.assert_called_once_with("abc", False, True)
 
 
 def test_get_string_positions_as_dict(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -118,7 +118,7 @@ def test_get_string_positions_as_dict(mocker: MockerFixture, under_test: ReadWri
         {"ypos": 6, "xpos": 11},
     ]
 
-    Emulator.get_string_positions.assert_called_once_with("abc", False)
+    Emulator.get_string_positions.assert_called_once_with("abc", False, True)
 
 
 def test_get_string_positions_invalid_mode(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -130,7 +130,7 @@ def test_get_string_positions_invalid_mode(mocker: MockerFixture, under_test: Re
     logger.warn.assert_called_with(
         '"mode" should be either "ResultMode.As_Dict" or "ResultMode.As_Tuple". ' "Returning the result as tuple"
     )
-    Emulator.get_string_positions.assert_called_once_with("abc", False)
+    Emulator.get_string_positions.assert_called_once_with("abc", False, True)
 
 
 def test_get_string_positions_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -138,7 +138,7 @@ def test_get_string_positions_ignore_case(mocker: MockerFixture, under_test: Rea
 
     assert under_test.get_string_positions("abc", ignore_case=True) == [(5, 10)]
 
-    Emulator.get_string_positions.assert_called_once_with("abc", True)
+    Emulator.get_string_positions.assert_called_once_with("abc", True, True)
 
 
 def test_get_string_positions_only_after(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -148,7 +148,7 @@ def test_get_string_positions_only_after(mocker: MockerFixture, under_test: Read
     assert under_test.get_string_positions_only_after(5, 6, "my string") == [(5, 7)]
 
     Emulator.check_limits.assert_called_with(5, 6)
-    Emulator.get_string_positions.assert_called_with("my string", False)
+    Emulator.get_string_positions.assert_called_with("my string", False, True)
 
 
 def test_get_string_positions_only_after_as_dict(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -158,7 +158,7 @@ def test_get_string_positions_only_after_as_dict(mocker: MockerFixture, under_te
     assert under_test.get_string_positions_only_after(5, 6, "my string", ResultMode.As_Dict) == [{"xpos": 7, "ypos": 5}]
 
     Emulator.check_limits.assert_called_with(5, 6)
-    Emulator.get_string_positions.assert_called_with("my string", False)
+    Emulator.get_string_positions.assert_called_with("my string", False, True)
 
 
 def test_get_string_positions_only_after_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -168,7 +168,7 @@ def test_get_string_positions_only_after_ignore_case(mocker: MockerFixture, unde
     assert under_test.get_string_positions_only_after(5, 6, "my string", ignore_case=True) == [(5, 7)]
 
     Emulator.check_limits.assert_called_with(5, 6)
-    Emulator.get_string_positions.assert_called_with("my string", True)
+    Emulator.get_string_positions.assert_called_with("my string", True, True)
 
 
 def test_get_string_positions_only_before(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -178,7 +178,7 @@ def test_get_string_positions_only_before(mocker: MockerFixture, under_test: Rea
     assert under_test.get_string_positions_only_before(5, 7, "my string") == [(1, 1)]
 
     Emulator.check_limits.assert_called_with(5, 7)
-    Emulator.get_string_positions.assert_called_with("my string", False)
+    Emulator.get_string_positions.assert_called_with("my string", False, True)
 
 
 def test_get_string_positions_only_before_as_dict(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -190,7 +190,7 @@ def test_get_string_positions_only_before_as_dict(mocker: MockerFixture, under_t
     ]
 
     Emulator.check_limits.assert_called_with(5, 7)
-    Emulator.get_string_positions.assert_called_with("my string", False)
+    Emulator.get_string_positions.assert_called_with("my string", False, True)
 
 
 def test_get_string_positions_only_before_ignore_case(mocker: MockerFixture, under_test: ReadWriteKeywords):
@@ -200,4 +200,4 @@ def test_get_string_positions_only_before_ignore_case(mocker: MockerFixture, und
     assert under_test.get_string_positions_only_before(5, 7, "my string", ignore_case=True) == [(1, 1)]
 
     Emulator.check_limits.assert_called_with(5, 7)
-    Emulator.get_string_positions.assert_called_with("my string", True)
+    Emulator.get_string_positions.assert_called_with("my string", True, True)

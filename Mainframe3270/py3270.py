@@ -490,10 +490,10 @@ class Emulator(object):
                 return True
         return False
 
-    def get_string_positions(self, string, ignore_case=False):
+    def get_string_positions(self, string, ignore_case=False, replace_unicode=True):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found."""
-        screen_content = self.read_all_screen()
+        screen_content = self.read_all_screen(replace_unicode=replace_unicode)
         indices_object = re.finditer(re.escape(string), screen_content, flags=0 if not ignore_case else re.IGNORECASE)
         indices = [index.start() for index in indices_object]
         # ypos and xpos should be returned 1-based
