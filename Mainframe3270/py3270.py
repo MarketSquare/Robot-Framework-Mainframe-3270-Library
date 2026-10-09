@@ -453,7 +453,7 @@ class Emulator(object):
         if xpos and ypos:
             self.move_to(ypos, xpos)
         # escape double quotes in the data to send
-        tosend = tosend.decode("utf-8").replace('"', '"')
+        tosend = tosend.decode("utf-8").replace('"', '\\"')
         self.exec_command('String("{0}")'.format(tosend).encode("utf-8"))
 
     def send_enter(self):
