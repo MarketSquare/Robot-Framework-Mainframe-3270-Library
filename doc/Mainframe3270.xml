@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2025-12-17T00:46:35+00:00" specversion="6" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2026-10-16T13:30:20+00:00" specversion="7" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
 <version>4.3</version>
 <doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
@@ -132,6 +132,7 @@ Note that this is an experimental feature, so not all models might work as expec
 <default>2</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>By default, the emulator visibility is set to visible=True.
 In this case test cases are executed using wc3270 (Windows) or x3270 (Linux/MacOSX).
 You can change this by setting visible=False.
@@ -159,6 +160,7 @@ To change the ``run_on_failure_keyword`` during runtime, see `Register Run On Fa
 <type name="timedelta" typedoc="timedelta"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Change the timeout for connection in seconds.
 
 Example:
@@ -172,6 +174,7 @@ Example:
 <type name="timedelta" typedoc="timedelta"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>To give time for the mainframe screen to be "drawn" and receive the next commands, a "wait time" has been
 created, which by default is set to 0.5 seconds. This is a sleep applied AFTER the following keywords:
 
@@ -196,6 +199,7 @@ Example:
 <type name="timedelta" typedoc="timedelta"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>To give the user time to see what is happening inside the mainframe, a "wait time after write" has
 been created, which by default is set to 0 seconds. This is a sleep applied AFTER sending a string in these
 keywords:
@@ -218,12 +222,14 @@ Example:
 <kw name="Close All Connections" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="216">
 <arguments repr="">
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Close all currently opened connections and reset the index counter to 1.</doc>
 <shortdoc>Close all currently opened connections and reset the index counter to 1.</shortdoc>
 </kw>
 <kw name="Close Connection" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\connection.py" lineno="209">
 <arguments repr="">
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Close the current connection.</doc>
 <shortdoc>Close the current connection.</shortdoc>
 </kw>
@@ -246,6 +252,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Delete the character under the cursor. If you want to delete a character that is in
 another position, simply pass the coordinates ``ypos`` / ``xpos``.
 
@@ -275,6 +282,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Delete the entire content of a field at the current cursor location and positions
 the cursor at beginning of field. If you want to delete a field that is in
 another position, simply pass the coordinates ``ypos`` / ``xpos`` of any part in the field.
@@ -293,6 +301,7 @@ Example:
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Execute a [https://x3270.miraheze.org/wiki/Category:Wc3270_actions|x3270 command].
 
 Example:
@@ -327,7 +336,7 @@ Example:
 <shortdoc>Returns the current cursor position. The coordinates are 1 based.</shortdoc>
 </kw>
 <kw name="Get String Positions" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="52">
-<arguments repr="string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
+<arguments repr="string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False, replace_unicode: bool = True">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="string: str">
 <name>string</name>
 <type name="str" typedoc="string"/>
@@ -341,6 +350,11 @@ Example:
 <name>ignore_case</name>
 <type name="bool" typedoc="boolean"/>
 <default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="replace_unicode: bool = True">
+<name>replace_unicode</name>
+<type name="bool" typedoc="boolean"/>
+<default>True</default>
 </arg>
 </arguments>
 <doc>Returns a list of tuples of ypos and xpos for the position where the `string` was found,
@@ -351,13 +365,18 @@ a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is return
 
 If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
+NEW in version 4.4: The `replace_unicode` argument was added to control whether Unicode values should be
+replaced with their corresponding characters. This is useful if you need to get the string positions for strings with unicode symbols like umlauts.
+
+
 Example:
-    | ${positions} | Get String Positions | Abc |         | # Returns a list like [(1, 8)] |
-    | ${positions} | Get String Positions | Abc | As Dict | # Returns a list like [{"ypos": 1, "xpos": 8}] |</doc>
+    | ${positions} | Get String Positions | Abc |         |                       | # Returns a list like [(1, 8)] |
+    | ${positions} | Get String Positions | Abc | As Dict |                       | # Returns a list like [{"ypos": 1, "xpos": 8}] |
+    | ${positions} | Get String Positions | Üab | As Dict | replace_unicode=False | # Returns a list like [{"ypos": 1, "xpos": 8}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, or an empty list if it was not found.</shortdoc>
 </kw>
-<kw name="Get String Positions Only After" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="69">
-<arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
+<kw name="Get String Positions Only After" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="74">
+<arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False, replace_unicode: bool = True">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
 <type name="int" typedoc="integer"/>
@@ -379,6 +398,11 @@ Example:
 <name>ignore_case</name>
 <type name="bool" typedoc="boolean"/>
 <default>False</default>
+</arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="replace_unicode: bool = True">
+<name>replace_unicode</name>
+<type name="bool" typedoc="boolean"/>
+<default>True</default>
 </arg>
 </arguments>
 <doc>Returns a list of tuples of ypos and xpos for the position where the `string` was found,
@@ -389,13 +413,17 @@ a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is return
 
 If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
+NEW in version 4.4: The `replace_unicode` argument was added to control whether Unicode values should be
+replaced with their corresponding characters. This is useful if you need to get the string positions for strings with unicode symbols like umlauts.
+
 Example:
-    | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         | # Returns a list like [(5, 5)] |
-    | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict | # Returns a list like [{"ypos": 5, "xpos": 5}] |</doc>
+    | ${positions} | Get String Positions Only After | 5 | 4 | Abc |         |                       | # Returns a list like [(5, 5)] |
+    | ${positions} | Get String Positions Only After | 5 | 4 | Abc | As Dict |                       | # Returns a list like [{"ypos": 5, "xpos": 5}] |
+    | ${positions} | Get String Positions Only After | 5 | 4 | Übc | As Dict | replace_unicode=False | # Returns a list like [{"ypos": 5, "xpos": 5}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.</shortdoc>
 </kw>
-<kw name="Get String Positions Only Before" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="95">
-<arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False">
+<kw name="Get String Positions Only Before" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="105">
+<arguments repr="ypos: int, xpos: int, string: str, mode: ResultMode = As_Tuple, ignore_case: bool = False, replace_unicode: bool = True">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="ypos: int">
 <name>ypos</name>
 <type name="int" typedoc="integer"/>
@@ -418,6 +446,11 @@ Example:
 <type name="bool" typedoc="boolean"/>
 <default>False</default>
 </arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="replace_unicode: bool = True">
+<name>replace_unicode</name>
+<type name="bool" typedoc="boolean"/>
+<default>True</default>
+</arg>
 </arguments>
 <doc>Returns a list of tuples of ypos and xpos for the position where the `string` was found,
 but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.
@@ -427,9 +460,13 @@ a list of dictionaries in the form of ``[{"xpos": int, "ypos": int}]`` is return
 
 If `ignore_case` is set to `True`, then the search is done case-insensitively.
 
+NEW in version 4.4: The `replace_unicode` argument was added to control whether Unicode values should be
+replaced with their corresponding characters. This is useful if you need to get the string positions for strings with unicode symbols like umlauts.
+
 Example:
-    | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         | # Returns a list like [(11, 19)] |
-    | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict | # Returns a list like [{"ypos": 11, "xpos": 19}] |</doc>
+    | ${positions} | Get String Positions Only Before | 11 | 20 | Abc |         |                       | # Returns a list like [(11, 19)] |
+    | ${positions} | Get String Positions Only Before | 11 | 20 | Abc | As Dict |                       | # Returns a list like [{"ypos": 11, "xpos": 19}] |
+    | ${positions} | Get String Positions Only Before | 11 | 20 | Übc | As Dict | replace_unicode=False | # Returns a list like [{"ypos": 11, "xpos": 19}] |</doc>
 <shortdoc>Returns a list of tuples of ypos and xpos for the position where the `string` was found, but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.</shortdoc>
 </kw>
 <kw name="Move Cursor To" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="103">
@@ -453,12 +490,14 @@ Example:
 <kw name="Move Next Field" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="64">
 <arguments repr="">
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</doc>
 <shortdoc>Move the cursor to the next input field. Equivalent to pressing the Tab key.</shortdoc>
 </kw>
 <kw name="Move Previous Field" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="71">
 <arguments repr="">
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</doc>
 <shortdoc>Move the cursor to the previous input field. Equivalent to pressing the Shift+Tab keys.</shortdoc>
 </kw>
@@ -619,6 +658,7 @@ where the content of `session.wc3270` is:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Assert that all the strings in a given list exist on the mainframe screen.
 
 The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
@@ -654,6 +694,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Assert that one of the strings in a given list exists on the mainframe screen.
 
 The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
@@ -687,6 +728,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Assert that the text displayed on the mainframe screen matches the given pattern.
 
 Pattern matching is similar to matching files in a shell, and it is always case-sensitive.
@@ -728,6 +770,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Assert that a given string exists on the mainframe screen.
 
 The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
@@ -765,6 +808,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Asserts that the entered string appears the desired number of times on the mainframe screen.
 
 The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
@@ -785,6 +829,7 @@ Example:
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Fails if string does not match pattern as a regular expression. Regular expression check is
 implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
 regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
@@ -816,6 +861,7 @@ thus be escaped with another backslash (e.g. \\d\\w+).</doc>
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Fails if one of the strings in a given list exists on the mainframe screen. If one of the string
 are found, the keyword will raise an exception.
 
@@ -852,6 +898,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Assert that none of the strings in a given list exists on the mainframe screen. If one or more of the
 string are found, the keyword will raise an exception.
 
@@ -886,6 +933,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Assert that the text displayed on the mainframe screen does NOT match the given pattern.
 
 Pattern matching is similar to matching files in a shell, and it is always case-sensitive.
@@ -927,6 +975,7 @@ Example:
 <default>None</default>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Assert that a given string does NOT exist on the mainframe screen.
 
 The assertion is case-sensitive. If you want it to be case-insensitive, you can pass the argument
@@ -947,6 +996,7 @@ Example:
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Fails if string does match pattern as a regular expression. Regular expression check is
 implemented using the Python [https://docs.python.org/2/library/re.html|re module]. Python's
 regular expression syntax is derived from Perl, and it is thus also very similar to the syntax used,
@@ -1028,6 +1078,7 @@ to get a string of length from the current cursor position.</doc>
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>This keyword lets you change the keyword that runs on failure during test execution.
 The default is `Take Screenshot`, which is set on library import.
 
@@ -1041,6 +1092,7 @@ Example:
 <kw name="Send Enter" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\commands.py" lineno="56">
 <arguments repr="">
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Send an Enter to the screen.</doc>
 <shortdoc>Send an Enter to the screen.</shortdoc>
 </kw>
@@ -1051,19 +1103,21 @@ Example:
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Send a Program Function to the screen.
 
 Example:
     | Send PF | 3 |</doc>
 <shortdoc>Send a Program Function to the screen.</shortdoc>
 </kw>
-<kw name="Set Screenshot Folder" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="18">
+<kw name="Set Screenshot Folder" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="11">
 <arguments repr="path: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="path: str">
 <name>path</name>
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Set a folder to keep the html files generated by the `Take Screenshot` keyword.
 
 Note that the folder needs to exist before running your automation scripts. Else the images
@@ -1096,8 +1150,8 @@ Examples:
 | Switch Connection | first | | # first is now the current connection  |</doc>
 <shortdoc>Switch the current connection to the one identified by index or alias. Indices are returned from and aliases can be optionally provided to the `Open Connection` and `Open Connection From Session File` keywords.</shortdoc>
 </kw>
-<kw name="Take Screenshot" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="34">
-<arguments repr="height: int = 400, width: int = 600, filename_prefix: str = screenshot, img: bool = False">
+<kw name="Take Screenshot" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\screenshot.py" lineno="27">
+<arguments repr="height: int = 400, width: int = 600, filename_prefix: str = screenshot, img: bool = False, browser: str = chrome">
 <arg kind="POSITIONAL_OR_NAMED" required="false" repr="height: int = 400">
 <name>height</name>
 <type name="int" typedoc="integer"/>
@@ -1118,6 +1172,11 @@ Examples:
 <type name="bool" typedoc="boolean"/>
 <default>False</default>
 </arg>
+<arg kind="POSITIONAL_OR_NAMED" required="false" repr="browser: str = chrome">
+<name>browser</name>
+<type name="str" typedoc="string"/>
+<default>chrome</default>
+</arg>
 </arguments>
 <returntype name="str" typedoc="string"/>
 <doc>Generate a screenshot of the IBM 3270 Mainframe in a html or png format. The
@@ -1131,12 +1190,15 @@ module this option only works if chrome is installed in your system.
 
 The file name prefix can be set, the default is "screenshot".
 
+The Html2Image compatible browser that should be used for creating a png screenshot can be selected with the `browser` parameter, the default is "chrome".
+
 The file path is returned.
 
 Example:
     | ${filepath} | Take Screenshot |
     | ${filepath} | Take Screenshot | img=${True} |
     | ${filepath} | Take Screenshot | height=500 | width=700 |
+    | ${filepath} | Take Screenshot | browser=edge |
     | Take Screenshot | height=500 | width=700 |
     | Take Screenshot | filename_prefix=MyScreenshot |</doc>
 <shortdoc>Generate a screenshot of the IBM 3270 Mainframe in a html or png format. The default folder is the log folder of RobotFramework, if you want change see the `Set Screenshot Folder`.</shortdoc>
@@ -1144,6 +1206,7 @@ Example:
 <kw name="Wait Field Detected" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\wait_and_timeout.py" lineno="63">
 <arguments repr="">
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Wait until the screen is ready, the cursor has been positioned
 on a modifiable field, and the keyboard is unlocked.
 
@@ -1179,33 +1242,35 @@ Example:
     | Wait Until String | something | 0:00:15 |</doc>
 <shortdoc>Wait until a string exists on the mainframe screen to perform the next step. If the string does not appear in 5 seconds, the keyword will raise an exception. You can define a different timeout.</shortdoc>
 </kw>
-<kw name="Write" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="121">
+<kw name="Write" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="136">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Send a string *and Enter* to the screen at the current cursor location.
 
 Example:
     | Write | something |</doc>
 <shortdoc>Send a string *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="142">
+<kw name="Write Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="157">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Send only the string to the screen at the current cursor location.
 
 Example:
     | Write Bare | something |</doc>
 <shortdoc>Send only the string to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Bare In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="173">
+<kw name="Write Bare In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="188">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1229,7 +1294,7 @@ Example:
     | Write Bare in Position | something | 9 | 11 |</doc>
 <shortdoc>Send only the string to the screen at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="161">
+<kw name="Write In Position" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="176">
 <arguments repr="txt: str, ypos: int, xpos: int">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
@@ -1244,6 +1309,7 @@ Example:
 <type name="int" typedoc="integer"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Send a string *and Enter* to the screen at screen coordinates ``ypos`` / ``xpos``.
 
 Coordinates are 1 based, as listed in the status area of the
@@ -1253,13 +1319,14 @@ Example:
     | Write in Position | something | 9 | 11 |</doc>
 <shortdoc>Send a string *and Enter* to the screen at screen coordinates ``ypos`` / ``xpos``.</shortdoc>
 </kw>
-<kw name="Write Unicode" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="130">
+<kw name="Write Unicode" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="145">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Send a Unicode string using the execute command String("") *and Enter* to the screen at the current
 cursor location.
 
@@ -1267,13 +1334,14 @@ Example:
     | Write Unicode | ß |</doc>
 <shortdoc>Send a Unicode string using the execute command String("") *and Enter* to the screen at the current cursor location.</shortdoc>
 </kw>
-<kw name="Write Unicode Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="151">
+<kw name="Write Unicode Bare" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\keywords\read_write.py" lineno="166">
 <arguments repr="txt: str">
 <arg kind="POSITIONAL_OR_NAMED" required="true" repr="txt: str">
 <name>txt</name>
 <type name="str" typedoc="string"/>
 </arg>
 </arguments>
+<returntype name="None" typedoc="None"/>
 <doc>Send only the Unicode string using the execute command String("") to the screen at the current cursor location.
 
 Example:
@@ -1343,9 +1411,8 @@ Examples: ``{'a': 1, 'b': 2}``, ``{'key': 1, 'nested': {'key': 2}}``
 </type>
 <type name="integer" type="Standard">
 <doc>Conversion is done using Python's [https://docs.python.org/library/functions.html#int|int]
-built-in function. Floating point
-numbers are accepted only if they can be represented as integers exactly.
-For example, ``1.0`` is accepted and ``1.1`` is not.
+built-in function. Floating point numbers are accepted only if they can be
+represented as integers exactly. For example, ``1.0`` is accepted and ``1.1`` is not.
 
 It is possible to use hexadecimal, octal and binary numbers by prefixing values
 with ``0x``, ``0o`` and ``0b``, respectively. Spaces and underscores can be used
@@ -1415,8 +1482,17 @@ Converting the empty string is new in Robot Framework 7.4.
 <type>string</type>
 </accepts>
 <usages>
+<usage>__init__</usage>
+<usage>Change Timeout</usage>
+<usage>Change Wait Time</usage>
+<usage>Change Wait Time After Write</usage>
+<usage>Close All Connections</usage>
+<usage>Close Connection</usage>
 <usage>Delete Char</usage>
 <usage>Delete Field</usage>
+<usage>Execute Command</usage>
+<usage>Move Next Field</usage>
+<usage>Move Previous Field</usage>
 <usage>Open Connection</usage>
 <usage>Open Connection From Session File</usage>
 <usage>Page Should Contain All Strings</usage>
@@ -1424,10 +1500,22 @@ Converting the empty string is new in Robot Framework 7.4.
 <usage>Page Should Contain Match</usage>
 <usage>Page Should Contain String</usage>
 <usage>Page Should Contain String X Times</usage>
+<usage>Page Should Match Regex</usage>
 <usage>Page Should Not Contain All Strings</usage>
 <usage>Page Should Not Contain Any String</usage>
 <usage>Page Should Not Contain Match</usage>
 <usage>Page Should Not Contain String</usage>
+<usage>Page Should Not Match Regex</usage>
+<usage>Register Run On Failure Keyword</usage>
+<usage>Send Enter</usage>
+<usage>Send PF</usage>
+<usage>Set Screenshot Folder</usage>
+<usage>Wait Field Detected</usage>
+<usage>Write</usage>
+<usage>Write Bare</usage>
+<usage>Write In Position</usage>
+<usage>Write Unicode</usage>
+<usage>Write Unicode Bare</usage>
 </usages>
 </type>
 <type name="Path" type="Standard">
