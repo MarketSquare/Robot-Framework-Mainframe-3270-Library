@@ -49,7 +49,13 @@ class ReadWriteKeywords(LibraryComponent):
         return self.mf.read_all_screen(replace_unicode)
 
     @keyword("Get String Positions")
-    def get_string_positions(self, string: str, mode: ResultMode = ResultMode.As_Tuple, ignore_case: bool = False, replace_unicode: bool = True):
+    def get_string_positions(
+        self,
+        string: str,
+        mode: ResultMode = ResultMode.As_Tuple,
+        ignore_case: bool = False,
+        replace_unicode: bool = True,
+    ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         or an empty list if it was not found.
 
@@ -78,7 +84,7 @@ class ReadWriteKeywords(LibraryComponent):
         string: str,
         mode: ResultMode = ResultMode.As_Tuple,
         ignore_case: bool = False,
-        replace_unicode: bool = True
+        replace_unicode: bool = True,
     ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         but only after the specified ypos/xpos coordinates. If it is not found an empty list is returned.
@@ -109,7 +115,7 @@ class ReadWriteKeywords(LibraryComponent):
         string: str,
         mode: ResultMode = ResultMode.As_Tuple,
         ignore_case: bool = False,
-        replace_unicode: bool = True
+        replace_unicode: bool = True,
     ):
         """Returns a list of tuples of ypos and xpos for the position where the `string` was found,
         but only before the specified ypos/xpos coordinates. If it is not found an empty list is returned.

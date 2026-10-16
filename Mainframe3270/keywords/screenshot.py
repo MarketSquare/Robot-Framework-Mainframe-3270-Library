@@ -60,16 +60,16 @@ class ScreenshotKeywords(LibraryComponent):
         self.mf.save_screen(filepath)
         if img:
             try:
-                hti = Html2Image(size=(600, 500), browser=browser)
+                hti = Html2Image(size=(600, 500), browser=browser, disable_logging=True)
             except Exception as exception:
                 logger.info("\n" + str(exception), also_console=True)
-                raise EnvironmentError(f"Browser {browser} not found, please use argument ${img}=False")
- 
+                raise EnvironmentError(f"Browser {browser} not found, please use argument ${{img}}=False")
             hti.output_path = self.img_folder
             img_name = f"{filename_prefix}_{filename_suffix}.png"
             img_path = os.path.join(self.img_folder, img_name)
             hti.screenshot(html_file=filepath, save_as=img_name)
             logger.info(f"<img src='{img_path}'>", html=True)
+            os.remove(filepath)
             return img_path
         else:
             logger.write(

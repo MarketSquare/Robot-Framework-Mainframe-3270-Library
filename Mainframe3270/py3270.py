@@ -425,7 +425,7 @@ class Emulator(object):
         Using this method tells the client to wait until a field is
         detected and the cursor has been positioned on it.
         """
-        self.exec_command("Wait({0}, InputField)".format(self.timeout).encode("utf-8"))
+        self.exec_command("Wait({0}, InputField)".format(int(self.timeout)).encode("utf-8"))
         if self.status.keyboard != b"U":
             raise KeyboardStateError(
                 "keyboard not unlocked, state was: {0}".format(self.status.keyboard.decode("utf-8"))
@@ -453,7 +453,7 @@ class Emulator(object):
         if xpos and ypos:
             self.move_to(ypos, xpos)
         # escape double quotes in the data to send
-        tosend = tosend.decode("utf-8").replace('"', '"')
+        tosend = tosend.decode("utf-8").replace('"', '\\"')
         self.exec_command('String("{0}")'.format(tosend).encode("utf-8"))
 
     def send_enter(self):

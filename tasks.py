@@ -37,7 +37,7 @@ def utest(c):
 @task
 def atest(c):
     """Runs robot acceptance tests."""
-    c.run("robot --loglevel DEBUG atest/")
+    c.run("robot --loglevel DEBUG --exclude no-ci atest/")
 
 
 @task(utest, atest)
