@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2026-10-16T13:30:20+00:00" specversion="7" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
-<version>4.3</version>
+<keywordspec name="Mainframe3270" type="LIBRARY" format="ROBOT" scope="SUITE" generated="2026-10-16T13:53:37+00:00" specversion="7" source="C:\Merkle\repositories\Mainframe-3270-Library\Mainframe3270\__init__.py" lineno="22">
+<version>4.4</version>
 <doc>Mainframe3270 is a library for Robot Framework based on the [https://pypi.org/project/py3270/|py3270 project],
 a Python interface to x3270, an IBM 3270 terminal emulator. It provides an API to a x3270 or s3270 subprocess.
 

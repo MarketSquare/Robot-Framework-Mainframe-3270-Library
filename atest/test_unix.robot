@@ -2,6 +2,7 @@
 Library             ../Mainframe3270/
 Library             OperatingSystem
 Resource            pub400_variables.robot
+
 Suite Setup         Suite Mainframe Setup
 Suite Teardown      Close Connection
 

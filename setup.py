@@ -22,7 +22,7 @@ package_kwargs = {
     "description": "Mainframe Test library for Robot Framework",
     "long_description": long_description,
     "long_description_content_type": "text/markdown",
-    "author": "Altran Portugal",
+    "author": "Samuel Cabral",
     "author_email": "samuca@gmail.com",
     "license": "MIT License",
     "license_files": ["LICENSE.md", "THIRD-PARTY-NOTICES.txt"],
