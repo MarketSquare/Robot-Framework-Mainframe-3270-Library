@@ -63,7 +63,7 @@ class ScreenshotKeywords(LibraryComponent):
                 hti = Html2Image(size=(600, 500), browser=browser, disable_logging=True)
             except Exception as exception:
                 logger.info("\n" + str(exception), also_console=True)
-                raise EnvironmentError(f"Browser {browser} not found, please use argument ${img}=False")
+                raise EnvironmentError(f"Browser {browser} not found, please use argument ${{img}}=False")
             hti.output_path = self.img_folder
             img_name = f"{filename_prefix}_{filename_suffix}.png"
             img_path = os.path.join(self.img_folder, img_name)
