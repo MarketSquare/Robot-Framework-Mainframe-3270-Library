@@ -16,6 +16,10 @@ Test Screenshot Png
     Sleep    1
     Take Screenshot    img=${True}
 
+Test Screenshot Png Edge
+    Sleep    1
+    Take Screenshot    img=${True}    browser=edge
+
 Test Screenshot Html
     Write Bare    HTML
     Sleep    1
